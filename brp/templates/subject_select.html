@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+<title>Biorepository Subject Select</title>
+{% endblock %}
+
+{% block topbar_block %}
+<p class="navbar-text">Subject List</p>
+{% endblock %}
+{% block top_links %}
+    <li><a href="{{root_path}}/welcome">Projects</href></a></li>
+{% endblock %}
+
+
+{% block main_content %}
+<h3>Project: {{protocol.name}}</h3>
+<div id="toolbar">
+    <ul class="list-unstyled">
+       <li><input class="btn btn-success" type="button" value="New Subject" onclick="location.href='{{root_path}}/dataentry/protocol/{{protocol.id}}/newsubject/'" /></li>
+    </ul>
+</div>
+
+<div id="filter_bar">
+    <ul class="list-unstyled">
+        <li>
+            <ul class="list-unstyled">
+              <li style="display:inline">
+                <form class="form-horizontal" role="form">
+                  <div class="form-group">
+                    <label for="org_select" class="col-lg-2 control-label">Filter Subject List</label>
+                    <div class="col-lg-4">
+                        <select class="form-control" id="org_select" onchange=organizationSelect(this.value)>
+                            <option value='ALL'>All Groups</option>
+                                {% for o in organizations %}
+                                  <option value='{{o.id}}'>{{o.name}}</option>
+                                {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-3">
+                      <input class="form-control" id="inputEmail1" placeholder="Enter Search Text Here" onclick="if(this.value=='Enter Search Text Here')this.value=''" onkeyup=text_filter(this.value) type="text" name="search" value="Enter Search Text Here">
+                    </div>
+                    <div class="col-lg-2" style="padding-top:10px;">
+                    <span class="label label-primary"><span class="sub-count">{{subjects|length}}</span> <span class="count-label">{% if subjects|length == 1 %}Subject{% else %}Subjects{% endif %}</span></span>
+                    <div class="col-lg-2">
+                  </div>
+             </form>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<div id="subject_table_div">
+    <table id="subject_table" class="table table-bordered table-striped sortable">
+        <thead>
+            <tr>
+                <th "width:100px,">Group</th>
+                <th "width:50px">MRN</th>
+                <th style="width:90px" data-defaultsort="asc">Last Name</th>
+                <th style="width:90px">First Name</th>
+                <th style="width:95px">Birth Date</th>
+                <th style="width:240px" data-defaultsort="disabled">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for s in subjects %}
+            <tr class="subject_row" oid="{{s.organization_id}}" filter="f">
+                <td style="padding-top:20px;">{{s.organization_name}}</td>
+                <td style="padding-top:20px;">{{s.organization_subject_id}}</td>
+                <td style="padding-top:20px;">{{s.last_name}}</td>
+                <td style="padding-top:20px;">{{s.first_name}}</td>
+                <td style="padding-top:20px;">{{s.dob}}</td>
+                <td>
+                    <table class="table-condensed" style="border:none">
+                        <tbody>
+                        <tr style="border:none">
+                            <td style="border:none"><button class="btn btn-small btn-primary" onclick="location.href='{{root_path}}/dataentry/protocol/{{protocol.id}}/editsubject/{{s.id}}/'">Edit PHI</button></td>
+                            {% for pds in authorized_data_sources %}
+                                <td style="border:none"><button class="btn btn-small btn-primary" onclick="location.href='{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{s.id}}/list/'">{{pds.display_label}}</button></td>
+                            {% endfor %}
+                            {% for pds in unauthorized_data_sources %}
+                                <td style="border:none"><button class="btn btn-small" disabled title="No Credentials Found. Please contact the administrator for further information.">{{pds.display_label}}</button></td>
+                            {% endfor %}
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block script %}
+var subject_filters = '';
+var subject_org_filter = '';
+var subject_text_filter = '';
+var $subject_table_rows = $('.subject_row', $('#subject_table'));
+
+function applySubjectFilters(){
+    if(subject_filters == ''){
+        $subject_table_rows.attr('filter','f');
+    }else{
+        $subject_table_rows.attr('filter','t');
+        $subject_table_rows.filter(subject_filters).attr('filter','f');
+    }
+    $subject_table_rows.each(function(i){
+        $(this).hide();
+    });
+    $subject_table_rows.filter('[filter=f]').show();
+}
+function updateSubjectCount(){
+    $(".sub-count").text($(".subject_row:visible").length);
+    if ($(".subject_row:visible").length == 1){
+        $(".count-label").text('Subject');
+    } else {
+        $(".count-label").text('Subjects');
+    }
+}
+
+function text_filter(value){
+    var temp = subject_text_filter;
+    var v = trimWhiteSpace(value.toLowerCase());
+    if (v == '') subject_text_filter = '';
+    else subject_text_filter=':text_search('+value+')';
+    if(subject_filters == ''){
+        subject_filters = subject_text_filter;
+    }else{
+        subject_filters = subject_filters.replace(temp,subject_text_filter);
+    }
+    applySubjectFilters();
+    updateSubjectCount();
+}
+
+function organizationSelect(value){
+    var temp = subject_org_filter;
+    subject_org_filter=':organization('+value+')';
+    if(subject_filters === ''){
+        subject_filters = subject_org_filter;
+    }else{
+        subject_filters = subject_filters.replace(temp,subject_org_filter);
+    }
+    applySubjectFilters();
+    updateSubjectCount();
+}
+
+function updatePatientView(value){
+    var items = value.split(':');
+    $('#subject_name').html(items[0] + ' ' + items[1]);
+    $('#subject_dob').html(items[2]);
+}
+
+jQuery(document).ready(function() {
+    extendFilters();
+})
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load markdown_deux_tags %}
+
+{% comment %}
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/moderation.css">
+{% endblock %}
+{% endcomment %}
+
+{% block topbar_block %}
+<p class="navbar-text">Account Moderation for <b>{{ user.get_full_name }}</b></p>
+{% endblock %}
+
+{% block main_content %}
+    <p>&larr; <a href="{% url 'moderate-registration-list' %}">Back to Moderation List</a></p>
+
+    <div class="container">
+        {% with profile.user as user %}
+        <div class="content">
+            <h4>1. Contact Information</h4>
+
+            <section>
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ user.get_full_name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Institution</th>
+                        <td>{{ user.profile.institution }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ user.email|urlize }}</td>
+                    </tr>
+                </table>
+            </section>
+
+            <h4>2. Description of {{ user.get_full_name }}'s Research</h4>
+
+            <section>{{ user.profile.reason|markdown }}</section>
+
+            <h4>3. Approval/Rejection Comment</h4>
+
+            <p class="info">This message will be sent to {{ user.get_full_name }}
+                as part of their approval/rejection email.</p>
+
+            <form method="post" action="">
+                {% csrf_token %}
+
+                {{ form.comment }}
+
+                <div style="position: relative; margin-top: 10px;">
+                    <input id="approve" type="submit" name="status" value="Approve">
+                    <input id="reject" type="submit" name="status" value="Reject">
+                </div>
+            </form>
+            
+        </div>
+        {% endwith %}
+    </div>
+{% endblock %}

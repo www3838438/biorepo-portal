@@ -1,0 +1,9 @@
+*.pyc
+*.DS_Store
+*.env
+*.log
+_static/
+_site/
+.project_config.json
+*.env
+rc_driver

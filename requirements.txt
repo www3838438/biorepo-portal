@@ -1,0 +1,34 @@
+# This file collects all required third-party applications that are needed
+# to run this project. Later you can install all these apps in a row
+# using pip. Example::
+#
+#     pip install -U -r requirements.txt
+
+# Core requirements
+Django>=1.6,<1.7
+south==1.0.1
+django-environ==0.3.0
+django-session-security==2.2.1
+django-markdown-deux==1.0.5
+djangorestframework==3.1.1
+djangorestframework-jwt==1.5.0
+
+# eHB Interfacing
+git+git://github.com/chop-dbhi/ehb-client.git@v0.5.0#egg=ehb-client
+git+git://github.com/chop-dbhi/ehb-datasources.git@v0.10.3#egg=ehb-datasources
+
+# Backend support
+psycopg2==2.5.4
+
+# Cache backend support
+python-memcached==1.53
+
+# For LDAP supoort, install python-ldap
+python-ldap==2.4.19
+
+#account registration moderation infrastructure
+django-siteauth==0.9b1
+git+git://github.com/bruth/django-registration2.git#egg=django-registration2
+markdown2==2.3.0
+
+raven==5.4.4

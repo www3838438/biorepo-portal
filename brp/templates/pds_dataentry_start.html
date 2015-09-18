@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+<title>Subject Data</title>
+{% endblock %}
+
+{% block topbar_block %}
+    <p class="navbar-text">Subject Data</p>
+{% endblock %}
+{% block top_links %}
+    <li><a href="{{root_path}}/dataentry/protocoldatasource/{{pds_id}}/subject/{{subject.id}}/list/">Records</href></a></li>
+    <li><a href="{{root_path}}/dataentry/protocol/{{protocol.id}}/">Subjects</href></a></li>
+    <li><a href="{{root_path}}/welcome">Projects</href></a></li>
+{% endblock %}
+
+
+{% block main_content %}
+
+<div>
+	<table class="table table-bordered">
+		<tr>
+			<th>Project</th>
+			<th>Last Name</th>
+			<th>First Name</th>
+			<th>{{organization.subject_id_label}}</th>
+			<th>Birth Date</th>
+			<th>Other Actions</th>
+		</tr>
+		<tbody>
+		<tr>
+			<td style="padding-top:15px;">{{protocol.name}}</td>
+			<td style="padding-top:15px;">{{subject.last_name}}</td>
+			<td style="padding-top:15px;">{{subject.first_name}}</td>
+			<td style="padding-top:15px;">{{subject.organization_subject_id}}</td>
+			<td style="padding-top:15px;">{{subject.dob}}</td>
+			<td>
+			    {% for pds in authorized_data_sources %}
+					<button class="btn btn-small btn-primary" onclick="location.href='{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/list/'">{{pds.display_label}}</button>
+				{% endfor %}
+				{% for pds in unauthorized_data_sources %}
+					<button class="btn btn-small" disabled title="No Credentials Found. Please contact the administrator for further information.">{{pds.display_label}}</button>
+				{% endfor %}
+			</td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+
+<div> <span class="label label-primary">{{label.label}}</span></div>
+
+<div style="margin-top:10px">
+
+{{subRecordSelectionForm|safe}}
+
+</div>
+
+<div class="modal fade" id="pleaseWaitModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Please Wait</h4>
+        </div>
+        <div class="modal-body">
+            <div id="pleaseWaitMsg"><p> Please wait for this action to complete. This may take several seconds.</p></div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+
+{% endblock %}
+
+{% block script %}
+
+$(function () {
+    if ($.browser.msie) {
+        $('input:radio').click(function () {
+            this.blur();
+            this.focus();
+        });
+        $('input:checkbox').click(function () {
+            this.blur();
+            this.focus();
+        });
+    }
+});
+{% endblock %}

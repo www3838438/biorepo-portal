@@ -1,0 +1,35 @@
+{% extends "subject_base.html" %}
+
+{% block head_content %}
+<title>Subject Edit</title>
+{% endblock %}
+
+{% block topbar_block %}
+<p class="navbar-text">Subject Edit</p>
+{% endblock %}
+{% block top_links %}
+    <li><a href="{{root_path}}/dataentry/protocol/{{protocol.id}}/">Subjects</href></a></li>
+    <li><a href="{{root_path}}/welcome">Projects</href></a></li>
+{% endblock %}
+
+{% block form_content %}
+<h3>Edit subject information on project {{protocol.name}}</h3>
+<form class="well" action="{{root_path}}/dataentry/protocol/{{protocol.id}}/editsubject/{{subject.id}}/" method="post">{% csrf_token %}
+	{% if errors %}
+		<div>
+			<h1>Error:</h1>
+			{% for error in errors %}
+				<li> {{error}}</li>
+			{% endfor %}
+		</div>
+	{% endif %}
+	<table class="table">
+		{{form.as_table}}
+	</table>
+	<ul class="unstyled">
+		<li style="display:inline"><input class="btn btn-small btn-primary" type="submit" value="Save" /></li>
+		<li style="display:inline"><input class="btn btn-small btn-danger" type="button" value="Cancel" onclick="location.href='{{root_path}}/dataentry/protocol/{{protocol.id}}/'"/></li>
+	</ul>
+</form>
+
+{% endblock %}

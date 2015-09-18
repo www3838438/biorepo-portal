@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+	<script type="text/javascript" src="{{ STATIC_URL }}js/src/registration/main.js"></script>
+    <title>Biorepository Account Registration</title>
+{% endblock %}
+
+
+{% block topbar_block %}
+<p class="navbar-text">Account Registration</p>
+{% endblock %}
+
+{% block main_content %}
+
+        {% if form.non_field_errors %}
+        <div class="info">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+            <form method="post" action="">
+                {% csrf_token %}
+
+                <h4>1. End User License Agreement (EULA)</h4>
+
+
+                <section {% if form.eula.errors %}class="error"{% endif %}>
+                    {{ form.eula }} I agree to the terms detailed in the <a href="{% url 'eula' %}" target="_blank">End User License Agreement</a>
+                </section>
+
+                <h4>2. Basic Information</h4>
+
+                <p class="info">All information below is required. If you are a CHOP employee, use
+                your CHOP-issued email address.</p>
+
+                <section id="basic-information">
+                    <table>
+                        <tr>
+                            <th>{{ form.first_name.label_tag }}</th>
+                            <td>{% formfield form.first_name %}</td>
+                        </tr>
+                        <tr>
+                            <th>{{ form.last_name.label_tag }}</th>
+                            <td>{% formfield form.last_name %}</td>
+                        </tr>
+                        <tr>
+                            <th>{{ form.email.label_tag }}</th>
+                            <td>{% formfield form.email %}</td>
+			</tr>
+                        <tr>
+                            <th>{{ form.institution.label_tag }}</th>
+                            <td>{% formfield form.institution %}</td>
+                        </tr>
+
+                    </table>
+                </section>
+
+		<h4>3. Account Information</h4>
+
+                <p class="info">If you are a CHOP employee, you do not need to fill out this section. You will
+                simply use your Active Directory (AD) credentials.</p>
+
+                <section id="account-information">
+                    <table>
+                        <tr>
+                            <th>{{ form.password1.label_tag }}</th>
+                            <td>{% formfield form.password1 %}<br>
+				<span class="info">{{ form.password1.help_text }}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>{{ form.password2.label_tag }}</th>
+                            <td>{% formfield form.password2 %}</td>
+			</tr>
+                    </table>
+                </section>
+
+		<h4>4. Tell us about your research</h4>
+
+		<p class="info">Please give a brief summary of the project you are working on and the first and last names of the study managers who requested you have access to this portal.</p>
+
+                {% formfield form.reason %}
+
+                <p class="info">Once this request is submitted, an account moderator will review your request and send you
+                an email when your account has been activated.</p>
+
+                <input type="submit" value="Request Account">
+
+            </form>
+
+{% endblock %}
+
+{% block script %}
+bindEmailFuncs();
+
+{% endblock %}

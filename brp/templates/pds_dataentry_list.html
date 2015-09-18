@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+<title>Subject Data Record List</title>
+{% endblock %}
+
+{% block topbar_block %}
+<p class="navbar-text">Subject Data Record List</p>
+{% endblock %}
+{% block top_links %}
+    <li><a href="{{root_path}}/dataentry/protocol/{{protocol.id}}/">Subjects</href></a></li>
+    <li><a href="{{root_path}}/welcome">Projects</href></a></li>
+{% endblock %}
+
+{% block main_content %}
+
+<div>
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>Project</th>
+            <th>Last Name</th>
+            <th>First Name</th>
+            <th>{{organization.subject_id_label}}</th>
+            <th>Birth Date</th>
+            <th>Other Actions</th>
+        </tr>
+        <tr>
+            <td style="padding-top:15px;">{{protocol.name}}</td>
+            <td style="padding-top:15px;">{{subject.last_name}}</td>
+            <td style="padding-top:15px;">{{subject.first_name}}</td>
+            <td style="padding-top:15px;">{{subject.organization_subject_id}}</td>
+            <td style="padding-top:15px;">{{subject.dob}}</td>
+            <td>
+                {% for pds in authorized_data_sources %}
+                    <button class="btn btn-small btn-primary" onclick="location.href='{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/list/'">{{pds.display_label}}</button>
+                {% endfor %}
+                {% for pds in unauthorized_data_sources %}
+                    <button class="btn btn-small" disabled title="No Credentials Found. Please contact the administrator for further information.">{{pds.display_label}}</button>
+                {% endfor %}
+        </td>
+        </tr>
+    </table>
+</div>
+
+<div style="margin-top:10px">
+<div >
+<h3><b>{{pds.display_label}}</b> Record Information</h3>
+{{record_list_html|safe}}
+
+{% if allow_more_records %}
+<button title="Create a new record" class="btn btn-small btn-primary" data-toggle="modal" data-backdrop="static" data-keyboard="false" href="#confirmRecordCreate">Create New Record</button>
+{% else %}
+<button title="No more records are allowed" disabled="true" class="btn btn-small btn-primary" >Create New Record</button>
+{% endif %}
+</div>
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+</div>
+
+
+<div class="modal fade" id="confirmRecordCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">Confirm Record Create</h4>
+        </div>
+        <div class="modal-body">
+            <div id="confirmMsg"><p>Do you want to create a new {{pds.display_label}} record?</p></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-small btn-primary" onclick="this.disabled=true; labelPrompt();">Yes</button>
+         <button id="confirmModalNoBtn" class="btn btn-small" data-dismiss="modal" >No</a>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+
+  <div class="modal fade" id="labelPrompt" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Select a label for this record</h4>
+          </div>
+          <div class="modal-body">
+              <select id="labelSelect">
+              {% for label in record_labels %}
+                <option value="{{label.id}}">{{label.label}}</option>
+              {% endfor %}
+              </select>
+              <div id="pleaseWaitMsg" style="display:none"><p> Please wait for this action to complete. This may take several seconds.</p></div>
+          </div>
+          <div class="modal-footer">
+              <button class="btn btn-small btn-primary" onclick="this.disabled=true; updateConfirmModal();">Yes</button>
+           <button id="confirmModalNoBtn" class="btn btn-small" data-dismiss="modal" >No</a>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+{% endblock %}
+
+
+{% block script %}
+
+
+$(function () {
+    if ($.browser.msie) {
+        $('input:radio').click(function () {
+            this.blur();
+            this.focus();
+        });
+        $('input:checkbox').click(function () {
+            this.blur();
+            this.focus();
+        });
+    }
+});
+
+function labelPrompt(){
+  $("#confirmRecordCreate").modal('hide')
+  $("#labelPrompt").modal('show')
+}
+
+
+function updateConfirmModal(){
+$('#confirmMsg').hide();
+$('#confirmtitle').hide();
+$('#pleaseWaitTitle').show();
+$('#pleaseWaitMsg').show();
+$('#confirmModalNoBtn').attr('disabled', 'disabled');
+label_id = $("#labelSelect").val()
+location.href='{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/create/?label_id=' + label_id
+}
+
+
+{% endblock %}

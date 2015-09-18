@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/login.css">
+{% endblock %}
+
+{% block head_content %}
+<title>Biorepository Portal Login</title>
+{% endblock %}
+
+{% block topbar_block %}
+<p class="navbar-text">Biorepository Login</p>
+{% endblock %}
+{% block top_links %}
+    <li><a id="request-account" href="{% url 'register' %}">Request an Account<br></a></li>
+{% endblock %}
+
+{% block main_content %}
+
+    <div class="container">
+        {% if form.non_field_errors %}
+	    <div class="info messages col-md-8 col-md-offset-2">
+		<div class="alert alert-danger">
+		    <center>
+                    {% for e in form.non_field_errors %}
+                        <span>{{ e }}</span>{% if not forloop.last %}<br>{% endif %}
+                    {% endfor %}
+		    <center>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="col-md-4 col-md-offset-4" >
+            {% if login_not_allowed %}
+                <p class="message warning">You have reached the maximum number of login attempts.</p>
+            {% else %}
+
+                <form class="well" method="post" action="{% url 'login' %}">
+                    <section>
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ next }}">
+
+                        <table >
+                            <tr>
+                                <th style="padding-right:5px;">{{ form.email.label_tag }}</th>
+                                <td>{% formfield form.email %}</td>
+                            </tr>
+                            <tr>
+                                <th style="padding-right:5px;">{{ form.password.label_tag }}</th>
+                                <td>{% formfield form.password %}</td>
+                            </tr>
+                        </table>
+                        <div><a style="font-size:0.8em" href="{% url 'register' %}">Register </a></div>
+                    </section>
+		    <div style="text-align: right"> <button class="btn btn-primary">Login</button></div>
+                </form>
+           {% endif %}
+        </div>
+    </div>
+
+    <script>
+    function validateEmail(email) {
+	var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+	return re.test(email);
+    }
+    </script>
+{% endblock %}
