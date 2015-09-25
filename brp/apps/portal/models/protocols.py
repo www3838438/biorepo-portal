@@ -45,17 +45,17 @@ class Base(CreatedModified):
 class ImmutableKey(Base):
 
     key = models.CharField(max_length=255, unique=True,
-			   verbose_name='Immutable Key', editable=False,
-			   blank=True)
+                           verbose_name='Immutable Key', editable=False,
+                           blank=True)
 
     def _make_random_key(self, seed, ja, l,
-			 chars=string.ascii_uppercase + string.digits):
+                         chars=string.ascii_uppercase + string.digits):
         random.seed(seed)
         random.jumpahead(ja * 50)
         return ''.join(random.choice(chars) for idx in range(l))
 
     def _set_key(self):
-	# Generate a new key, override any key that was used to create this object
+        # Generate a new key, override any key that was used to create this object
         if not self.pk:
             key_length = self._key_length()
             seed = self._key_seed()
@@ -65,8 +65,8 @@ class ImmutableKey(Base):
             idx = 0
             max_idx = 1e6
             while idx < max_idx:
-		uk = self._make_random_key(seed=seed, ja=jump + idx,
-					   l=key_length)
+                uk = self._make_random_key(seed=seed, ja=jump + idx,
+                                           l=key_length)
                 immutables_using_uk = ImmutableKey.objects.filter(key=uk)
                 if immutables_using_uk.count() == 0:
                     idx = max_idx
@@ -91,16 +91,16 @@ class BaseWithImmutableKey(Base):
     which never changes
     '''
     immutable_key = models.ForeignKey(ImmutableKey, editable=False, blank=True,
-				      unique=True, null=True)
+                                      unique=True, null=True)
 
     def _create_immutable_key(self):
-	'''
-	Generate an immutable_key for this entity
-	'''
+        '''
+        Generate an immutable_key for this entity
+        '''
 
         if self.immutable_key:
-	    # If the key already exists then this model is being edited but
-	    # this key should not change
+            # If the key already exists then this model is being edited but
+            # this key should not change
             return
         else:
             ik = ImmutableKey()
@@ -130,10 +130,10 @@ class Organization(BaseWithImmutableKey):
         ordering = ['name']
 
     def save(self, *args, **kwargs):
-	'''
-	On save we need to make sure this organization exists in the
-	ehb-service, otherwise create it
-	'''
+        '''
+        On save we need to make sure this organization exists in the
+        ehb-service, otherwise create it
+        '''
         rh = ServiceClient.get_rh_for(record_type=ServiceClient.ORGANIZATION)
         try:
             org = rh.get(name=self.name)
@@ -141,16 +141,16 @@ class Organization(BaseWithImmutableKey):
         except PageNotFound:
             org = Organization(name=self.name, subject_id_label=self.subject_id_label)
             r = rh.create(org)[0]
-	    if(r.get('success')):
+        if(r.get('success')):
                 super(Organization, self).save(*args, **kwargs)
-            else:
-		raise Exception('Unable to create Organization record in ehb-service')
+        else:
+            raise Exception('Unable to create Organization record in ehb-service')
 
     def getEhbServiceInstance(self):
-	'''
-	Gets the record for this organization as maintained in the ehb service
-	PageNotFound Exception will be thrown if no record is found
-	'''
+        '''
+        Gets the record for this organization as maintained in the ehb service
+        PageNotFound Exception will be thrown if no record is found
+        '''
         rh = ServiceClient.get_rh_for(record_type=ServiceClient.ORGANIZATION)
         return rh.get(name=self.name)
 
@@ -172,12 +172,12 @@ class DataSource(Base):
     desc_help = 'Please briefly describe this data source.'
     description = models.TextField(verbose_name='Data Source Description', help_text=desc_help)
     ehb_service_es_id = models.IntegerField(
-	editable=False, default=-1, verbose_name='EHB Service External System ID')
+        editable=False, default=-1, verbose_name='EHB Service External System ID')
 
     def save(self, *args, **kwargs):
-	'''
-	On save we need to make sure this source exists in the ehb service, otherwise create it
-	'''
+        '''
+        On save we need to make sure this source exists in the ehb service, otherwise create it
+        '''
         rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_SYSTEM)
         try:
             es = rh.get(url=self.url)
@@ -190,11 +190,11 @@ class DataSource(Base):
                 description=self.description
             )
             r = rh.create(es)[0]
-	    if(r.get('success')):
+        if(r.get('success')):
                 self.ehb_service_es_id = es.id
                 super(DataSource, self).save(*args, **kwargs)
-            else:
-		raise Exception('Unable to create ExternalSystem record in ehb-service')
+        else:
+            raise Exception('Unable to create ExternalSystem record in ehb-service')
 
     def clean(self):
         rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_SYSTEM)
@@ -202,9 +202,9 @@ class DataSource(Base):
             es = rh.get(url=self.url)
             if(self.name != es.name):
                 self.name = es.name
-		msg = ('Accept existing name? There is already a system in the'
-		       ' ehb-service with this URL but with the name: ' + es.name +
-		       '. This DataSource can only be saved with that name.')
+                msg = ('Accept existing name? There is already a system in the'
+                       ' ehb-service with this URL but with the name: ' + es.name +
+                       '. This DataSource can only be saved with that name.')
                 raise ValidationError(msg)
         except PageNotFound:
             # The save method will create the record in the ehb-service
@@ -213,9 +213,9 @@ class DataSource(Base):
         try:
             es = rh.get(name=self.name)
             if(self.url != es.url):
-		msg = ('Please change the name or correct the URL. There is '
-		       'already a system in the ehb-service with this name but'
-		       ' with URL: ' + es.url)
+                msg = ('Please change the name or correct the URL. There is '
+                       'already a system in the ehb-service with this name but'
+                       ' with URL: ' + es.url)
                 raise ValidationError(msg)
         except PageNotFound:
             # The save method will create the record in the ehb-service
@@ -225,9 +225,9 @@ class DataSource(Base):
         return self.name
 
     def getExternalSystem(self):
-	'''
-	This returns the ehb-service representation of this DataSource
-	'''
+        '''
+        This returns the ehb-service representation of this DataSource
+        '''
         rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_SYSTEM)
         es = rh.get(url=self.url)
         if es:
@@ -238,10 +238,10 @@ class DataSource(Base):
         return es
 
     def getSubjects(self):
-	'''
-	Returns the ehb-service representation of the subjects that have
-	external_records for this data_source
-	'''
+        '''
+        Returns the ehb-service representation of the subjects that have
+        external_records for this data_source
+        '''
         es = self.getExternalSystem()
         if es:
             rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_SYSTEM)
@@ -272,9 +272,9 @@ class Protocol(BaseWithImmutableKey):
 
     def save(self, *args, **kwargs):
         super(Protocol, self).save(*args, **kwargs)
-	# Need to create a group for this protocol if it doesn't exist
-	# (i.e. before there is a pk) that will be used to identify subjects
-	# on the protocol
+        # Need to create a group for this protocol if it doesn't exist
+        # (i.e. before there is a pk) that will be used to identify subjects
+        # on the protocol
         gh = ServiceClient.get_rh_for(record_type=ServiceClient.GROUP)
         try:
             gh.get(name=self.ehb_group_name())
@@ -287,9 +287,8 @@ class Protocol(BaseWithImmutableKey):
             )
             r = gh.create(grp)[0]
             if not (r.get("success")):
-		raise Exception(
-		    'Unable to create Protocol Subject Group in ehb-service'
-		)
+                raise Exception(
+                    'Unable to create Protocol Subject Group in ehb-service')
 
     def _gh(self):
         return ServiceClient.get_rh_for(record_type=ServiceClient.GROUP)
@@ -310,9 +309,9 @@ class Protocol(BaseWithImmutableKey):
             return False
 
     def getSubjects(self):
-	'''
-	Returns the Subjects on this protocol
-	'''
+        '''
+        Returns the Subjects on this protocol
+        '''
         try:
             return self._gh().get_subjects(self._subject_group())
         except Exception:
@@ -407,7 +406,7 @@ class ProtocolDataSourceLink(models.Model):
     )
     pds_two = models.ForeignKey(
         ProtocolDataSource,
-	verbose_name='Protocol Data Source',
+        verbose_name='Protocol Data Source',
         related_name='pds_two_set'
     )
 
@@ -435,25 +434,25 @@ class ProtocolDataSourceLink(models.Model):
         return self.linker.split(',')[1]
 
     def clean(self):
-	'''
-	The normal unique_together constraint doesn't work because we want to
-	ensure that for two protocol data sources, say A and B, and a linker,
-	say L, that only one ProtocolDataSourceLink record can be created
-	regardless of what position A and B are held in pds_one and pds_two
-	'''
+        '''
+        The normal unique_together constraint doesn't work because we want to
+        ensure that for two protocol data sources, say A and B, and a linker,
+        say L, that only one ProtocolDataSourceLink record can be created
+        regardless of what position A and B are held in pds_one and pds_two
+        '''
         try:
             msg = 'This protocol data source linking option has already been created.'
-	    order_one = ProtocolDataSourceLink.objects.filter(
-		pds_one=self.pds_one).filter(pds_two=self.pds_two).filter(linker=self.linker)
+            order_one = ProtocolDataSourceLink.objects.filter(
+                pds_one=self.pds_one).filter(pds_two=self.pds_two).filter(linker=self.linker)
             for entry in order_one:
                 if entry.pk != self.pk:
-		    # If they are equal we are modifying this record
+                    # If they are equal we are modifying this record
                     raise ValidationError(msg)
-	    order_two = ProtocolDataSourceLink.objects.filter(
-		pds_one=self.pds_two).filter(pds_two=self.pds_one).filter(linker=self.linker)
+            order_two = ProtocolDataSourceLink.objects.filter(
+                pds_one=self.pds_two).filter(pds_two=self.pds_one).filter(linker=self.linker)
             for entry in order_two:
                 if entry.pk != self.pk:
-		    # If they are equal we are modifying this record
+                    # If they are equal we are modifying this record
                     raise ValidationError(msg)
         except ProtocolDataSource.DoesNotExist:
             # The ProtocolDataSource validation will handle this
@@ -477,8 +476,8 @@ class ProtocolUser(Base):
     role = models.IntegerField(choices=roles)
 
     class Meta(Base.Meta):
-	unique_together = ('protocol', 'user')
-	ordering = ['user']
+        unique_together = ('protocol', 'user')
+        ordering = ['user']
 
     def __unicode__(self):
         return self.user.username + ', ' + self.protocol.name
@@ -494,24 +493,24 @@ class ProtocolUserCredentials(Base):
     user = models.ForeignKey(User, verbose_name='User')
     protocol_user = models.ForeignKey(ProtocolUser, verbose_name='Protocol User')
     data_source_username = models.CharField(
-	max_length=50, verbose_name='Username for Data Source', blank=True)
+        max_length=50, verbose_name='Username for Data Source', blank=True)
     data_source_password = models.CharField(
-	max_length=128, verbose_name='Password for Data Source')
+        max_length=128, verbose_name='Password for Data Source')
     allow_label_printing = models.BooleanField(
-	verbose_name='Allow Label Printing', default=False)
+        verbose_name='Allow Label Printing', default=False)
     allow_zpl_export = models.BooleanField(verbose_name='Allow Raw ZPL Export', default=False)
     allow_chop_printing = models.BooleanField(
-	verbose_name='Allow label printing to CHOP Networked Printers', default=False)
+        verbose_name='Allow label printing to CHOP Networked Printers', default=False)
 
     class Meta(Base.Meta):
-	unique_together = ('data_source', 'user', 'protocol')
+        unique_together = ('data_source', 'user', 'protocol')
         verbose_name = 'Protocol User Credentials'
         verbose_name_plural = 'Protocol User Credentials'
-	ordering = ['protocol']
+        ordering = ['protocol']
 
     def __unicode__(self):
-	return '{0}, {1}, {2}'.format(
-	    self.user.__unicode__(),
-	    self.protocol.name,
-	    self.data_source.data_source.name
-	)
+        return '{0}, {1}, {2}'.format(
+            self.user.__unicode__(),
+            self.protocol.name,
+            self.data_source.data_source.name
+        )
