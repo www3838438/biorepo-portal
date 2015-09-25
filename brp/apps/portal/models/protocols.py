@@ -1,5 +1,6 @@
 import random
 import string
+import json
 
 from django.db import models
 from django.conf import settings
@@ -202,7 +203,7 @@ class DataSource(Base):
             es = rh.get(url=self.url)
             if(self.name != es.name):
                 self.name = es.name
-                msg = ('Accept existing name? There is already a system in the'
+                msg = ('Accept existing name? There is already a system in the' +
                        ' ehb-service with this URL but with the name: ' + es.name +
                        '. This DataSource can only be saved with that name.')
                 raise ValidationError(msg)
@@ -213,8 +214,8 @@ class DataSource(Base):
         try:
             es = rh.get(name=self.name)
             if(self.url != es.url):
-                msg = ('Please change the name or correct the URL. There is '
-                       'already a system in the ehb-service with this name but'
+                msg = ('Please change the name or correct the URL. There is ' +
+                       'already a system in the ehb-service with this name but' +
                        ' with URL: ' + es.url)
                 raise ValidationError(msg)
         except PageNotFound:
@@ -356,6 +357,15 @@ class ProtocolDataSource(Base):
 
     def _isSecure(self):
         return self.data_source.url.startswith('https')
+
+    def clean(self):
+        rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_SYSTEM)
+        try:
+            json.loads(self.driver_configuration)
+        except ValueError:
+            msg = ('Please enter a valid JSON object in Driver Configuration Options. ' +
+                   'If there is no configuration enter "{}"')
+            raise ValidationError(msg)
 
     def getDriver(self, protocol_user_credentials):
         driver = None
