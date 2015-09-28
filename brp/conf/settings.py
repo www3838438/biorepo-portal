@@ -10,7 +10,7 @@ environ.Env.read_env('{0}.env'.format(env('APP_ENV')))  # reading .env file
 ALLOWED_HOSTS = []
 
 TIME_ZONE = env('TIME_ZONE', default='America/New_York')
-DEBUG = env('DEBUG')
+DEBUG = env.bool('DEBUG')
 
 #####################################
 # Database and Caching
@@ -42,7 +42,7 @@ SERVICE_CLIENT_SETTINGS = {
     "API_KEY": env('SERVICE_CLIENT_API_KEY'),
     "APP_URL": env('SERVICE_CLIENT_APP_URL'),
     "HOST": env('SERVICE_CLIENT_HOST'),
-    "ISSECURE": env('SERVICE_CLIENT_ISSECURE'),
+    "ISSECURE": env.bool('SERVICE_CLIENT_ISSECURE'),
     "ROOT_PATH": env('SERVICE_CLIENT_ROOT_PATH'),
     "SELF_ROOT_PATH": env('SERVICE_CLIENT_SELF_ROOT_PATH')
 }
@@ -63,7 +63,7 @@ PROTOCOL_PROPS = {
 # LDAP Authentication Backend -- LDAP_BIND_PASSWORD and LDAP_SERVER_URI are
 # defined in local_settings.py
 LDAP = {}
-LDAP['DEBUG'] = env('LDAP_DEBUG')
+LDAP['DEBUG'] = env.bool('LDAP_DEBUG')
 LDAP['PREBINDDN'] = env.str('LDAP_PREBINDDN')
 LDAP['SEARCHDN'] = env.str('LDAP_SEARCHDN')
 LDAP['SEARCH_FILTER'] = env.str('LDAP_SEARCH_FILTER')
