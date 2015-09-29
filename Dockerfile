@@ -28,7 +28,7 @@ RUN pip install "django-markdown-deux==1.0.5"
 RUN pip install "djangorestframework==3.1.1"
 RUN pip install "djangorestframework-jwt==1.5.0"
 RUN pip install "git+https://github.com/chop-dbhi/ehb-client.git@v0.5.0#egg=ehb-client"
-RUN pip install "git+https://github.com/chop-dbhi/ehb-datasources.git@v0.10.3#egg=ehb-datasources"
+RUN pip install "git+https://github.com/chop-dbhi/ehb-datasources.git@a787efb16bff7685dff287a50e796b4a0155247a#egg=ehb-datasources"
 RUN pip install "psycopg2==2.5.4"
 RUN pip install "python-memcached==1.53"
 RUN pip install "python-ldap==2.4.19"
@@ -38,7 +38,10 @@ RUN pip install "markdown2==2.3.0"
 RUN pip install "raven==5.4.4"
 RUN pip install uWSGI
 
+ENV APP_ENV test
+
 ADD . /opt/app
+ADD test.env_example /opt/app/test.env
 
 # Ensure all python requirements are met
 RUN pip install -r /opt/app/requirements.txt
