@@ -1,0 +1,105 @@
+[{
+    "pk": 1,
+    "model": "auth.user",
+    "fields": {
+        "username": "admin",
+        "first_name": "",
+        "last_name": "",
+        "is_active": true,
+        "is_superuser": true,
+        "is_staff": true,
+        "last_login": "2014-01-27T16:22:38.537",
+        "groups": [],
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$10000$fe8KOhXyKFJt$nB8tFGivcvxNQJOdzk1igm4iA4dA00k4KB6bYYDBRfA=",
+        "email": "admin@email.chop.edu",
+        "date_joined": "2014-01-27T16:22:15.193"
+    }
+}, {
+    "pk": 1,
+    "model": "portal.immutablekey",
+    "fields": {
+        "modified": "2015-09-29T12:01:11.200",
+        "key": "C381K1T9G5SCOS5Z",
+        "created": "2015-09-29T12:01:11.200"
+    }
+}, {
+    "pk": 2,
+    "model": "portal.immutablekey",
+    "fields": {
+        "modified": "2015-09-29T12:01:41.672",
+        "key": "M0536B4E2DDLA7W6",
+        "created": "2015-09-29T12:01:41.671"
+    }
+}, {
+    "pk": 1,
+    "model": "portal.organization",
+    "fields": {
+        "immutable_key": 1,
+        "subject_id_label": "Record ID",
+        "modified": "2015-09-29T12:01:11.201",
+        "name": "Amazing Children's Hospital",
+        "created": "2015-09-29T12:01:11.201"
+    }
+}, {
+    "pk": 1,
+    "model": "portal.datasource",
+    "fields": {
+        "description": "CHOP's REDCap Instance",
+        "created": "2015-09-29T12:03:50.203",
+        "url": "https://redcap.chop.edu/api/",
+        "modified": "2015-09-29T12:03:50.203",
+        "ehb_service_es_id": 1,
+        "name": "REDCap"
+    }
+}, {
+    "pk": 1,
+    "model": "portal.protocoldatasource",
+    "fields": {
+        "data_source": 1,
+        "protocol": 1,
+        "created": "2015-09-29T12:04:57.702",
+        "max_records_per_subject": -1,
+        "driver": 0,
+        "modified": "2015-09-29T12:04:57.702",
+        "display_label": "Health Data",
+        "path": "Demo",
+        "driver_configuration": "{\r\n    \"unique_event_names\": [\r\n        \"visit_arm_1\",\r\n        \"breakfast_at_visit_arm_1\",\r\n        \"lunch_at_visit_arm_1\",\r\n        \"dinner_at_visit_arm_1\"\r\n    ],\r\n    \"event_labels\": [\r\n        \"Visit Baseline\",\r\n        \"Breakfast\",\r\n        \"Lunch\",\r\n        \"Dinner\"\r\n    ],\r\n    \"form_data\": {\r\n        \"baseline_visit_data\": [\r\n            1,\r\n            0,\r\n            0,\r\n            0\r\n        ],\r\n        \"meal_description_form\": [\r\n            0,\r\n            1,\r\n            1,\r\n            1\r\n        ]\r\n    },\r\n    \"record_id_field_name\": \"study_id\"\r\n}"
+    }
+}, {
+    "pk": 1,
+    "model": "portal.protocol",
+    "fields": {
+        "organizations": [1],
+        "immutable_key": 2,
+        "modified": "2015-09-29T12:01:41.672",
+        "name": "Demonstration Protocol",
+        "created": "2015-09-29T12:01:41.672"
+    }
+}, {
+    "pk": 1,
+    "model": "portal.protocoluser",
+    "fields": {
+        "role": 0,
+        "user": 1,
+        "protocol": 1,
+        "modified": "2015-09-29T12:06:19.003",
+        "created": "2015-09-29T12:06:19.003"
+    }
+}, {
+    "pk": 1,
+    "model": "portal.protocolusercredentials",
+    "fields": {
+        "data_source": 1,
+        "protocol": 1,
+        "created": "2015-09-29T12:08:11.730",
+        "data_source_username": "",
+        "modified": "2015-09-29T12:08:11.730",
+        "allow_label_printing": false,
+        "user": 1,
+        "protocol_user": 1,
+        "allow_chop_printing": false,
+        "data_source_password": "71F3F25FC3BCF2232E27298E7AFBC636",
+        "allow_zpl_export": false
+    }
+}]
