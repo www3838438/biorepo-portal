@@ -7,3 +7,4 @@ _site
 services/
 .git
 brp/conf/.env
+*.env
