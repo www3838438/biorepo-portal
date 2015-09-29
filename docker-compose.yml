@@ -1,0 +1,14 @@
+ehb:
+    image: dbhi/ehb-service
+    ports:
+        - ":8000"
+memcached:
+    image: memcached:latest
+
+brp:
+    build: .
+    links:
+        - ehb
+        - memcached
+    ports:
+        - ":8000"
