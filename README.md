@@ -1,3 +1,13 @@
+## Quickstart
+
+The Biorepository Portal contains a [docker-compose](https://www.docker.com/docker-compose) file which defines a `brp` service to quickly spin up a demonstration instance of the portal. This demo consists of the Portal itself, memcached, as well as a companion instance of [electronic Honest Broker](https://github.com/chop-dbhi/ehb-service).
+
+Run:
+
+`docker-compose up brp`
+
+Demonstration accounts for both the Portal and the eHB have a user name of `admin@email.chop.edu` and a password of `Chopchop1234` (case sensitive).
+
 ## Introduction
 
 #### What is the Biorepository Portal?
