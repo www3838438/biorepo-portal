@@ -2,6 +2,8 @@
 *.DS_Store
 *.env
 *.log
+.otto
+.ottoid
 _static/
 _site/
 .project_config.json
