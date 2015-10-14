@@ -35,7 +35,7 @@ RUN pip install "python-ldap==2.4.19"
 RUN pip install "django-siteauth==0.9b1"
 RUN pip install "git+https://github.com/bruth/django-registration2.git#egg=django-registration2"
 RUN pip install "markdown2==2.3.0"
-RUN pip install "raven==5.4.4"
+RUN pip install "raven==5.0.0"
 RUN pip install uWSGI
 
 ENV APP_ENV test

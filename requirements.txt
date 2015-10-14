@@ -31,4 +31,4 @@ django-siteauth==0.9b1
 git+git://github.com/bruth/django-registration2.git#egg=django-registration2
 markdown2==2.3.0
 
-raven==5.4.4
+raven==5.0.0
