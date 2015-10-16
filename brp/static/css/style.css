@@ -1,9 +1,20 @@
 .logo {
     margin-top:9px;
 }
+.navbar {
+    background-color: #56B3C4;
+}
+
+body{
+    margin-top: 70px;
+    padding-bottom: 70px;
+}
 .navbar-text{
-    color:#85b3c7 !important;
-    
+    color:white !important;
+    margin-top:20px;
+}
+.navbar-fixed-bottom {
+    background-color: white;
 }
 h2 {
     color: #777;
@@ -16,4 +27,28 @@ h3 {
 }
 .navbar-default .navbar-nav>li>a{
     font-weight: bold;
+    color: white;
+    margin-right: 20px;
+}
+.btn-primary {
+    color: white;
+    background-color: #56B3C4;
+    border-color: #D4D4D4;
+}
+.btn-success {
+    background-color: #6AC771;
+}
+.btn-success:hover {
+    background-color: #77CA8D;
+}
+
+.btn-primary:hover {
+    background-color: #55A3B1;
+    border-color: #D4D4D4;
+}
+.label-primary {
+    background-color: #55A3B1;
+}
+table {
+    font-size: .8em;
 }

@@ -13,9 +13,6 @@ dataentry_patterns = patterns(
     r'^protocoldatasource/(?P<pds_id>\d+)/subject/(?P<subject_id>\d+)/record/(?P<record_id>\d+)/start/$',
     'pds_dataentry_start'),
     url(
-    r'^protocoldatasource/(?P<pds_id>\d+)/subject/(?P<subject_id>\d+)/record/(?P<record_id>\d+)/print/$',
-    'pds_dataentry_print'),
-    url(
     r'^protocoldatasource/(?P<pds_id>\d+)/subject/(?P<subject_id>\d+)/record/(?P<record_id>\d+)/form_spec/(?P<form_spec>[a-z0-9-_]+)/$',  # noqa
     'pds_dataentry_form'),
 )
