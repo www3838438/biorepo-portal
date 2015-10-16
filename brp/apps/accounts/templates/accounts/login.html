@@ -18,7 +18,7 @@
 
 {% block main_content %}
 
-    <div class="container">
+    <div class="splash-container">
         {% if form.non_field_errors %}
 	    <div class="info messages col-md-8 col-md-offset-2">
 		<div class="alert alert-danger">
@@ -36,7 +36,7 @@
                 <p class="message warning">You have reached the maximum number of login attempts.</p>
             {% else %}
 
-                <form class="well" method="post" action="{% url 'login' %}">
+		<form class="well login" method="post" action="{% url 'login' %}">
                     <section>
                         {% csrf_token %}
                         <input type="hidden" name="next" value="{{ next }}">
