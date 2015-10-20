@@ -1,17 +1,19 @@
 .logo {
     margin-top:9px;
+    margin-left:15px;
+    margin-bottom: 10px;
 }
 .navbar {
-    background-color: #56B3C4;
+    background-color: #51b6c8;
 }
 
 body{
-    margin-top: 70px;
+    margin-top: 80px;
     padding-bottom: 70px;
 }
 .navbar-text{
     color:white !important;
-    margin-top:20px;
+    margin-top:30px;
 }
 .navbar-fixed-bottom {
     background-color: white;
@@ -32,7 +34,7 @@ h3 {
 }
 .btn-primary {
     color: white;
-    background-color: #56B3C4;
+    background-color: #51b6c8;
     border-color: #D4D4D4;
 }
 .btn-success {
@@ -66,4 +68,10 @@ table {
 }
 .login {
     margin-top: 80px;
+}
+a {
+    color: #7a7a7a;
+}
+.status-pane {
+    color: #7a7a7a;
 }
