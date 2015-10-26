@@ -857,17 +857,9 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
     # this will be the ehb-service externalRecord for this pds, subject NOT the actual datasource record
     record = None
     error_msgs = []
-    # Get the record from the ehb with this record id and verify that it is in
-    # the protocol data source for this subject
+
     try:
-        pds_records = er_rh.get(
-            external_system_url=pds.data_source.url, path=pds.path, subject_id=subject.id)
         record = er_rh.get(id=record_id)
-        if record and pds_records:
-            if record not in pds_records:
-                return Http404
-        else:
-            return Http404
     except PageNotFound:
         return Http404
 
