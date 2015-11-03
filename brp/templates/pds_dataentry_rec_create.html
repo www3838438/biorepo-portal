@@ -17,20 +17,24 @@
 
 <div>
     <table class="table table-bordered table-striped">
-        <tr>
-            <th>Project</th>
-            <th>Last Name</th>
-            <th>First Name</th>
-            <th>{{organization.subject_id_label}}</th>
-            <th>Birth Date</th>
-        </tr>
-        <tr>
-            <td style="padding-top:15px;">{{protocol.name}}</td>
-            <td style="padding-top:15px;">{{subject.last_name}}</td >
-            <td style="padding-top:15px;">{{subject.first_name}}</td>
-            <td style="padding-top:15px;">{{subject.organization_subject_id}}</td>
-            <td style="padding-top:15px;">{{subject.dob}}</td>
-        </tr>
+	<thead>
+	    <tr>
+		<th>Project</th>
+		<th>Last Name</th>
+		<th>First Name</th>
+		<th>{{organization.subject_id_label}}</th>
+		<th>Birth Date</th>
+	    </tr>
+	</thead>
+	<tbody>
+	    <tr>
+		<td style="padding-top:15px;">{{protocol.name}}</td>
+		<td style="padding-top:15px;">{{subject.last_name}}</td >
+		<td style="padding-top:15px;">{{subject.first_name}}</td>
+		<td style="padding-top:15px;">{{subject.organization_subject_id}}</td>
+		<td style="padding-top:15px;">{{subject.dob}}</td>
+	    </tr>
+	</tbody>
     </table>
 </div>
 
