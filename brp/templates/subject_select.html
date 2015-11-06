@@ -49,10 +49,10 @@
     </ul>
 </div>
 
-<div id="subject_table_div">
-    <table id="subject_table" class="table table-bordered table-striped sortable">
-        <thead>
-            <tr>
+<div class="subject-table">
+    <table id="subject_table" class="table table-striped sortable">
+	<thead>
+	    <tr>
 		<th>Group</th>
 		<th>MRN</th>
 		<th data-defaultsort="asc">Last Name</th>
@@ -63,12 +63,12 @@
         </thead>
         <tbody>
         {% for s in subjects %}
-            <tr class="subject_row" oid="{{s.organization_id}}" filter="f">
-                <td style="padding-top:20px;">{{s.organization_name}}</td>
-                <td style="padding-top:20px;">{{s.organization_subject_id}}</td>
-                <td style="padding-top:20px;">{{s.last_name}}</td>
-                <td style="padding-top:20px;">{{s.first_name}}</td>
-                <td style="padding-top:20px;">{{s.dob}}</td>
+	    <tr class="subject-row" oid="{{s.organization_id}}" filter="f">
+		<td class="subject-text">{{s.organization_name}}</td>
+		<td class="subject-text">{{s.organization_subject_id}}</td>
+		<td class="subject-text">{{s.last_name}}</td>
+		<td class="subject-text">{{s.first_name}}</td>
+		<td class="subject-text">{{s.dob}}</td>
                 <td>
                     <table class="table-condensed" style="border:none">
                         <tbody>
