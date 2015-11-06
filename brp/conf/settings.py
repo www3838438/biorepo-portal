@@ -21,8 +21,11 @@ DATABASES = {
 }
 
 CACHES = {
-    'default': env.cache()
+    'default': env.cache(),
+    'redis': env.cache('REDIS_URL')
 }
+CACHES['redis']['BACKEND'] = 'django_redis.cache.RedisCache'
+CACHES['redis']['TIMEOUT'] = 86400
 
 #####################################
 # General Django Settings
