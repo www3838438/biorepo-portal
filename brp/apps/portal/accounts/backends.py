@@ -113,6 +113,7 @@ class LdapBackend(ModelBackend):
                     conn.simple_bind_s(self.settings['PREBINDDN'],
                                        self.settings['PREBINDPW'])
                 except ldap.LDAPError, exc:
+		    log.error('Error performing LDAP pre bind')
                     return
 
             # Now do the actual search
@@ -121,6 +122,7 @@ class LdapBackend(ModelBackend):
                                    self.settings['SCOPE'], filter, attrsonly=1)
 
             if len(result) != 1:
+		log.error('Unable to find user in Active Directory')
                 return
             return result[0][0]
         else:
@@ -142,6 +144,7 @@ class LdapBackend(ModelBackend):
         try:
             user = User.objects.get(email__iexact=email)
         except User.DoesNotExist:
+	    log.error('Unable to find user with email {0}'.format(email))
             return
 
         if self.settings['OPTIONS']:
@@ -153,17 +156,22 @@ class LdapBackend(ModelBackend):
         bind_string = self._pre_bind(conn, username)
 
         if not bind_string:
+	    log.error('Unable to initialize connection to LDAP server')
             return
 
         try:
             # Try to bind as the provided user. We leave the bind until
-            # the end for other ldap.search_s call to work authenticated.
-            conn.bind_s(bind_string, password)
-        except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM), e:
-	    if ldap.INVALID_CREDENTIALS:
+	    # the end for other ldap.search_s call to work authenticated.
+	    conn.bind_s(bind_string, password)
+	except (ldap.INVALID_CREDENTIALS, ldap.UNWILLING_TO_PERFORM), e:
+	    if e == ldap.INVALID_CREDENTIALS:
 		log.error('Invalid LDAP credentials')
-            return
-        finally:
-            conn.unbind_s()
+	    elif e == ldap.UNWILLING_TO_PERFORM:
+		log.error('LDAP Unwilling to perform')
+	    else:
+		log.error('Unknown LDAP issue')
+	    return
+	finally:
+	    conn.unbind_s()
 
         return user
