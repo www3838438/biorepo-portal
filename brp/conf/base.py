@@ -224,9 +224,7 @@ LOGGING = {
 # AUTHENTICATION
 # ------------------------------------
 AUTHENTICATION_BACKENDS = (
-    'portal.accounts.backends.EmailBackend',
     'portal.accounts.backends.LdapBackend',
-    'django.contrib.auth.backends.ModelBackend',
 
 )
 
