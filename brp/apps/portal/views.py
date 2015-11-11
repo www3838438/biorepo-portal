@@ -389,6 +389,7 @@ def pds_dataentry_list(request, pds_id, subject_id):
             records = er_rh.get(
                 external_system_url=es_url, subject_id=subject_id, path=pds.path)
             records.sort(key=lambda x: x.created)
+	    records = [json.loads(record.json_from_identity(record)) for record in records]
             allow_more_records = pds.max_records_per_subject == (
                 -1) or len(records) < pds.max_records_per_subject
             if len(records) > 0:
@@ -396,7 +397,7 @@ def pds_dataentry_list(request, pds_id, subject_id):
                     ServiceClient.self_root_path,
                     pds.id,
                     subject.id)
-                record_urls = ['%s%s/start/' % (prefix, each.id) for each in records]
+		record_urls = ['%s%s/start/' % (prefix, each['id']) for each in records]
                 driver = DriverUtils.getDriverFor(
                     protocol_data_source=pds, user=request.user)
                 record_list_html = driver.recordListForm(
