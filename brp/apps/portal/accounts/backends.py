@@ -83,7 +83,6 @@ class LdapBackend(ModelBackend):
     #     - Override the _pre_bind() method, which receives the ldap object and
     #       the username as it's parameters and should return the DN of the user.
 
-
     settings = {
               'SERVER_URI': 'ldap://localhost',
               'SEARCHDN': 'dc=localhost',
