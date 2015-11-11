@@ -145,40 +145,50 @@ class ProtocolDataSourceViewSet(viewsets.ModelViewSet):
             })
         return params
 
-    @list_route()
     def subjects(self, request, *args, **kwargs):
-        """
-        Returns a list of subjects associated with the protocol datasource and their
-        """
-        p = self.get_object()
-        subjects = p.protocol.getSubjects()
-        if p.protocol.isUserAuthorized(request.user):
-            if subjects:
-                params = self.buildQueryParams(subjects, p.data_source.ehb_service_es_id, p.path)
-                res = ServiceClient.ext_rec_client.query(*params)
-                subjects = [eHBSubjectSerializer(subject).data for subject in subjects]
+            """
+            Returns a list of subjects associated with the protocol datasource and their
+            """
+            p = self.get_object()
+            subjects = p.protocol.getSubjects()
+            organizations = p.protocol.organizations.all()
+            if p.protocol.isUserAuthorized(request.user):
+                if subjects:
+                    params = self.buildQueryParams(subjects, p.data_source.ehb_service_es_id, p.path)
+                    res = ServiceClient.ext_rec_client.query(*params)
+                    subjects = [eHBSubjectSerializer(subject).data for subject in subjects]
 
-                for sub in subjects:
-                    sub.update({"external_records": []})
+                    ehb_orgs = []
+                    # We can't rely on Ids being consistent across apps so we must
+                    # append the name here for display downstream.
+                    for o in organizations:
+                        ehb_orgs.append(o.getEhbServiceInstance())
+                    for sub in subjects:
+                        sub.update({"external_records": []})
+                        for ehb_org in ehb_orgs:
+                            if sub['organization_id'] == ehb_org.id:
+                                sub['organization_name'] = ehb_org.name
+                    for ex_rec in res:
+                        if ex_rec["success"]:
+                            for sub in subjects:
+                                for rec in ex_rec["external_record"]:
+                                    if rec.subject_id == sub["id"]:
+                                        sub["external_records"].append(eHBExternalRecordSerializer(rec).data)
 
-                for ex_rec in res:
-                    if ex_rec["success"]:
-                        for sub in subjects:
-                            for rec in ex_rec["external_record"]:
-                                if rec.subject_id == sub["id"]:
-                                    sub["external_records"].append(eHBExternalRecordSerializer(rec).data)
-
-                return Response({
-                    "subjects": subjects,
-                    "count": len(subjects)
+                    return Response({
+                        "subjects": subjects,
+                        "count": len(subjects)
+                        })
+                else:
+                    return Response({
+                        "subjects": [],
+                        "count": 0
                     })
             else:
-                return Response([])
-        else:
-            return Response(
-                {"detail": "You are not authorized to view subjects from this protocol datasource"},
-                status=403
-            )
+                return Response(
+                    {"detail": "You are not authorized to view subjects from this protocol datasource"},
+                    status=403
+                )
 
     @list_route()
     def subject_records(self, request, *args, **kwargs):
