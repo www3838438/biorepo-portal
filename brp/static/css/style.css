@@ -1,65 +1,27 @@
-.logo {
-    margin-top:9px;
-    margin-left:15px;
-    margin-bottom: 10px;
-}
-.navbar {
-    background-color: #51b6c8;
-}
+
 
 body{
     margin-top: 80px;
     padding-bottom: 70px;
 }
-.navbar-text{
-    color:white !important;
-    margin-top:30px;
-}
+
 .navbar-fixed-bottom {
     background-color: white;
-}
-h2 {
-    color: #777;
-}
-h3 {
-    color: #777;
 }
 .container>p{
     color: #777;
 }
-.navbar-default .navbar-nav>li>a{
-    font-weight: bold;
-    color: white;
-    margin-right: 20px;
-    margin-top:15px;
-}
-.btn-primary {
-    color: white;
-    background-color: #51b6c8;
-    border-color: #D4D4D4;
-}
-.btn-register {
-    background-color: #D4D4D4;
-}
-.btn-success {
-    background-color: #6AC771;
-}
-.btn-success:hover {
-    background-color: #77CA8D;
+.main-content {
+    margin-top:10px;
+    padding-top:40px;
 }
 
-.btn-primary:hover {
-    background-color: #55A3B1;
-    border-color: #D4D4D4;
-}
-.label-primary {
-    background-color: #51b6c8;
-}
 table {
     font-size: .8em;
 }
 .splash-container {
-  background-image: url("lab.jpg");
+  /*background-image: url("lab.jpg");*/
+  background-color: #eeeeee;
   background-size: contain;
   z-index: 1;
   overflow: hidden;
@@ -73,7 +35,7 @@ table {
 .login {
     margin-top: 80px;
     border-radius: 30px;
-    color: white;
+    color: #7A9E9F;
 }
 a {
     color: #7a7a7a;
