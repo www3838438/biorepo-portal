@@ -1,16 +1,16 @@
 import os
 import datetime
-
+import environ
 # Import global settings to make it easier to extend settings.
 from django.conf.global_settings import *  # noqa
 from django.core.exceptions import ImproperlyConfigured
 
 # Import the project module to calculate directories relative to the module
 # location.
-PROJECT_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../..')
 PROJECT_ROOT, PROJECT_MODULE_NAME = os.path.split(
     os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 )
+root = environ.Path(__file__) - 3
 
 INSTALLED_APPS = (
 
@@ -75,7 +75,7 @@ USE_ETAGS = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(PROJECT_ROOT, PROJECT_MODULE_NAME, 'media')
+MEDIA_ROOT = str(root.path('brp/media/'))
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -86,7 +86,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(PROJECT_PATH, '_site/static')
+STATIC_ROOT = str(root.path('_site/static/'))
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -142,7 +142,7 @@ MIDDLEWARE_CLASSES = (
 # ------------------------------------
 
 TEMPLATE_DIRS = (
-    os.path.join(PROJECT_ROOT, PROJECT_MODULE_NAME, 'templates'),
+    str(root.path('brp/templates/')),
 )
 
 TEMPLATE_CONTEXT_PROCESSORS += (
@@ -170,7 +170,7 @@ LOGGING = {
         'default': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/debug.log',
+	    'filename': str(root.path('logs/debug.log')),
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'standard',
@@ -178,7 +178,7 @@ LOGGING = {
         'request_handler': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/requests.log',
+	    'filename': str(root.path('logs/requests.log')),
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'standard',
@@ -191,7 +191,7 @@ LOGGING = {
         'ehb': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': 'logs/ehb.log',
+	    'filename': str(root.path('logs/ehb.log')),
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'standard',
