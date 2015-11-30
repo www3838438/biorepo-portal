@@ -1,4 +1,4 @@
-FROM python:2.7.10
+FROM python:2.7.8-wheezy
 
 MAINTAINER Tyler Rivera "riverat2@email.chop.edu"
 
@@ -27,7 +27,7 @@ RUN pip install "django-session-security==2.2.1"
 RUN pip install "django-markdown-deux==1.0.5"
 RUN pip install "djangorestframework==3.1.1"
 RUN pip install "djangorestframework-jwt==1.5.0"
-RUN pip install "git+https://github.com/chop-dbhi/ehb-client.git@v0.5.0#egg=ehb-client"
+RUN pip install "git+https://github.com/chop-dbhi/ehb-client.git"
 RUN pip install "git+https://github.com/chop-dbhi/ehb-datasources.git"
 RUN pip install "psycopg2==2.5.4"
 RUN pip install "python-memcached==1.53"
