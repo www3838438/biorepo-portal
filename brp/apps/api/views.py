@@ -153,24 +153,27 @@ class ProtocolDataSourceViewSet(viewsets.ModelViewSet):
         p = self.get_object()
         subjects = p.protocol.getSubjects()
         if p.protocol.isUserAuthorized(request.user):
-            params = self.buildQueryParams(subjects, p.data_source.ehb_service_es_id, p.path)
-            res = ServiceClient.ext_rec_client.query(*params)
-            subjects = [eHBSubjectSerializer(subject).data for subject in subjects]
+            if subjects:
+                params = self.buildQueryParams(subjects, p.data_source.ehb_service_es_id, p.path)
+                res = ServiceClient.ext_rec_client.query(*params)
+                subjects = [eHBSubjectSerializer(subject).data for subject in subjects]
 
-            for sub in subjects:
-                sub.update({"external_records": []})
+                for sub in subjects:
+                    sub.update({"external_records": []})
 
-            for ex_rec in res:
-                if ex_rec["success"]:
-                    for sub in subjects:
-                        for rec in ex_rec["external_record"]:
-                            if rec.subject_id == sub["id"]:
-                                sub["external_records"].append(eHBExternalRecordSerializer(rec).data)
+                for ex_rec in res:
+                    if ex_rec["success"]:
+                        for sub in subjects:
+                            for rec in ex_rec["external_record"]:
+                                if rec.subject_id == sub["id"]:
+                                    sub["external_records"].append(eHBExternalRecordSerializer(rec).data)
 
-            return Response({
-                "subjects": subjects,
-                "count": len(subjects)
-                })
+                return Response({
+                    "subjects": subjects,
+                    "count": len(subjects)
+                    })
+            else:
+                return Response([])
         else:
             return Response(
                 {"detail": "You are not authorized to view subjects from this protocol datasource"},
