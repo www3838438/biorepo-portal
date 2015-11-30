@@ -48,6 +48,7 @@ a {
 }
 .subject-table {
     width: auto;
+    padding-bottom:50px;
 }
 .subject-text{
     padding-top:20px !important;
@@ -71,4 +72,7 @@ a {
     color: inherit;
     background-color: #f1f1f1;
     border-radius: 7px;
+}
+.paginate_button {
+    margin: 10px;
 }
