@@ -303,8 +303,9 @@ def getProtocolSubjects(protocol):
 	return subs
     else:
 	subs = protocol.getSubjects()
-	cache_payload = [json.loads(subject.json_from_identity(subject)) for subject in subs]
-	cache.set(ck, json.dumps(cache_payload))
+	if subs:
+	    cache_payload = [json.loads(subject.json_from_identity(subject)) for subject in subs]
+	    cache.set(ck, json.dumps(cache_payload))
 	return subs
 
 
