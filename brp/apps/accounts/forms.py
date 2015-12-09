@@ -101,7 +101,7 @@ class BrpAuthenticationForm(auth_forms.AuthenticationForm):
         email = self.cleaned_data.get('email')
         password = self.cleaned_data.get('password')
         # Fragile way of making sure people are using email addresses to log in.
-        if '@' not in email:
+	if email and '@' not in email:
             raise forms.ValidationError(_('Please use your CHOP issued email address (user@email.chop.edu)'))
         if email and password:
             # this is not a mistake.. Django assumes username will always be

@@ -13,16 +13,9 @@
 {% if request.user.is_authenticated %}
 <p>Welcome back <b>{{user.first_name}} {{user.last_name}}</b></p>
 <p><i>Select project for data entry:</i></p>
-<table class="table table-striped table-bordered">
-	<tr>
-		<th>Project</th>
-	</tr>
 {% for p in protocols %}
-	<tr>
-	<td><a href="{{root_path}}/dataentry/protocol/{{p.id}}/">{{p.name}}</a></td>
-	</tr>
+	<a class="project-row-link" href="{{root_path}}/dataentry/protocol/{{p.id}}/"><div class="project-row">{{p.name}}</div></a>
 {% endfor %}
-</table>
 {% else %}
 <div class="alert alert-warning">Your session has expired. Please feel free to <a href="{{root_path}}/login">login</a> again</div>
 {% endif %}

@@ -152,15 +152,23 @@ class ProtocolDataSourceViewSet(viewsets.ModelViewSet):
         """
         p = self.get_object()
         subjects = p.protocol.getSubjects()
+        organizations = p.protocol.organizations.all()
         if p.protocol.isUserAuthorized(request.user):
             if subjects:
                 params = self.buildQueryParams(subjects, p.data_source.ehb_service_es_id, p.path)
                 res = ServiceClient.ext_rec_client.query(*params)
                 subjects = [eHBSubjectSerializer(subject).data for subject in subjects]
 
+                ehb_orgs = []
+                # We can't rely on Ids being consistent across apps so we must
+                # append the name here for display downstream.
+                for o in organizations:
+                    ehb_orgs.append(o.getEhbServiceInstance())
                 for sub in subjects:
                     sub.update({"external_records": []})
-
+                    for ehb_org in ehb_orgs:
+                        if sub['organization_id'] == ehb_org.id:
+                            sub['organization_name'] = ehb_org.name
                 for ex_rec in res:
                     if ex_rec["success"]:
                         for sub in subjects:
@@ -173,7 +181,10 @@ class ProtocolDataSourceViewSet(viewsets.ModelViewSet):
                     "count": len(subjects)
                     })
             else:
-                return Response([])
+                return Response({
+                    "subjects": [],
+                    "count": 0
+                })
         else:
             return Response(
                 {"detail": "You are not authorized to view subjects from this protocol datasource"},

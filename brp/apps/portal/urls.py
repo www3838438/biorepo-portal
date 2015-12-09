@@ -13,15 +13,12 @@ dataentry_patterns = patterns(
     r'^protocoldatasource/(?P<pds_id>\d+)/subject/(?P<subject_id>\d+)/record/(?P<record_id>\d+)/start/$',
     'pds_dataentry_start'),
     url(
-    r'^protocoldatasource/(?P<pds_id>\d+)/subject/(?P<subject_id>\d+)/record/(?P<record_id>\d+)/print/$',
-    'pds_dataentry_print'),
-    url(
     r'^protocoldatasource/(?P<pds_id>\d+)/subject/(?P<subject_id>\d+)/record/(?P<record_id>\d+)/form_spec/(?P<form_spec>[a-z0-9-_]+)/$',  # noqa
     'pds_dataentry_form'),
 )
 
 urlpatterns = patterns(
     '',
-    url(r'^welcome', 'portal.accounts.views.welcome', name='welcome'),
+    url(r'^welcome', 'portal.views.welcome', name='welcome'),
     url(r'^dataentry/', include(dataentry_patterns, namespace='dataentry'))
 )

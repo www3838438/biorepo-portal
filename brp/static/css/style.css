@@ -1,19 +1,81 @@
-.logo {
-    margin-top:9px;
+
+
+body{
+    margin-top: 80px;
+    padding-bottom: 70px;
 }
-.navbar-text{
-    color:#85b3c7 !important;
-    
-}
-h2 {
-    color: #777;
-}
-h3 {
-    color: #777;
+
+.navbar-fixed-bottom {
+    background-color: white;
 }
 .container>p{
     color: #777;
 }
-.navbar-default .navbar-nav>li>a{
-    font-weight: bold;
+.main-content {
+    margin-top:10px;
+    padding-top:40px;
+    padding-bottom: 50px;
+}
+
+table {
+    font-size: .8em;
+}
+.splash-container {
+  /*background-image: url("lab.jpg");*/
+  background-color: #eeeeee;
+  background-size: contain;
+  z-index: 1;
+  overflow: hidden;
+  /* The following styles are required for the "scroll-over" effect */
+  width: 100%;
+  height: 100%;
+  top: 30px;
+  left: 0;
+  position: absolute !important;
+}
+.login {
+    margin-top: 80px;
+    border-radius: 30px;
+    color: #7A9E9F;
+}
+a {
+    color: #7a7a7a;
+}
+.status-pane {
+    color: #7a7a7a;
+}
+.info {
+    padding-top: 50px;
+}
+.subject-table {
+    width: auto;
+}
+.subject-text{
+    padding-top:20px !important;
+}
+
+.project-row-link {
+    font-size: 1.5em;
+    text-decoration: none;
+}
+.project-row-link:hover {
+    font-size: 1.5em;
+    color: black;
+    text-decoration: none;
+}
+.project-row {
+    padding-top: 5px;
+    padding-left: 15px;
+}
+.project-row:hover {
+    text-decoration: none;
+    color: inherit;
+    background-color: #f1f1f1;
+    border-radius: 7px;
+}
+.paginate_button {
+    margin: 10px;
+}
+.main-content {
+
 }

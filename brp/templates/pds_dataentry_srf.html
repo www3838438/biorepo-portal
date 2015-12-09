@@ -18,20 +18,24 @@
 
 <div>
 	<table class="table table-bordered table-striped">
-		<tr>
+	<thead>
+	    <tr>
 			<th>Project</th>
 			<th>Last Name</th>
 			<th>First Name</th>
 			<th>{{organization.subject_id_label}}</th>
 			<th>Birth Date</th>
 		</tr>
-		<tr>
+	</thead>
+	<tbody>
+	    <tr>
 			<td style="padding-top:15px;">{{protocol.name}}</td>
 			<td style="padding-top:15px;">{{subject.last_name}}</td>
 			<td style="padding-top:15px;">{{subject.first_name}}</td>
 			<td style="padding-top:15px;">{{subject.organization_subject_id}}</td>
 			<td style="padding-top:15px;">{{subject.dob}}</td>
 		</tr>
+	</tbody>
 	</table>
 </div>
 
@@ -40,7 +44,7 @@
 <!-- ** Currently not structuring the REDCap forms as a form element to prevent modern browsers "unsaved form" prompt -->
 <!--<form id="subRecordForm" action="{{form_submission_url}}" method="post">{% csrf_token %}-->
 	{{subRecordForm|safe}}
-	<ul style="list-style-type:none">
+	<ul style="list-style-type:none;padding-bottom:30px">
   {% if next_form_url %}
     <li style="display:inline"><input id="subRecordFormSubmitContinue" class="btn btn-small btn-primary" value="Save and Continue" data-toggle="modal" data-backdrop="static" data-keyboard="false" href="#pleaseWaitModal"/></li>
   {% endif %}
