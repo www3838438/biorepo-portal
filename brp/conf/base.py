@@ -225,7 +225,8 @@ LOGGING = {
 # ------------------------------------
 AUTHENTICATION_BACKENDS = (
     'portal.accounts.backends.LdapBackend',
-
+    'portal.accounts.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 # django auth user profile integration
