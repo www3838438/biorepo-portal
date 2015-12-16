@@ -49,13 +49,14 @@ def welcome(request):
     for p in Protocol.objects.all():
 	if request.user in p.users.all():
 	    protocols.append(p)
-    return render_to_response('welcome.html',
-			      {
-				'user': usr,
-				'protocols': protocols,
-				'root_path': ServiceClient.self_root_path,
-				'redcap_status': getRedcapStatus()
-			      }, context_instance=RequestContext(request))
+    return render_to_response(
+	'welcome.html',
+	{
+	    'user': usr,
+	    'protocols': protocols,
+	    'root_path': ServiceClient.self_root_path,
+	    'redcap_status': getRedcapStatus()
+	}, context_instance=RequestContext(request))
 
 
 @login_required
