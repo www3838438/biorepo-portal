@@ -47,16 +47,16 @@ def welcome(request):
     # find the protocols for this user
     usr = request.user
     for p in Protocol.objects.all():
-	if request.user in p.users.all():
-	    protocols.append(p)
+        if request.user in p.users.all():
+            protocols.append(p)
     return render_to_response(
-	'welcome.html',
-	{
-	    'user': usr,
-	    'protocols': protocols,
-	    'root_path': ServiceClient.self_root_path,
-	    'redcap_status': getRedcapStatus()
-	}, context_instance=RequestContext(request))
+        'welcome.html',
+        {
+            'user': usr,
+            'protocols': protocols,
+            'root_path': ServiceClient.self_root_path,
+            'redcap_status': getRedcapStatus()
+        }, context_instance=RequestContext(request))
 
 
 @login_required
@@ -104,7 +104,7 @@ def edit_subject(request, protocol_id, subject_ehb_id):
                     protocol=protocol
                 )
                 if success:
-		    cache.delete('{0}_subjects'.format(protocol.id))
+                    cache.delete('{0}_subjects'.format(protocol.id))
                     return HttpResponseRedirect(
                         '%s/dataentry/protocol/%s/' % (
                             ServiceClient.self_root_path,
@@ -152,8 +152,8 @@ def edit_subject(request, protocol_id, subject_ehb_id):
             'protocol': protocol,
             'organizations': organizations,
             'subject': subject,
-	    'root_path': ServiceClient.self_root_path,
-	    'redcap_status': getRedcapStatus()
+            'root_path': ServiceClient.self_root_path,
+            'redcap_status': getRedcapStatus()
         }, context_instance=RequestContext(request))
 
     except Protocol.DoesNotExist:
@@ -179,7 +179,7 @@ def new_subject(request, protocol_id):
             if form.is_valid():
                 success, subject, errors = form.save(protocol=protocol)
                 if success:
-		    cache.delete('{0}_subjects'.format(protocol.id))
+                    cache.delete('{0}_subjects'.format(protocol.id))
                     return HttpResponseRedirect(
                         '%s/dataentry/protocol/%s/' % (
                             ServiceClient.self_root_path,
@@ -208,8 +208,8 @@ def new_subject(request, protocol_id):
             'selected_organization': selected_organization,
             'protocol': protocol,
             'organizations': organizations,
-	    'root_path': ServiceClient.self_root_path,
-	    'redcap_status': getRedcapStatus()
+            'root_path': ServiceClient.self_root_path,
+            'redcap_status': getRedcapStatus()
         }
         return render_to_response('subject_new.html', context,
                                   context_instance=RequestContext(request))
@@ -277,8 +277,8 @@ def subject_select(request, protocol_id):
         'organizations': ehb_orgs,
         'authorized_data_sources': authorized_sources,
         'unauthorized_data_sources': unauthorized_sources,
-	'root_path': ServiceClient.self_root_path,
-	'redcap_status': getRedcapStatus()
+        'root_path': ServiceClient.self_root_path,
+        'redcap_status': getRedcapStatus()
     }
 
     return render_to_response(
@@ -300,33 +300,33 @@ def getProtocolSubjects(protocol):
     ck = '{0}_subjects'.format(protocol.id)
     resp = cache.get(ck)
     if resp:
-	subs = [Subject(-1).identity_from_jsonObject(sub) for sub in json.loads(resp)]
-	return subs
+        subs = [Subject(-1).identity_from_jsonObject(sub) for sub in json.loads(resp)]
+        return subs
     else:
-	subs = protocol.getSubjects()
-	if subs:
-	    cache_payload = [json.loads(subject.json_from_identity(subject)) for subject in subs]
-	    cache.set(ck, json.dumps(cache_payload))
-	return subs
+        subs = protocol.getSubjects()
+        if subs:
+            cache_payload = [json.loads(subject.json_from_identity(subject)) for subject in subs]
+            cache.set(ck, json.dumps(cache_payload))
+        return subs
 
 
 def getPDSSubject(pds, sub_id):
     ck = '{0}_subjects'.format(pds.protocol.id)
     resp = cache.get(ck)
     if resp:
-	subs = json.loads(resp)
-	for subject in subs:
-	    if subject['id'] == int(sub_id):
-		return Subject(-1).identity_from_jsonObject(subject)
+        subs = json.loads(resp)
+        for subject in subs:
+            if subject['id'] == int(sub_id):
+                return Subject(-1).identity_from_jsonObject(subject)
     else:
-	try:
-	    s_rh = ServiceClient.get_rh_for(record_type=ServiceClient.SUBJECT)
-	    subject = s_rh.get(id=sub_id)
-	    if not pds.protocol.isSubjectOnProtocol(subject):
-		raise Http404
-	    else:
-		return subject
-	except PageNotFound:
+        try:
+            s_rh = ServiceClient.get_rh_for(record_type=ServiceClient.SUBJECT)
+            subject = s_rh.get(id=sub_id)
+            if not pds.protocol.isSubjectOnProtocol(subject):
+                raise Http404
+            else:
+                return subject
+        except PageNotFound:
             raise Http404
 
     return None
@@ -335,12 +335,12 @@ def getPDSSubject(pds, sub_id):
 def getRedcapStatus():
     redcap_resp = cache.get('redcap_status')
     if redcap_resp:
-	if int(redcap_resp) < 1000:
-	    return 'Good'
-	if int(redcap_resp) > 1000 and int(redcap_resp) < 10000:
-	    return 'Moderate'
-	if int(redcap_resp) > 10000:
-	    return 'Unresponsive'
+        if int(redcap_resp) < 1000:
+            return 'Good'
+        if int(redcap_resp) > 1000 and int(redcap_resp) < 10000:
+            return 'Moderate'
+        if int(redcap_resp) > 10000:
+            return 'Unresponsive'
     return 'Unavailable'
 
 
@@ -352,7 +352,7 @@ def filterLabels(pds, labels):
             if int(label['id']) in config['labels']:
                 lbl_set.append(label)
     except:
-	return [{"id": 1, "label": "Record"}]
+        return [{"id": 1, "label": "Record"}]
     return lbl_set
 
 
@@ -381,9 +381,9 @@ def pds_dataentry_list(request, pds_id, subject_id):
     ck = 'recordlistform_{0}_{1}'.format(pds_id, subject_id)
 
     if request.method == 'GET':
-	rlf = cache.get(ck)
-	if rlf:
-	    return rlf
+        rlf = cache.get(ck)
+        if rlf:
+            return rlf
         record_list_html = '<div class="alert alert-info"><h4>No records found.</h4></div>'
         allow_more_records = False
         labels = filterLabels(pds, er_label_rh.query())
@@ -391,7 +391,7 @@ def pds_dataentry_list(request, pds_id, subject_id):
             records = er_rh.get(
                 external_system_url=es_url, subject_id=subject_id, path=pds.path)
             records.sort(key=lambda x: x.created)
-	    records = [json.loads(record.json_from_identity(record)) for record in records]
+            records = [json.loads(record.json_from_identity(record)) for record in records]
             allow_more_records = pds.max_records_per_subject == (
                 -1) or len(records) < pds.max_records_per_subject
             if len(records) > 0:
@@ -399,20 +399,20 @@ def pds_dataentry_list(request, pds_id, subject_id):
                     ServiceClient.self_root_path,
                     pds.id,
                     subject.id)
-		record_urls = ['%s%s/start/' % (prefix, each['id']) for each in records]
+                record_urls = ['%s%s/start/' % (prefix, each['id']) for each in records]
                 driver = DriverUtils.getDriverFor(
                     protocol_data_source=pds, user=request.user)
                 record_list_html = driver.recordListForm(
-		    record_urls, records, labels)
+                    record_urls, records, labels)
         except PageNotFound:
             allow_more_records = pds.max_records_per_subject != 0
 
         authorized_sources, unauthorized_sources = _auth_unauth_source_lists(
             pds.protocol, request.user, pds)
 
-	# TODO ADD A BOOLEAN ALLOW_CREATE_MORE_RECORDS =
-	# pds.max_recrods_allowed < 0 or pds.max_records_allowed < len(records)
-	# and pass this to render_to_response method to decide to show/hide create
+        # TODO ADD A BOOLEAN ALLOW_CREATE_MORE_RECORDS =
+        # pds.max_recrods_allowed < 0 or pds.max_records_allowed < len(records)
+        # and pass this to render_to_response method to decide to show/hide create
         # button
         context = {
             'protocol': pds.protocol,
@@ -424,18 +424,18 @@ def pds_dataentry_list(request, pds_id, subject_id):
             'unauthorized_data_sources': unauthorized_sources,
             'record_list_html': record_list_html,
             'allow_more_records': allow_more_records,
-	    'record_labels': labels,
-	    'redcap_status': getRedcapStatus()
+            'record_labels': labels,
+            'redcap_status': getRedcapStatus()
         }
-	resp = render_to_response(
+        resp = render_to_response(
             'pds_dataentry_list.html',
             context,
             context_instance=RequestContext(request)
         )
-	cache.set(ck, resp)
-	return resp
+        cache.set(ck, resp)
+        return resp
     if request.method == 'POST':
-	cache.delete(ck)
+        cache.delete(ck)
         try:
             data = json.loads(request.body)
         except:
@@ -551,8 +551,8 @@ def pds_dataentry_start(request, pds_id, subject_id, record_id):
                     'subject': subject,
                     'root_path': ServiceClient.self_root_path,
                     'pds_id': pds.id,
-		    'label': label,
-		    'redcap_status': getRedcapStatus()
+                    'label': label,
+                    'redcap_status': getRedcapStatus()
                 }
                 return render_to_response(
                     'pds_dataentry_start.html',
@@ -763,8 +763,8 @@ def pds_dataentry_create(request, pds_id, subject_id):
                                         'pds': pds,
                                         'form_submission_url': form_submission_url,
                                         'errors': error_msgs,
-					'label': label,
-					'redcap_status': getRedcapStatus()
+                                        'label': label,
+                                        'redcap_status': getRedcapStatus()
                                     }
                                     return render_to_response(
                                         'pds_dataentry_rec_create.html',
@@ -799,8 +799,8 @@ def pds_dataentry_create(request, pds_id, subject_id):
                         'pds': pds,
                         'form_submission_url': form_submission_url,
                         'errors': error_msgs,
-			'label': label,
-			'redcap_status': getRedcapStatus()
+                        'label': label,
+                        'redcap_status': getRedcapStatus()
                     }
                     return render_to_response(
                         'pds_dataentry_rec_create.html',
@@ -823,8 +823,8 @@ def pds_dataentry_create(request, pds_id, subject_id):
                     'root_path': ServiceClient.self_root_path,
                     'pds': pds,
                     'form_submission_url': form_submission_url,
-		    'label': label,
-		    'redcap_status': getRedcapStatus()
+                    'label': label,
+                    'redcap_status': getRedcapStatus()
                 }
                 return render_to_response(
                     'pds_dataentry_rec_create.html',
@@ -917,16 +917,16 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
 
     def generateSubRecordForm(driver, external_record, form_spec, attempt_count, max_attempts):
         try:
-	    key = 'subrecordform_{0}_{1}'.format(external_record.id, form_spec)
-	    cf = cache.get(key)
-	    if cf:
-		return cf
-	    else:
-		form = driver.subRecordForm(external_record=external_record,
-					    form_spec=form_spec,
-					    session=request.session)
-		cache.set(key, form)
-	    return form
+            key = 'subrecordform_{0}_{1}'.format(external_record.id, form_spec)
+            cf = cache.get(key)
+            if cf:
+                return cf
+            else:
+                form = driver.subRecordForm(external_record=external_record,
+                                            form_spec=form_spec,
+                                            session=request.session)
+                cache.set(key, form)
+            return form
         except RecordDoesNotExist:
             return None
 
@@ -945,11 +945,11 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
     error_msgs = []
 
     try:
-	r = cache.get('externalrecord_{0}'.format(record_id))
-	if r:
-	    record = ExternalRecord(1).identity_from_jsonObject(json.loads(r))
-	else:
-	    record = er_rh.get(id=record_id)
+        r = cache.get('externalrecord_{0}'.format(record_id))
+        if r:
+            record = ExternalRecord(1).identity_from_jsonObject(json.loads(r))
+        else:
+            record = er_rh.get(id=record_id)
     except PageNotFound:
         return Http404
 
@@ -961,8 +961,8 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
         # path, subject combination.
         if request.method == 'POST':
             # have the driver process this request
-	    key = 'subrecordform_{0}_{1}'.format(record.id, form_spec)
-	    cache.delete(key)
+            key = 'subrecordform_{0}_{1}'.format(record.id, form_spec)
+            cache.delete(key)
             errors = driver.processForm(
                 request=request, external_record=record, form_spec=form_spec, session=request.session)
             if errors:
@@ -1010,8 +1010,8 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
                     'pds': pds,
                     'form_submission_url': form_submission_url,
                     'next_form_url': next_form_url,
-		    'rec_id': str(record_id),
-		    'redcap_status': getRedcapStatus()
+                    'rec_id': str(record_id),
+                    'redcap_status': getRedcapStatus()
                 }
 
                 return render_to_response('pds_dataentry_srf.html', context,
