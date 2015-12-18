@@ -20,7 +20,7 @@ class Migration(DataMigration):
 
         "Perform a 'safe' load using Avocado's backup utilities."
         from django.core.management import call_command
-        call_command('loaddata', 'brp/apps/accounts/fixtures/0001_eula.json')
+        call_command('loaddata', 'brp/accounts/fixtures/0001_eula.json')
 
     def backwards(self, orm):
         db.delete_table(u'accounts_userprofile')
