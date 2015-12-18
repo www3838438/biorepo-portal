@@ -2,9 +2,9 @@
 
 cd /opt/app
 
-python ./bin/manage.py syncdb --noinput
-python ./bin/manage.py migrate --noinput
-python ./bin/manage.py collectstatic --noinput
+python ./brp/manage.py syncdb --noinput
+python ./brp/manage.py migrate --noinput
+python ./brp/manage.py collectstatic --noinput
 
 if [ "$(ls -A /opt/app)" ]; then
     if [ "$FORCE_SCRIPT_NAME" = "" ]; then
