@@ -17,7 +17,7 @@ class CreatedModified(models.Model):
     class Meta(object):
         abstract = True
 
-    def save(self):
+    def save(self, *args, **kwargs):
         now = datetime.now()
 
         if not self.created:

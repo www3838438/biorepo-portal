@@ -81,7 +81,7 @@ class ImmutableKey(Base):
     def _key_length(self, default=15):
         return self._settings_prop('IMMUTABLE_KEYS', 'length', default)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self._set_key()
         super(ImmutableKey, self).save()
 
