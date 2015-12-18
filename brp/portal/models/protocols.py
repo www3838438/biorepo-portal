@@ -142,10 +142,10 @@ class Organization(BaseWithImmutableKey):
         except PageNotFound:
             org = Organization(name=self.name, subject_id_label=self.subject_id_label)
             r = rh.create(org)[0]
-        if(r.get('success')):
-                super(Organization, self).save(*args, **kwargs)
-        else:
-            raise Exception('Unable to create Organization record in ehb-service')
+            if(r.get('success')):
+                    super(Organization, self).save(*args, **kwargs)
+            else:
+                raise Exception('Unable to create Organization record in ehb-service')
 
     def getEhbServiceInstance(self):
         '''
@@ -162,7 +162,7 @@ class Organization(BaseWithImmutableKey):
 class DataSource(Base):
     '''
     This class represents an external data source used for a given protocol.
-    It is the link between the ehb-cccr app and the ehb-service. The field
+    It is the link between the brp app and the ehb-service. The field
     ehb_service_es_id is the id of the ExternalSystem record stored in the
     ehb-service corresponding to this DataSource. The name field should match
     the name field in the ExternalSystem record
@@ -191,11 +191,11 @@ class DataSource(Base):
                 description=self.description
             )
             r = rh.create(es)[0]
-        if(r.get('success')):
-                self.ehb_service_es_id = es.id
-                super(DataSource, self).save(*args, **kwargs)
-        else:
-            raise Exception('Unable to create ExternalSystem record in ehb-service')
+            if(r.get('success')):
+                    self.ehb_service_es_id = es.id
+                    super(DataSource, self).save(*args, **kwargs)
+            else:
+                raise Exception('Unable to create ExternalSystem record in ehb-service')
 
     def clean(self):
         rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_SYSTEM)
