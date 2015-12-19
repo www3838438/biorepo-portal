@@ -33,6 +33,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'rest_framework.authtoken',
     'markdown_deux',
+    'django_nose',
 
     # project apps in biorepo-portal/apps
     'portal',
@@ -170,7 +171,7 @@ LOGGING = {
         'default': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-	    'filename': str(root.path('logs/debug.log')),
+            'filename': str(root.path('logs/debug.log')),
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'standard',
@@ -178,7 +179,7 @@ LOGGING = {
         'request_handler': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-	    'filename': str(root.path('logs/requests.log')),
+            'filename': str(root.path('logs/requests.log')),
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'standard',
@@ -191,7 +192,7 @@ LOGGING = {
         'ehb': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-	    'filename': str(root.path('logs/ehb.log')),
+            'filename': str(root.path('logs/ehb.log')),
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'standard',
@@ -298,3 +299,5 @@ REST_FRAMEWORK = {
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3000),
 }
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

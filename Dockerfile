@@ -38,6 +38,7 @@ RUN pip install "markdown2==2.3.0"
 RUN pip install "raven==5.0.0"
 RUN pip install "django-redis==4.2.0"
 RUN pip install uWSGI
+RUN pip install "django-nose==1.4.2"
 
 ENV APP_ENV test
 
