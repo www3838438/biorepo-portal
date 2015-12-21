@@ -918,14 +918,16 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
     def generateSubRecordForm(driver, external_record, form_spec, attempt_count, max_attempts):
         try:
             key = 'subrecordform_{0}_{1}'.format(external_record.id, form_spec)
-            cf = cache.get(key)
+            # Caching turned off for the time being on SRF
+            # cf = cache.get(key)
+            cf = None
             if cf:
                 return cf
             else:
                 form = driver.subRecordForm(external_record=external_record,
                                             form_spec=form_spec,
                                             session=request.session)
-                cache.set(key, form)
+                # cache.set(key, form)
             return form
         except RecordDoesNotExist:
             return None
@@ -962,7 +964,7 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
         if request.method == 'POST':
             # have the driver process this request
             key = 'subrecordform_{0}_{1}'.format(record.id, form_spec)
-            cache.delete(key)
+            # cache.delete(key)
             errors = driver.processForm(
                 request=request, external_record=record, form_spec=form_spec, session=request.session)
             if errors:
