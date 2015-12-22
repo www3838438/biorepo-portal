@@ -15,7 +15,7 @@ djangorestframework-jwt==1.5.0
 
 # eHB Interfacing
 git+git://github.com/chop-dbhi/ehb-client.git#egg=ehb-client
-git+git://github.com/chop-dbhi/ehb-datasources.git
+git+git://github.com/chop-dbhi/ehb-datasources.git@422d775cd7be9ae9465a02e2580d09eefd04fbda
 
 # Backend support
 psycopg2==2.5.4
