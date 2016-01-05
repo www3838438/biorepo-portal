@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     # project apps in biorepo-portal/apps
     'portal',
     'accounts',
+    'api',
 )
 
 # ------------------------------------
@@ -127,6 +128,7 @@ SITEAUTH_DENY_URLS = (
 MIDDLEWARE_CLASSES = (
     # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.gzip.GZipMiddleware',
+    'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
