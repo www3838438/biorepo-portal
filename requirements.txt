@@ -8,6 +8,7 @@
 Django>=1.6,<1.7
 south==1.0.1
 django-environ==0.3.0
+git+git://github.com/joke2k/django-environ.git@e91c4f9cc65ffaf39c149a30e61340e0c0d1ab76
 django-session-security==2.2.1
 django-markdown-deux==1.0.5
 djangorestframework==3.1.1
@@ -21,7 +22,7 @@ git+git://github.com/chop-dbhi/ehb-datasources.git@422d775cd7be9ae9465a02e2580d0
 psycopg2==2.5.4
 
 # Cache backend support
-python-memcached==1.53
+django-redis==4.2.0
 
 # For LDAP supoort, install python-ldap
 python-ldap==2.4.19
@@ -32,5 +33,4 @@ git+git://github.com/bruth/django-registration2.git#egg=django-registration2
 markdown2==2.3.0
 
 raven==5.0.0
-django-redis==4.2.0
 django-nose==1.4.2
