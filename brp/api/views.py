@@ -113,7 +113,10 @@ class ProtocolViewSet(viewsets.ModelViewSet):
         for pds in p.getProtocolDataSources():
             t = ProtocolDataSourceSerializer(pds, context={'request': request}).data
             # Parse ProtocolDataSource configuration
-            dc = json.loads(pds.driver_configuration)
+            if pds.driver_configuration != '':
+                dc = json.loads(pds.driver_configuration)
+            else:
+                dc = ''
             t["driver_configuration"] = dc
             # Determine Authorization
             try:
