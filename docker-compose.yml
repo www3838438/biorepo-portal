@@ -2,8 +2,6 @@ ehb:
     image: dbhi/ehb-service
     ports:
         - ":8000"
-memcached:
-    image: memcached:latest
 
 redis:
     image: redis:latest
@@ -12,7 +10,6 @@ brp:
     build: .
     links:
         - ehb
-        - memcached
         - redis
     ports:
         - ":8000"
