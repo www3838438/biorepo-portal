@@ -6,11 +6,12 @@ dependencies:
     override:
         - docker info
         - docker build -t dbhi/biorepo-portal .
+        - docker run -d --name redis redis:3.0.5
         - docker run -d --name ehb-service dbhi/ehb-service
 
 test:
     override:
-        - docker run --link ehb-service dbhi/biorepo-portal /opt/app/scripts/test.sh
+        - docker run --link ehb-service --link redis dbhi/biorepo-portal /opt/app/scripts/test.sh
 
 deployment:
     hub:

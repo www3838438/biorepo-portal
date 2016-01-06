@@ -22,7 +22,7 @@ from ehb_client.requests.subject_request_handler import Subject
 from ehb_datasources.drivers.exceptions import RecordDoesNotExist,\
     RecordCreationError, IgnoreEhbExceptions
 
-cache = get_cache('redis')
+cache = get_cache('default')
 
 log = logging.getLogger(__name__)
 

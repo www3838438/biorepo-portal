@@ -11,19 +11,19 @@ from django.core.cache import get_cache
 
 from portal.ehb_service_client import ServiceClient
 
-cache = get_cache('redis')
+cache = get_cache('default')
 
 
 class Command(BaseCommand):
 
     def cache_records(self):
-	datasources = DataSource.objects.all()
-	er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
-	for ds in datasources:
-	    ers = er_rh.query({'external_system_id': ds.ehb_service_es_id})[0]['external_record']
-	    for record in ers:
-		cache.set('externalrecord_{0}'.format(record.id), record.json_from_identity(record))
-	print 'Caching of ExternalRecords complete'
+        datasources = DataSource.objects.all()
+        er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
+        for ds in datasources:
+            ers = er_rh.query({'external_system_id': ds.ehb_service_es_id})[0]['external_record']
+            for record in ers:
+                cache.set('externalrecord_{0}'.format(record.id), record.json_from_identity(record))
+        print 'Caching of ExternalRecords complete'
 
     def handle(self, *args, **options):
-	self.cache_records()
+        self.cache_records()

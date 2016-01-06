@@ -12,21 +12,21 @@ from django.core.cache import get_cache
 
 from portal.ehb_service_client import ServiceClient
 
-cache = get_cache('redis')
+cache = get_cache('default')
 
 class Command(BaseCommand):
 
     def cache_records(self):
-	datasources = DataSource.objects.all()
-	protocols = Protocol.objects.all()
-	for protocol in protocols:
-	    subs = protocol.getSubjects()
-	    if subs:
-		subs_dict = [json.loads(subject.json_from_identity(subject)) for subject in subs]
-		sk = '{0}_subjects'.format(protocol.id)
-		cache.set(sk, json.dumps(subs_dict))
+        datasources = DataSource.objects.all()
+        protocols = Protocol.objects.all()
+        for protocol in protocols:
+            subs = protocol.getSubjects()
+            if subs:
+                subs_dict = [json.loads(subject.json_from_identity(subject)) for subject in subs]
+                sk = '{0}_subjects'.format(protocol.id)
+                cache.set(sk, json.dumps(subs_dict))
 
-	print 'Subject caching complete'
+        print 'Subject caching complete'
 
     def handle(self, *args, **options):
-	self.cache_records()
+        self.cache_records()

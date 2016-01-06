@@ -1,6 +1,6 @@
 ## Quickstart
 
-The Biorepository Portal contains a [docker-compose](https://www.docker.com/docker-compose) file which defines a `brp` service to quickly spin up a demonstration instance of the portal. This demo consists of the Portal itself, memcached, as well as a companion instance of [electronic Honest Broker](https://github.com/chop-dbhi/ehb-service).
+The Biorepository Portal contains a [docker-compose](https://www.docker.com/docker-compose) file which defines a `brp` service to quickly spin up a demonstration instance of the portal. This demo consists of the Portal itself, redis, as well as a companion instance of [electronic Honest Broker](https://github.com/chop-dbhi/ehb-service).
 
 Run:
 

@@ -262,10 +262,7 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 # For production environments, the memcached backend is highly recommended
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
-        'KEY_PREFIX': 'brp',
-        'VERSION': 1,
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
 
