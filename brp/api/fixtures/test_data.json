@@ -40,6 +40,15 @@
         "created": "2015-09-29T12:01:41.671"
     }
 }, {
+    "pk": 3,
+    "model": "portal.immutablekey",
+    "fields": {
+        "modified": "2015-09-29T12:01:41.672",
+        "key": "BOGUSIMMUTABLEKEY",
+        "created": "2015-09-29T12:01:41.671"
+    }
+},
+{
     "pk": 1,
     "model": "portal.organization",
     "fields": {
@@ -76,6 +85,20 @@
     }
 }, {
     "pk": 1,
+    "model": "portal.protocoldatasource",
+    "fields": {
+        "data_source": 1,
+        "protocol": 1,
+        "created": "2015-09-29T12:04:57.702",
+        "max_records_per_subject": -1,
+        "driver": 0,
+        "modified": "2015-09-29T12:04:57.702",
+        "display_label": "Health Data",
+        "path": "Demo",
+        "driver_configuration": ""
+    }
+}, {
+    "pk": 1,
     "model": "portal.protocol",
     "fields": {
         "organizations": [1],
@@ -85,6 +108,17 @@
         "created": "2015-09-29T12:01:41.672"
     }
 }, {
+    "pk": 2,
+    "model": "portal.protocol",
+    "fields": {
+        "organizations": [1],
+        "immutable_key": 3,
+        "modified": "2015-09-29T12:01:41.672",
+        "name": "Protocol Without Datasources",
+        "created": "2015-09-29T12:01:41.672"
+    }
+},
+{
     "pk": 1,
     "model": "portal.protocoluser",
     "fields": {
