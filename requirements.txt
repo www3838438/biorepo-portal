@@ -7,7 +7,6 @@
 # Core requirements
 Django>=1.6,<1.7
 south==1.0.1
-django-environ==0.3.0
 git+git://github.com/joke2k/django-environ.git@e91c4f9cc65ffaf39c149a30e61340e0c0d1ab76
 django-session-security==2.2.1
 django-markdown-deux==1.0.5
