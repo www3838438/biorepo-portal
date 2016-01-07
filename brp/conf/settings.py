@@ -7,7 +7,7 @@ root = environ.Path(__file__) - 3  # three folder back (/a/b/c/ - 3 = /)
 env = environ.Env(DEBUG=(bool, False),)  # set default values and casting
 environ.Env.read_env('{0}.env'.format(env('APP_ENV')))  # reading .env file
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', [])
 
 TIME_ZONE = env('TIME_ZONE', default='America/New_York')
 DEBUG = env.bool('DEBUG')
