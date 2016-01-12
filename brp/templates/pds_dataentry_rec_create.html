@@ -38,6 +38,27 @@
     </table>
 </div>
 
+{% if subject.external_ids %}
+<div>
+    <table class="table table-bordered table-striped">
+	<thead>
+	<tr>
+	    <th>External ID Label</th>
+	    <th>Identifier</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for ex_id in subject.external_ids %}
+	<tr>
+	    <td style="padding-top:15px;">{{ex_id.label_desc}}</td>
+	    <td style="padding-top:15px;">{{ex_id.record_id}}</td>
+	</tr>
+	{% endfor %}
+    </tbody>
+    </table>
+</div>
+{% endif %}
+
 <div style="margin-top:10px">
 <form title="Rec create form" action="{{form_submission_url}}" method="post">{% csrf_token %}
 <h4>Record Creation Form <input type="hidden" name="label_id" value="{{label.id}}"><span class="label label-primary">{{label.label}}</span>    <small><em>{{pds.display_label}}</em></small></h4>

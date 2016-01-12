@@ -28,6 +28,9 @@
 	    <tr>
 		<th>Group</th>
 		<th>MRN</th>
+	{% if addl_id_column %}
+	<th>{{addl_id_column.label}}</th>
+	{% endif %}
 		<th data-defaultsort="asc">Last Name</th>
 		<th>First Name</th>
 		<th>Birth Date</th>
@@ -38,8 +41,11 @@
 	{% for s in subjects %}
 	    <tr class="subject_row" oid="{{s.organization_id}}" filter="f">
 		<td class="subject-text">{{s.organization_name}}</td>
-		<td class="subject-text">{{s.organization_subject_id}}</td>
-		<td class="subject-text">{{s.last_name}}</td>
+		<td class="subject-text">{{s.organization_subject_id}}{% if s.external_ids %}<br><span class="external-ids"> External IDs: <br>{% for ex_id in s.external_ids %}{{ex_id.label_desc}}: {{ex_id.record_id}}<br>{% endfor %}</span>{% endif %}</td>
+	{% if addl_id_column %}
+	<td class="subject-text">{% if s.external_ids %}{{s.external_ids.0.record_id}}{% endif %}</td>
+	{% endif %}
+	<td class="subject-text">{{s.last_name}}</td>
 		<td class="subject-text">{{s.first_name}}</td>
 		<td class="subject-text">{{s.dob}}</td>
                 <td>

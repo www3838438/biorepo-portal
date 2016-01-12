@@ -26,6 +26,8 @@ cache = get_cache('default')
 
 log = logging.getLogger(__name__)
 
+MANAGE_EXTERNAL_IDS = False
+
 
 def forbidden(request, template_name='403.html'):
     '''Default 403 handler'''
@@ -255,6 +257,12 @@ def subject_select(request, protocol_id):
         return forbidden(request)
 
     subjects = getProtocolSubjects(p)
+    addl_id_column = None
+
+    for pds in p.getProtocolDataSources():
+	if pds.driver == 3:
+	    ExIdSource = pds
+	    MANAGE_EXTERNAL_IDS = True
 
     organizations = p.organizations.all()
     # add the organization name to the subject object for use in template
@@ -264,6 +272,18 @@ def subject_select(request, protocol_id):
     if subjects:
         for s in subjects:
             s.dob = s.dob.strftime('%Y-%m-%d')
+	    # Check whether or not we're managing External Identifiers
+	    if MANAGE_EXTERNAL_IDS:
+		try:
+		    config = json.loads(ExIdSource.driver_configuration)
+		except:
+		    pass
+		if 'sort_on' in config.keys():
+		    er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
+		    lbl = er_label_rh.get(id=config['sort_on'])
+		    addl_id_column = lbl
+		s.external_ids = getExternalIdentifiers(ExIdSource, s)
+
             for o in ehb_orgs:
                 if s.organization_id == o.id:
                     s.organization_name = o.name
@@ -272,6 +292,7 @@ def subject_select(request, protocol_id):
         p, request.user)
 
     context = {
+	'addl_id_column': addl_id_column,
         'subjects': subjects,
         'protocol': p,
         'organizations': ehb_orgs,
@@ -286,6 +307,25 @@ def subject_select(request, protocol_id):
         context,
         context_instance=RequestContext(request)
     )
+
+
+def getExternalIdentifiers(pds, subject):
+    er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
+    er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
+    lbls = er_label_rh.query()
+    try:
+	pds_records = er_rh.get(
+	    external_system_url=pds.data_source.url, path=pds.path, subject_id=subject.id)
+    except PageNotFound:
+	pds_records = []
+    for ex_rec in pds_records:
+	for label in lbls:
+	    if ex_rec.label_id == label['id']:
+		if label['label'] == '':
+		    ex_rec.label_desc = 'Record'
+		else:
+		    ex_rec.label_desc = label['label']
+    return pds_records
 
 
 def getProtocolDataSource(pk):
@@ -370,7 +410,18 @@ def pds_dataentry_list(request, pds_id, subject_id):
     if not pds.protocol.isUserAuthorized(request.user):
         return forbidden(request)
 
+    # Check to see if this PDS is managing external identifiers
+    for _pds in pds.protocol.getProtocolDataSources():
+	if _pds.driver == 3:
+	    ExIdSource = _pds
+	    MANAGE_EXTERNAL_IDS = True
+
     subject = getPDSSubject(pds=pds, sub_id=subject_id)
+
+    # If we are managing external identifiers add them to the subject
+    if MANAGE_EXTERNAL_IDS:
+	subject.external_ids = getExternalIdentifiers(ExIdSource, subject)
+
     o_rh = ServiceClient.get_rh_for(record_type=ServiceClient.ORGANIZATION)
     org = o_rh.get(id=subject.organization_id)
     es_url = pds.data_source.url
@@ -378,12 +429,8 @@ def pds_dataentry_list(request, pds_id, subject_id):
     # Get record ids for this (protocol, subject, data source) combination
     er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
     er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
-    ck = 'recordlistform_{0}_{1}'.format(pds_id, subject_id)
 
     if request.method == 'GET':
-        rlf = cache.get(ck)
-        if rlf:
-            return rlf
         record_list_html = '<div class="alert alert-info"><h4>No records found.</h4></div>'
         allow_more_records = False
         labels = filterLabels(pds, er_label_rh.query())
@@ -432,7 +479,6 @@ def pds_dataentry_list(request, pds_id, subject_id):
             context,
             context_instance=RequestContext(request)
         )
-        cache.set(ck, resp)
         return resp
     if request.method == 'POST':
         cache.delete(ck)
@@ -478,10 +524,17 @@ def pds_dataentry_start(request, pds_id, subject_id, record_id):
     if not pds.protocol.isUserAuthorized(request.user):
         return forbidden(request)
 
+    # Check to see if this PDS is managing external identifiers
+    for _pds in pds.protocol.getProtocolDataSources():
+	if _pds.driver == 3:
+	    ExIdSource = _pds
+	    MANAGE_EXTERNAL_IDS = True
+
     subject = getPDSSubject(pds=pds, sub_id=subject_id)
-    # this subject is not actually on this protcol
-    if not pds.protocol.isSubjectOnProtocol(subject):
-        return Http404
+
+    # If we are managing external identifiers add them to the subject
+    if MANAGE_EXTERNAL_IDS:
+	subject.external_ids = getExternalIdentifiers(ExIdSource, subject)
 
     er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
     record = None  # this will be the ehb-service externalRecord for this pds, subject NOT the actual datasource record
@@ -618,15 +671,21 @@ def pds_dataentry_create(request, pds_id, subject_id):
     for Subject with subject_id=subject_id. The specific record creation form is driver dependent - and not all drivers
     implement the form.'''
 
-    # Invalidate cache
-    ck = 'recordlistform_{0}_{1}'.format(pds_id, subject_id)
-    cache.delete(ck)
-
     pds = getProtocolDataSource(pk=pds_id)
     log.info('Attempting record creation for {0} on Protocol Datasource {1}'.format(subject_id, pds_id))
 
-    # check to make sure the maximum number of records has not been exceeded
+    # Check to see if this PDS is managing external identifiers
+    for _pds in pds.protocol.getProtocolDataSources():
+	if _pds.driver == 3:
+	    ExIdSource = _pds
+	    MANAGE_EXTERNAL_IDS = True
+
     subject = getPDSSubject(pds=pds, sub_id=subject_id)
+
+    # If we are managing external identifiers add them to the subject
+    if MANAGE_EXTERNAL_IDS:
+	subject.external_ids = getExternalIdentifiers(ExIdSource, subject)
+
     es_url = pds.data_source.url
     # get record ids for this protocol, subject, data source combination
     er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
@@ -690,7 +749,7 @@ def pds_dataentry_create(request, pds_id, subject_id):
                             # this will create the ehb external_record entry
                             # and add that record to the subject's record group
                             ehb_rec_id = SubjectUtils.create_new_ehb_external_record(
-                                pds, request.user, subject, rec_id, label_id)
+				pds, request.user, subject, rec_id, label_id).id
 
                             path = '%s/dataentry/protocoldatasource/%s/subject/%s/record/%s/start/' % (
                                 ServiceClient.self_root_path,
@@ -927,7 +986,6 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
                 form = driver.subRecordForm(external_record=external_record,
                                             form_spec=form_spec,
                                             session=request.session)
-                # cache.set(key, form)
             return form
         except RecordDoesNotExist:
             return None
@@ -936,10 +994,17 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
     if not pds.protocol.isUserAuthorized(request.user):
         return forbidden(request)
 
+    # Check to see if this PDS is managing external identifiers
+    for _pds in pds.protocol.getProtocolDataSources():
+	if _pds.driver == 3:
+	    ExIdSource = _pds
+	    MANAGE_EXTERNAL_IDS = True
+
     subject = getPDSSubject(pds=pds, sub_id=subject_id)
-    # this subject is not actually on this protcol
-    if not pds.protocol.isSubjectOnProtocol(subject):
-        return Http404
+
+    # If we are managing external identifiers add them to the subject
+    if MANAGE_EXTERNAL_IDS:
+	subject.external_ids = getExternalIdentifiers(ExIdSource, subject)
 
     er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
     # this will be the ehb-service externalRecord for this pds, subject NOT the actual datasource record
