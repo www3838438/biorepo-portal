@@ -411,6 +411,8 @@ def pds_dataentry_list(request, pds_id, subject_id):
     if not pds.protocol.isUserAuthorized(request.user):
         return forbidden(request)
 
+    MANAGE_EXTERNAL_IDS = False
+
     # Check to see if this PDS is managing external identifiers
     for _pds in pds.protocol.getProtocolDataSources():
         if _pds.driver == 3:
@@ -525,6 +527,7 @@ def pds_dataentry_start(request, pds_id, subject_id, record_id):
     if not pds.protocol.isUserAuthorized(request.user):
         return forbidden(request)
 
+    MANAGE_EXTERNAL_IDS = False
     # Check to see if this PDS is managing external identifiers
     for _pds in pds.protocol.getProtocolDataSources():
         if _pds.driver == 3:
@@ -675,6 +678,7 @@ def pds_dataentry_create(request, pds_id, subject_id):
     pds = getProtocolDataSource(pk=pds_id)
     log.info('Attempting record creation for {0} on Protocol Datasource {1}'.format(subject_id, pds_id))
 
+    MANAGE_EXTERNAL_IDS = False
     # Check to see if this PDS is managing external identifiers
     for _pds in pds.protocol.getProtocolDataSources():
         if _pds.driver == 3:
@@ -994,6 +998,8 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
     pds = getProtocolDataSource(pds_id)
     if not pds.protocol.isUserAuthorized(request.user):
         return forbidden(request)
+
+    MANAGE_EXTERNAL_IDS = False
 
     # Check to see if this PDS is managing external identifiers
     for _pds in pds.protocol.getProtocolDataSources():
