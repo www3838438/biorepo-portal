@@ -257,7 +257,7 @@ def subject_select(request, protocol_id):
     subjects = getProtocolSubjects(p)
     addl_id_column = None
 
-    MANAGE_EXTERNAL_IDS = True
+    MANAGE_EXTERNAL_IDS = False
 
     for pds in p.getProtocolDataSources():
         if pds.driver == 3:
