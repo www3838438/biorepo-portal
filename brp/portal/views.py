@@ -260,9 +260,9 @@ def subject_select(request, protocol_id):
     MANAGE_EXTERNAL_IDS = True
 
     for pds in p.getProtocolDataSources():
-	if pds.driver == 3:
-	    ExIdSource = pds
-	    MANAGE_EXTERNAL_IDS = True
+        if pds.driver == 3:
+            ExIdSource = pds
+            MANAGE_EXTERNAL_IDS = True
 
     organizations = p.organizations.all()
     # add the organization name to the subject object for use in template
@@ -272,17 +272,18 @@ def subject_select(request, protocol_id):
     if subjects:
         for s in subjects:
             s.dob = s.dob.strftime('%Y-%m-%d')
-	    # Check whether or not we're managing External Identifiers
-	    if MANAGE_EXTERNAL_IDS:
-		try:
-		    config = json.loads(ExIdSource.driver_configuration)
-		except:
-		    pass
-		if 'sort_on' in config.keys():
-		    er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
-		    lbl = er_label_rh.get(id=config['sort_on'])
-		    addl_id_column = lbl
-		s.external_ids = getExternalIdentifiers(ExIdSource, s)
+            # Check whether or not we're managing External Identifiers
+            if MANAGE_EXTERNAL_IDS:
+                try:
+                    config = json.loads(ExIdSource.driver_configuration)
+                    if 'sort_on' in config.keys():
+                        er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
+                        lbl = er_label_rh.get(id=config['sort_on'])
+                        addl_id_column = lbl
+                except:
+                    pass
+
+                s.external_ids = getExternalIdentifiers(ExIdSource, s)
 
             for o in ehb_orgs:
                 if s.organization_id == o.id:
@@ -292,7 +293,7 @@ def subject_select(request, protocol_id):
         p, request.user)
 
     context = {
-	'addl_id_column': addl_id_column,
+        'addl_id_column': addl_id_column,
         'subjects': subjects,
         'protocol': p,
         'organizations': ehb_orgs,
@@ -314,17 +315,17 @@ def getExternalIdentifiers(pds, subject):
     er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
     lbls = er_label_rh.query()
     try:
-	pds_records = er_rh.get(
-	    external_system_url=pds.data_source.url, path=pds.path, subject_id=subject.id)
+        pds_records = er_rh.get(
+            external_system_url=pds.data_source.url, path=pds.path, subject_id=subject.id)
     except PageNotFound:
-	pds_records = []
+        pds_records = []
     for ex_rec in pds_records:
-	for label in lbls:
-	    if ex_rec.label_id == label['id']:
-		if label['label'] == '':
-		    ex_rec.label_desc = 'Record'
-		else:
-		    ex_rec.label_desc = label['label']
+        for label in lbls:
+            if ex_rec.label_id == label['id']:
+                if label['label'] == '':
+                    ex_rec.label_desc = 'Record'
+                else:
+                    ex_rec.label_desc = label['label']
     return pds_records
 
 
@@ -412,15 +413,15 @@ def pds_dataentry_list(request, pds_id, subject_id):
 
     # Check to see if this PDS is managing external identifiers
     for _pds in pds.protocol.getProtocolDataSources():
-	if _pds.driver == 3:
-	    ExIdSource = _pds
-	    MANAGE_EXTERNAL_IDS = True
+        if _pds.driver == 3:
+            ExIdSource = _pds
+            MANAGE_EXTERNAL_IDS = True
 
     subject = getPDSSubject(pds=pds, sub_id=subject_id)
 
     # If we are managing external identifiers add them to the subject
     if MANAGE_EXTERNAL_IDS:
-	subject.external_ids = getExternalIdentifiers(ExIdSource, subject)
+        subject.external_ids = getExternalIdentifiers(ExIdSource, subject)
 
     o_rh = ServiceClient.get_rh_for(record_type=ServiceClient.ORGANIZATION)
     org = o_rh.get(id=subject.organization_id)
@@ -526,15 +527,15 @@ def pds_dataentry_start(request, pds_id, subject_id, record_id):
 
     # Check to see if this PDS is managing external identifiers
     for _pds in pds.protocol.getProtocolDataSources():
-	if _pds.driver == 3:
-	    ExIdSource = _pds
-	    MANAGE_EXTERNAL_IDS = True
+        if _pds.driver == 3:
+            ExIdSource = _pds
+            MANAGE_EXTERNAL_IDS = True
 
     subject = getPDSSubject(pds=pds, sub_id=subject_id)
 
     # If we are managing external identifiers add them to the subject
     if MANAGE_EXTERNAL_IDS:
-	subject.external_ids = getExternalIdentifiers(ExIdSource, subject)
+        subject.external_ids = getExternalIdentifiers(ExIdSource, subject)
 
     er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
     record = None  # this will be the ehb-service externalRecord for this pds, subject NOT the actual datasource record
@@ -676,15 +677,15 @@ def pds_dataentry_create(request, pds_id, subject_id):
 
     # Check to see if this PDS is managing external identifiers
     for _pds in pds.protocol.getProtocolDataSources():
-	if _pds.driver == 3:
-	    ExIdSource = _pds
-	    MANAGE_EXTERNAL_IDS = True
+        if _pds.driver == 3:
+            ExIdSource = _pds
+            MANAGE_EXTERNAL_IDS = True
 
     subject = getPDSSubject(pds=pds, sub_id=subject_id)
 
     # If we are managing external identifiers add them to the subject
     if MANAGE_EXTERNAL_IDS:
-	subject.external_ids = getExternalIdentifiers(ExIdSource, subject)
+        subject.external_ids = getExternalIdentifiers(ExIdSource, subject)
 
     es_url = pds.data_source.url
     # get record ids for this protocol, subject, data source combination
@@ -749,7 +750,7 @@ def pds_dataentry_create(request, pds_id, subject_id):
                             # this will create the ehb external_record entry
                             # and add that record to the subject's record group
                             ehb_rec_id = SubjectUtils.create_new_ehb_external_record(
-				pds, request.user, subject, rec_id, label_id).id
+                                pds, request.user, subject, rec_id, label_id).id
 
                             path = '%s/dataentry/protocoldatasource/%s/subject/%s/record/%s/start/' % (
                                 ServiceClient.self_root_path,
@@ -996,15 +997,15 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
 
     # Check to see if this PDS is managing external identifiers
     for _pds in pds.protocol.getProtocolDataSources():
-	if _pds.driver == 3:
-	    ExIdSource = _pds
-	    MANAGE_EXTERNAL_IDS = True
+        if _pds.driver == 3:
+            ExIdSource = _pds
+            MANAGE_EXTERNAL_IDS = True
 
     subject = getPDSSubject(pds=pds, sub_id=subject_id)
 
     # If we are managing external identifiers add them to the subject
     if MANAGE_EXTERNAL_IDS:
-	subject.external_ids = getExternalIdentifiers(ExIdSource, subject)
+        subject.external_ids = getExternalIdentifiers(ExIdSource, subject)
 
     er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
     # this will be the ehb-service externalRecord for this pds, subject NOT the actual datasource record
