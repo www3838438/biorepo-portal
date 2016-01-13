@@ -26,8 +26,6 @@ cache = get_cache('default')
 
 log = logging.getLogger(__name__)
 
-MANAGE_EXTERNAL_IDS = False
-
 
 def forbidden(request, template_name='403.html'):
     '''Default 403 handler'''
@@ -258,6 +256,8 @@ def subject_select(request, protocol_id):
 
     subjects = getProtocolSubjects(p)
     addl_id_column = None
+
+    MANAGE_EXTERNAL_IDS = True
 
     for pds in p.getProtocolDataSources():
 	if pds.driver == 3:
