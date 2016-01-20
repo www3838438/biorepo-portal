@@ -39,6 +39,27 @@
 	</table>
 </div>
 
+{% if subject.external_ids %}
+<div>
+    <table class="table table-bordered table-striped">
+	<thead>
+	<tr>
+	    <th>External ID Label</th>
+	    <th>Identifier</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for ex_id in subject.external_ids %}
+	<tr>
+	    <td style="padding-top:15px;">{{ex_id.label_desc}}</td>
+	    <td style="padding-top:15px;">{{ex_id.record_id}}</td>
+	</tr>
+	{% endfor %}
+    </tbody>
+    </table>
+</div>
+{% endif %}
+
 <div style="margin-top:10px">
 
 <!-- ** Currently not structuring the REDCap forms as a form element to prevent modern browsers "unsaved form" prompt -->

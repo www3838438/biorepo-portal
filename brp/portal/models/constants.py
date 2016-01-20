@@ -12,3 +12,4 @@ class ProtocolDataSourceConstants(object):
     redcap_driver = 0
     nautilus_driver = 1
     phenotype_driver = 2
+    external_identifiers = 3

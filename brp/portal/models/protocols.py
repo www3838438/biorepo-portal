@@ -18,6 +18,7 @@ from ehb_client.requests.group_request_handler import Group
 import ehb_datasources.drivers.phenotype.driver as PhenotypeDriver
 import ehb_datasources.drivers.redcap.driver as RedCapDriver
 import ehb_datasources.drivers.nautilus.driver as NauDriver
+import ehb_datasources.drivers.external_identifiers.driver as ExIdDriver
 
 __all__ = ('DataSource',)
 
@@ -342,7 +343,8 @@ class ProtocolDataSource(Base):
     DRIVER_CHOICES = (
         (ProtocolDataSourceConstants.redcap_driver, 'REDCap Client'),
         (ProtocolDataSourceConstants.nautilus_driver, 'Nautilus'),
-        (ProtocolDataSourceConstants.phenotype_driver, 'Phenotype Intake')
+	(ProtocolDataSourceConstants.phenotype_driver, 'Phenotype Intake'),
+	(ProtocolDataSourceConstants.external_identifiers, 'External Identifiers')
     )
     driver = models.IntegerField(verbose_name='Driver Name', choices=DRIVER_CHOICES)
 
@@ -394,6 +396,15 @@ class ProtocolDataSource(Base):
                 password=pw,
                 secure=self._isSecure()
             )
+	elif self.driver == ProtocolDataSourceConstants.external_identifiers:
+	    pw = protocol_user_credentials.data_source_password
+	    user = protocol_user_credentials.data_source_username
+	    driver = ExIdDriver.ehbDriver(
+		url=self.data_source.url,
+		user=user,
+		password=pw,
+		secure=self._isSecure()
+	    )
 
         return driver
 

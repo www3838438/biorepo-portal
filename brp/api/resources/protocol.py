@@ -35,7 +35,6 @@ class ProtocolViewSet(viewsets.ModelViewSet):
         Returns a list of subjects associated with a protocol.
         """
         p = self.get_object()
-        print args
         if p.isUserAuthorized(request.user):
             subjects = p.getSubjects()
         else:
