@@ -484,7 +484,6 @@ def pds_dataentry_list(request, pds_id, subject_id):
         )
         return resp
     if request.method == 'POST':
-        cache.delete(ck)
         try:
             data = json.loads(request.body)
         except:
