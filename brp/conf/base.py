@@ -244,6 +244,8 @@ REGISTRATION_MODERATION = True
 
 ADMINS = (
     ('Tyler Rivera', 'riverat2@email.chop.edu'),
+    ('Alex Felmeister', 'felmeistera@email.chop.edu'),
+    ('Alex Gonzalez', 'gonzalezak@email.chop.edu'),
 )
 MANAGERS = ADMINS
 
