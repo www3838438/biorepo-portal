@@ -550,11 +550,11 @@ def pds_dataentry_start(request, pds_id, subject_id, record_id):
         record = er_rh.get(id=record_id)
         if record and pds_records:
             if record not in pds_records:
-                return Http404
+                raise Http404
         else:
-            return Http404
+            raise Http404
     except PageNotFound:
-        return Http404
+        raise Http404
 
     # if a proper record exists, get the html from the driver and display it
     if record:
@@ -1024,7 +1024,7 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
         else:
             record = er_rh.get(id=record_id)
     except PageNotFound:
-        return Http404
+        raise Http404
 
     try:
         driver = DriverUtils.getDriverFor(
