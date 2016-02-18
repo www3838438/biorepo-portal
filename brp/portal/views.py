@@ -698,6 +698,26 @@ def _create_external_system_record(request, driver, pds, subject, record_id=None
     return er.id
 
 
+def _auth_unauth_source_lists(protocol, user, ignore_current_pds=None):
+    authorized_sources = []
+    unauthorized_sources = []
+    for pds in protocol.getProtocolDataSources():
+        if ignore_current_pds and pds == ignore_current_pds:
+            continue
+        try:
+            ProtocolUserCredentials.objects.get(
+                protocol=protocol, data_source=pds, user=user)
+            # creds exist so add this to authorized sources
+            authorized_sources.append(pds)
+        except ProtocolUserCredentials.DoesNotExist:
+            unauthorized_sources.append(pds)
+    authorized_sources = sorted(
+        authorized_sources, key=lambda source: source.display_label)
+    unauthorized_sources = sorted(
+        unauthorized_sources, key=lambda source: source.display_label)
+    return (authorized_sources, unauthorized_sources)
+
+
 @login_required
 @connectionRefused
 def pds_dataentry_create(request, pds_id, subject_id):
