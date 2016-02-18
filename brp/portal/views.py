@@ -45,7 +45,7 @@ def connectionRefused(func):
     return callfunc
 
 @login_required
-def welcome(request):
+def index(request):
     protocols = []
     # find the protocols for this user
     usr = request.user
