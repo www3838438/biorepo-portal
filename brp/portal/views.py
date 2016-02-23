@@ -314,11 +314,21 @@ def getExternalIdentifiers(pds, subject):
     er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
     er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
     lbls = er_label_rh.query()
-    try:
-        pds_records = er_rh.get(
-            external_system_url=pds.data_source.url, path=pds.path, subject_id=subject.id)
-    except PageNotFound:
+    ck = '{0}_{1}_externalrecords'.format(pds.protocol.id, subject.id)
+    # See if our records are in the cache.
+    resp = cache.get(ck)
+    if resp:
         pds_records = []
+        for record in json.loads(resp):
+            if record['external_system'] == pds.id:
+                pds_records.append(ExternalRecord(-1).identity_from_jsonObject(record))
+    else:
+        try:
+            pds_records = er_rh.get(
+                external_system_url=pds.data_source.url, path=pds.path, subject_id=subject.id)
+        except PageNotFound:
+            pds_records = []
+
     for ex_rec in pds_records:
         for label in lbls:
             if ex_rec.label_id == label['id']:

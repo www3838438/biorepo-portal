@@ -1,5 +1,6 @@
 # encoding: utf-8
 import datetime
+import json
 
 from portal.ehb_service_client import ServiceClient
 from portal.models.protocols import Protocol, Organization, DataSource
@@ -18,6 +19,9 @@ class Command(BaseCommand):
 
     def cache_records(self):
         datasources = DataSource.objects.all()
+        protocols = Protocol.objects.all()
+
+
         er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
         for ds in datasources:
             try:
@@ -28,6 +32,18 @@ class Command(BaseCommand):
                 cache.set('externalrecord_{0}'.format(record.id), record.json_from_identity(record))
                 # Make sure key lasts a day
                 cache.expire('externalrecord_{0}'.format(record.id), 60*60*24)
+        for protocol in protocols:
+            subs = protocol.getSubjects()
+            if subs:
+                subs_dict = [json.loads(subject.json_from_identity(subject)) for subject in subs]
+                for sub in subs:
+                    sub_records = []
+                    for record in ers:
+                        if record.subject_id == sub.id:
+                            sub_records.append(json.loads(record.json_from_identity(record)))
+                    ck = '{0}_{1}_externalrecords'.format(protocol.id, sub.id)
+                    cache.set(ck, json.dumps(sub_records))
+                    cache.expire(ck, 60*60*24)
         print 'Caching of ExternalRecords complete'
 
     def handle(self, *args, **options):
