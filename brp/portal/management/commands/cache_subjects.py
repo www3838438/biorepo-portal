@@ -14,6 +14,7 @@ from portal.ehb_service_client import ServiceClient
 
 cache = get_cache('default')
 
+
 class Command(BaseCommand):
 
     def cache_records(self):
@@ -25,6 +26,8 @@ class Command(BaseCommand):
                 subs_dict = [json.loads(subject.json_from_identity(subject)) for subject in subs]
                 sk = '{0}_subjects'.format(protocol.id)
                 cache.set(sk, json.dumps(subs_dict))
+                # Make sure key lasts a day
+                cache.expire(sk, 60*60*24)
 
         print 'Subject caching complete'
 

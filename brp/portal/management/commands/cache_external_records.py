@@ -20,9 +20,14 @@ class Command(BaseCommand):
         datasources = DataSource.objects.all()
         er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
         for ds in datasources:
-            ers = er_rh.query({'external_system_id': ds.ehb_service_es_id})[0]['external_record']
+            try:
+                ers = er_rh.query({'external_system_id': ds.ehb_service_es_id})[0]['external_record']
+            except:
+                print 'failed retrieval of records from external system: {0}'.format(ds)
             for record in ers:
                 cache.set('externalrecord_{0}'.format(record.id), record.json_from_identity(record))
+                # Make sure key lasts a day
+                cache.expire('externalrecord_{0}'.format(record.id), 60*60*24)
         print 'Caching of ExternalRecords complete'
 
     def handle(self, *args, **options):
