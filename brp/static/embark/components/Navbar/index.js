@@ -19,7 +19,6 @@ export default class Navbar extends React.Component {
     if (protocol) {
       var subjectUrl = 'dataentry/protocol/' + protocol.id;
     }
-
     return (
         <div style={navbarStyle} className="navbar navbar-ct-primary navbar-fixed-top" role="navigation">
           <div className="navbar-header">
@@ -32,9 +31,13 @@ export default class Navbar extends React.Component {
                 { subjectUrl ?
                   <li><Link to={subjectUrl}>Subjects</Link></li> :
                   <div/>
-                }
+                }{
+                  protocol ?
                   <li><Link to={'/'}>Projects</Link></li>
-                  <li><a href="/logout">Logout</a></li>
+                   :
+                  null
+                }
+                <li><a href="/logout">Logout</a></li>
             </ul>
           </div>
         </div>
