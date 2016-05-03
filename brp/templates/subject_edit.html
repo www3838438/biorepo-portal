@@ -1,6 +1,6 @@
 {% extends "subject_base.html" %}
 
-{% block script%}
+<script>
 $(function() {
   $( "#id_dob" ).datepicker({
           format: 'yyyy-mm-dd'
@@ -100,7 +100,7 @@ $(function () {
       return true;
   });
 });
-{% endblock %}
+</script>
 
 {% block head_content %}
 <title>Subject Edit</title>
