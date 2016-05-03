@@ -1,6 +1,5 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.safestring import mark_safe
 from portal.models import protocols
 from portal.ehb_service_client import ServiceClient
 from portal.utilities import SubjectUtils
@@ -24,23 +23,13 @@ class DynamicChoiceField(forms.ChoiceField):
         self.validate_organization(value)
 
 
-class DatePickerInput(forms.DateInput):
-
-    def render(self, name, value, attrs=None):
-        html = super(DatePickerInput, self).render(name, value, attrs)
-        html += """<input class="btn_today" id="todaybutton" type="button" value="Today" />"""
-        html += """<br/><span style="color:red" class="datespan" id="datespan_dob"></span>"""
-        return mark_safe(html)
-
-
 class GenericSubjectForm(forms.Form):
     organization = DynamicChoiceField(label="Group", choices=((u'0', '------------'),))
     subject_id = forms.CharField(max_length=40, label='MRN')
     subject_id_verify = forms.CharField(max_length=40, label='Verify MRN')
     first_name = forms.CharField(max_length=50, label='First Name')
     last_name = forms.CharField(max_length=50, label='Last Name')
-    dob = forms.DateField(widget=DatePickerInput, input_formats=['%Y-%m-%d', ], label='Date Of Birth (yyyy-mm-dd)')
-
+    dob = forms.DateField(input_formats=['%Y-%m-%d', ], label='Date Of Birth (yyyy-mm-dd)')
 
     def selectedOrg(self):
         return self.data.__getitem__('organization')
