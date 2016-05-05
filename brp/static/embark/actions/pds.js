@@ -8,6 +8,15 @@ export const SET_ACTIVE_PDS = 'SET_ACTIVE_PDS';
 export const REQUEST_PDS_LINKS = 'REQUEST_PDS_LINKS';
 export const RECEIVE_PDS_LINKS = 'RECEIVE_PDS_LINKS';
 
+function checkResponse(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  }
+  const error = new Error(response.statusText);
+  error.response = response;
+  throw error;
+}
+
 export function requestPDS() {
   return {
     type: REQUEST_PDS,
@@ -44,21 +53,11 @@ export function fetchPDS(protocolId) {
     })
 
       // Check response status
-      .then(response => {
-        if (response.status >= 200 && response.status < 300) {
-          return response;
-        }
-        const error = new Error(response.statusText);
-        error.response = response;
-        throw error;
-      })
-
+      .then(checkResponse)
       // Get json from response
       .then(response => response.json())
-
       // Pass json to complete async action
       .then(json => dispatch(receivePDS(json)))
-
       // Catch errors to add notification
       .catch(error => {
         dispatch(NotificationActions.addNotification(
@@ -91,9 +90,9 @@ export function receivePDSLinks(pdsId, json) {
 }
 
 export function fetchPDSLinks(pdsId) {
-  const url = `api/protocoldatasources/${pdsId}/links/`;
   return dispatch => {
     dispatch(requestPDSLinks());
+    const url = `api/protocoldatasources/${pdsId}/links/`;
     fetch(url, {
       method: 'GET',
       headers: {
