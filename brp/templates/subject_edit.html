@@ -51,6 +51,8 @@ $(function () {
       // clear out any existing warnings:
       var datespanEl = $("#datespan_dob")[0];
       datespanEl.innerHTML = "";
+      // and the date-picker:
+      $(this).datepicker('hide');
 
       if (dateStr == "") {
           return true;
