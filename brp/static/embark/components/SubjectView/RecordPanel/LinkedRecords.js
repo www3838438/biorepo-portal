@@ -12,7 +12,11 @@ class LinkedRecords extends React.Component {
   }
 
   linkText(activeRecord, link) {
-    return `Active record ${activeRecord.id} is related to ` +
+    if (link.primary) {
+      return `Record ${link.external_record.id} is related to ` +
+        `${activeRecord.id} as ${link.description}`;
+    }
+    return `Record ${activeRecord.id} is related to ` +
       `${link.external_record.id} as ${link.description}`;
   }
 
