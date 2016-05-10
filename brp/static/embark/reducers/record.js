@@ -2,10 +2,12 @@ import { SET_ACTIVE_RECORD, SET_EDIT_LABEL_MODE, SET_SELECTED_LABEL,
          RECEIVE_RECORDS, REQUEST_RECORDS, CLEAR_RECORD_STATE,
          SET_PENDING_LINKED_RECORD, SET_SELECTED_LINK_TYPE,
          REQUEST_RECORD_LINKS, RECEIVE_RECORD_LINKS, DISMISS_LINK_TYPE_MODAL,
-         CREATE_RECORD_LINK_FAILURE, DELETE_RECORD_LINK_SUCCESS } from '../actions/record';
+         CREATE_RECORD_LINK_FAILURE, DELETE_RECORD_LINK_SUCCESS,
+         CREATE_RECORD_REQUEST, SET_RECORD_ERROR } from '../actions/record';
 
 const initialState = {
   isFetching: false,
+  isCreating: false,
   items: [],
   activeRecord: null,
   activeLinks: [],
@@ -15,6 +17,7 @@ const initialState = {
   selectedLinkType: null,
   selectLinkTypeModal: false,
   linkError: null,
+  newRecordError: null,
 };
 
 let activeLinks = [];
@@ -43,6 +46,7 @@ function record(state = initialState, action) {
     case REQUEST_RECORDS:
       return Object.assign({}, state, {
         isFetching: true,
+        isCreating: false,
         items: [],
       });
     case SET_SELECTED_LABEL:
@@ -89,6 +93,15 @@ function record(state = initialState, action) {
       });
       return Object.assign({}, state, {
         activeLinks,
+      });
+    case CREATE_RECORD_REQUEST:
+      return Object.assign({}, state, {
+        isCreating: true,
+        newRecordError: null,
+      });
+    case SET_RECORD_ERROR:
+      return Object.assign({}, state, {
+        newRecordError: action.error,
       });
     default:
       return state;

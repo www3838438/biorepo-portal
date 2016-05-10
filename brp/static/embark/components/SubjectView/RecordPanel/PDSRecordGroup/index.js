@@ -214,7 +214,7 @@ PDSRecordGroup.propTypes = {
   activeRecord: React.PropTypes.object,
   activeLinks: React.PropTypes.array,
   linkMode: React.PropTypes.bool,
-  selectedLabel: React.PropTypes.object,
+  selectedLabel: React.PropTypes.number,
 };
 
 function mapStateToProps(state) {

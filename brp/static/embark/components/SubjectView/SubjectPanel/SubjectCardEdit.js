@@ -9,6 +9,7 @@ import * as SubjectActions from '../../../actions/subject';
 import * as Colors from 'material-ui/lib/styles/colors';
 import ExternalIDs from './ExternalIds';
 import LoadingGif from '../../LoadingGif';
+import moment from 'moment';
 
 class SubjectCardEdit extends React.Component {
 
@@ -32,17 +33,29 @@ class SubjectCardEdit extends React.Component {
     const subject = this.props.subject.activeSubject;
     if (this.isValid()) {
       dispatch(SubjectActions.updateSubject(protocolId, subject));
-    } else {
-      // TODO: Better user feedback than an alert.
-      alert('form is invalid');
     }
-
     e.preventDefault();
   }
 
   handleCancelClick() {
     this.restoreSubject();
     this.context.history.goBack();
+  }
+
+  validateDate(date) {
+    const { dispatch } = this.props;
+    if (!moment(date, ['YYYY-MM-DD']).isValid()) {
+      dispatch(SubjectActions.setUpdateFormError('Must be a valid date (YYYY-MM-DD).'));
+      return false;
+    }
+    if (!/^\d{4}-\d{1,2}-\d{1,2}$/.test(date)) {
+      dispatch(SubjectActions.setUpdateFormError('Must be a valid date (YYYY-MM-DD).'));
+      return false;
+    }
+    if (date === '') {
+      return false;
+    }
+    return true;
   }
 
   isValid() {
@@ -54,7 +67,7 @@ class SubjectCardEdit extends React.Component {
     if (subject.last_name === '') {
       return false;
     }
-    if (subject.dob === '') {
+    if (!this.validateDate(subject.dob)) {
       return false;
     }
     if (subject.organization_subject_id !== subject.organization_subject_id_validation) {
@@ -120,6 +133,15 @@ class SubjectCardEdit extends React.Component {
                 <LoadingGif />
               }
               </form>
+              {this.props.subject.updateFormError != null ?
+                <div
+                  style={{ marginTop: '10px' }}
+                  className="alert alert-danger"
+                >
+                  {this.props.subject.updateFormError}
+                </div> :
+                null
+              }
             </div>
           </div>
         </div>
@@ -152,6 +174,7 @@ function mapStateToProps(state) {
     subject: {
       items: state.subject.items,
       activeSubject: state.subject.activeSubject,
+      updateFormError: state.subject.updateFormError,
     },
     pds: {
       items: state.pds.items,

@@ -7,6 +7,7 @@ import * as Colors from 'material-ui/lib/styles/colors';
 import SubjectOrgSelectField from '../SubjectView/SubjectPanel/SubjectOrgSelectField';
 import SubjectTextField from '../SubjectView/SubjectPanel/SubjectTextField';
 import { connect } from 'react-redux';
+import moment from 'moment';
 
 // Use named export for unconnected component (for testing)
 export class NewSubjectForm extends React.Component {
@@ -30,6 +31,22 @@ export class NewSubjectForm extends React.Component {
   handleCloseClick() {
     const { dispatch } = this.props;
     dispatch(SubjectActions.setAddSubjectMode());
+  }
+
+  validateDate(date) {
+    const { dispatch } = this.props;
+    if (!moment(date, ['YYYY-MM-DD']).isValid()) {
+      dispatch(SubjectActions.setUpdateFormError('Must be a valid date (YYYY-MM-DD).'));
+      return false;
+    }
+    if (!/^\d{4}-\d{1,2}-\d{1,2}$/.test(date)) {
+      dispatch(SubjectActions.setUpdateFormError('Must be a valid date (YYYY-MM-DD).'));
+      return false;
+    }
+    if (date === '') {
+      return false;
+    }
+    return true;
   }
 
   isValid() {
@@ -62,7 +79,7 @@ export class NewSubjectForm extends React.Component {
       valid = false;
     }
 
-    if (!subject.dob) {
+    if (!this.validateDate(subject.dob)) {
       errors.dob = true;
       valid = false;
     }

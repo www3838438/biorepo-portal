@@ -16,6 +16,8 @@ export const UPDATE_RECORD_REQUEST = 'UPDATE_RECORD_REQUEST';
 export const UPDATE_RECORD_FAILURE = 'UPDATE_RECORD_FAILURE';
 export const UPDATE_RECORD_SUCCESS = 'UPDATE_RECORD_SUCCESS';
 export const DISMISS_LINK_TYPE_MODAL = 'DISMISS_LINK_TYPE_MODAL';
+export const CREATE_RECORD_REQUEST = 'CREATE_RECORD_REQUEST';
+export const SET_RECORD_ERROR = 'SET_RECORD_ERROR';
 export const CREATE_RECORD_LINK_REQUEST = 'CREATE_RECORD_LINK_REQUEST';
 export const CREATE_RECORD_LINK_SUCCESS = 'CREATE_RECORD_LINK_SUCCESS';
 export const CREATE_RECORD_LINK_FAILURE = 'CREATE_RECORD_LINK_FAILURE';
@@ -45,6 +47,20 @@ function checkLinkAction(json) {
 export function clearRecordState() {
   return {
     type: CLEAR_RECORD_STATE,
+  };
+}
+
+export function createRecordRequest() {
+  return {
+    type: CREATE_RECORD_REQUEST,
+    isCreating: true,
+  };
+}
+
+export function setRecordError(error) {
+  return {
+    type: SET_RECORD_ERROR,
+    error,
   };
 }
 

@@ -4,7 +4,8 @@ import { REQUEST_SUBJECTS, RECEIVE_SUBJECTS, SET_ACTIVE_SUBJECT,
          HIDE_ACTION_PANEL, UPDATE_SUBJECT_SUCCESS, UPDATE_SUBJECT_REQUEST,
          SET_LINK_MODE, ADD_SUBJECT_SUCCESS, ADD_SUBJECT_FAILURE,
          SET_ADD_SUBJECT_MODE, SET_NEW_SUBJECT, REQUEST_SUBJECT_SUCCESS,
-         SET_NEW_SUBJECT_FORM_ERRORS } from '../actions/subject';
+         SET_NEW_SUBJECT_FORM_ERRORS, SET_UPDATE_FORM_ERROR,
+         UPDATE_SUBJECT_FAILURE } from '../actions/subject';
 
 let initialNewSubject = {
   organization: null,
@@ -30,7 +31,7 @@ const initialState = {
     server: null,
     form: {},
   },
-  updateFormErrors: null,
+  updateFormError: null,
 };
 
 function subject(state = initialState, action) {
@@ -87,6 +88,11 @@ function subject(state = initialState, action) {
       return Object.assign({}, state, {
         isSaving: true,
       });
+    case UPDATE_SUBJECT_FAILURE:
+      return Object.assign({}, state, {
+        isSaving: false,
+        updateFormError: 'Error saving subject. Server error.',
+      });
     case UPDATE_SUBJECT_SUCCESS:
       action.subject.organization_subject_id_validation = action.subject.organization_subject_id;
       action.subject.organization_id = action.subject.organization;
@@ -94,7 +100,7 @@ function subject(state = initialState, action) {
       action.subject.external_records = state.activeSubject.external_records;
       return Object.assign({}, state, {
         isSaving: false,
-        updateFormErrors: null,
+        updateFormError: null,
         activeSubject: action.subject,
       });
     case SET_LINK_MODE:
@@ -146,6 +152,10 @@ function subject(state = initialState, action) {
         newFormErrors: {
           form: action.errors,
         },
+      });
+    case SET_UPDATE_FORM_ERROR:
+      return Object.assign({}, state, {
+        updateFormError: action.error,
       });
     default:
       return state;
