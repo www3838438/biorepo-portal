@@ -307,11 +307,11 @@ class ProtocolViewSet(viewsets.ModelViewSet):
 
             for sub in subs:
                 sub['external_records'] = []
+                sub['external_ids'] = []
                 for pds in protocoldatasources:
                     sub['external_records'].extend(self.getExternalRecords(pds, sub))
                 if manageExternalIDs:
                     # Break out external ids into a separate object for ease of use
-                    sub['external_ids'] = []
                     for record in sub['external_records']:
                         if record['external_system'] == 3:
                             sub['external_ids'].append(record)
