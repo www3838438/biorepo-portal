@@ -20,12 +20,7 @@ class SubjectSelect extends React.Component {
     const { dispatch } = this.props;
     dispatch(ProtocolActions.setActiveProtocol(this.props.params.id));
     // Check to see if subjects are loaded, if not fetch them
-    if (
-      (!this.props.subject.items || this.props.subject.items.length === 0) &&
-        this.props.subject.isFetching === false
-    ) {
-      dispatch(SubjectActions.fetchSubjects(this.props.params.id));
-    }
+    dispatch(SubjectActions.fetchSubjects(this.props.params.id));
   }
 
   getActiveProtocol() {
