@@ -8,9 +8,9 @@
     <p class="navbar-text">Subject Data</p>
 {% endblock %}
 {% block top_links %}
-    <li><a href="{{root_path}}/dataentry/protocoldatasource/{{pds_id}}/subject/{{subject.id}}/list/">Records</href></a></li>
-    <li><a href="{{root_path}}/dataentry/protocol/{{protocol.id}}/">Subjects</href></a></li>
-    <li><a href="{{root_path}}/welcome">Projects</href></a></li>
+    <li><a href="{{root_path}}/#/dataentry/protocol/{{protocol.id}}/subject/{{subject.id}}">Records</href></a></li>
+    <li><a href="{{root_path}}/#/dataentry/protocol/{{protocol.id}}/">Subjects</href></a></li>
+    <li><a href="{{root_path}}/">Projects</href></a></li>
 {% endblock %}
 
 
@@ -25,7 +25,6 @@
 			<th>First Name</th>
 			<th>{{organization.subject_id_label}}</th>
 			<th>Birth Date</th>
-			<th>Other Actions</th>
 		</tr>
 	<thead>
 		<tbody>
@@ -35,14 +34,6 @@
 			<td style="padding-top:15px;">{{subject.first_name}}</td>
 			<td style="padding-top:15px;">{{subject.organization_subject_id}}</td>
 			<td style="padding-top:15px;">{{subject.dob}}</td>
-			<td>
-			    {% for pds in authorized_data_sources %}
-					<button class="btn btn-small btn-primary" onclick="location.href='{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/list/'">{{pds.display_label}}</button>
-				{% endfor %}
-				{% for pds in unauthorized_data_sources %}
-					<button class="btn btn-small" disabled title="No Credentials Found. Please contact the administrator for further information.">{{pds.display_label}}</button>
-				{% endfor %}
-			</td>
 		</tr>
 		</tbody>
 	</table>

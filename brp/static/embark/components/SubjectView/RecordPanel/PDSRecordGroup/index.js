@@ -47,7 +47,8 @@ class PDSRecordGroup extends React.Component {
 
   handleViewRecordClick() {
     const url = `/dataentry/protocoldatasource/${this.props.pds.id}/subject/` +
-      `${this.props.subject.id}/record/${this.props.activeRecord.id}/start/`;
+      `${this.props.subject.id}/record/${this.props.activeRecord.id}/start/` +
+      `?p=${this.props.protocol.activeProtocolId}`;
     window.location.href = url;
   }
 
@@ -221,7 +222,7 @@ function mapStateToProps(state) {
   return {
     protocol: {
       items: state.protocol.items,
-      activeProtocol: state.protocol.activeProtocol,
+      activeProtocolId: state.protocol.activeProtocolId,
     },
     record: {
       isFetching: state.record.isFetching,
