@@ -122,16 +122,16 @@ class SubjectSelect extends React.Component {
             </ul>
           </div>
           <div className="subject-table">
-            <Griddle
-              showFilter
-              onRowClick={this.handleClick}
-              resultsPerPage={10}
-              results={subs}
-              columns={columns}
-              tableClassName={'subject-table'}
-              useGriddleStyles={false}
-              customNoDataComponent={LoadingGif}
-            />
+            {!this.props.subject.isFetching ?
+              <Griddle
+                showFilter
+                onRowClick={this.handleClick}
+                resultsPerPage={10}
+                results={subs}
+                columns={columns}
+                tableClassName={'subject-table'}
+                useGriddleStyles={false}
+              /> : <LoadingGif />}
           </div>
         </div> :
         <div />
