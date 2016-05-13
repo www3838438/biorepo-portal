@@ -16,6 +16,8 @@ from portal.ehb_service_client import ServiceClient
 
 from api.serializers import eHBSubjectSerializer
 
+from rest_framework.response import Response
+
 cache = get_cache('default')
 
 

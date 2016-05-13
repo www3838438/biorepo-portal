@@ -238,7 +238,7 @@ class ProtocolViewSet(viewsets.ModelViewSet):
         p = self.get_object()
         if p.isUserAuthorized(request.user):
             protocoldatasources = p.getProtocolDataSources()
-
+            manageExternalIDs = False
             for pds in protocoldatasources:
                 if pds.driver == 3:
                     ExIdSource = pds
