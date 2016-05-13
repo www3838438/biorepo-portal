@@ -813,6 +813,24 @@ def pds_dataentry_create(request, pds_id, subject_id):
                                 pds.id,
                                 subject_id,
                                 ehb_rec_id)
+                            cache_key = 'protocol{0}_sub_data'.format(pds.protocol.id)
+                            cache_data = cache.get(cache_key)
+                            if cache_data:
+                                subs = json.loads(cache_data)
+                                for sub in subs:
+                                    if sub['id'] == int(subject_id):
+                                        er = er_rh.get(id=ehb_rec_id)
+                                        exRec = json.loads(er.json_from_identity(er))
+                                        exRec['pds'] = pds.id
+                                        exRec['label_id'] = label['id']
+                                        if label['label'] == '':
+                                            label['label'] = 'Record'
+                                        exRec['label_desc'] = label['label']
+                                        if exRec['external_system'] == 3:
+                                            sub['external_ids'].append(exRec)
+                                        sub['external_records'].append(exRec)
+                                cache.set(cache_key, json.dumps(subs))
+                                cache.expire(cache_key, 24 * 24 * 60)
                             return HttpResponseRedirect(path)
                         except RecordCreationError as rce:  # exception from the eHB
                             log.error(rce.errmsg)
@@ -955,6 +973,24 @@ def pds_dataentry_create(request, pds_id, subject_id):
                 label = er_label_rh.get(id=label_id)
                 ehb_rec_id = _create_external_system_record(
                     request, driver, pds, subject, label=label_id)
+                cache_key = 'protocol{0}_sub_data'.format(pds.protocol.id)
+                cache_data = cache.get(cache_key)
+                if cache_data:
+                    subs = json.loads(cache_data)
+                    for sub in subs:
+                        if sub['id'] == int(subject_id):
+                            er = er_rh.get(id=ehb_rec_id)
+                            exRec = json.loads(er.json_from_identity(er))
+                            exRec['pds'] = pds.id
+                            exRec['label_id'] = label['id']
+                            if label['label'] == '':
+                                label['label'] = 'Record'
+                            exRec['label_desc'] = label['label']
+                            if exRec['external_system'] == 3:
+                                sub['external_ids'].append(exRec)
+                            sub['external_records'].append(exRec)
+                    cache.set(cache_key, json.dumps(subs))
+                    cache.expire(cache_key, 24 * 24 * 60)
                 path = '%s/dataentry/protocoldatasource/%s/subject/%s/record/%s/start/' % (
                     ServiceClient.self_root_path,
                     pds.id,

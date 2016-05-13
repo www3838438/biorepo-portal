@@ -1,16 +1,19 @@
 import json
 from datetime import datetime
 from django.contrib.auth.models import User, Group
+from django.core.cache import get_cache
+
 from ehb_client.requests.exceptions import PageNotFound
 from ehb_client.requests.subject_request_handler import Subject
 from ehb_client.requests.external_record_request_handler import ExternalRecord
+
 from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
+
 from api.serializers import UserSerializer, GroupSerializer, OrganizationSerializer,\
     DataSourceSerializer, ProtocolSerializer, ProtocolDataSourceSerializer,\
     eHBSubjectSerializer
-
 from portal.models.protocols import Organization, Protocol, DataSource, ProtocolDataSource,\
     ProtocolUserCredentials
 from portal.ehb_service_client import ServiceClient
@@ -18,6 +21,7 @@ from portal.utilities import SubjectUtils
 
 from copy import deepcopy
 
+cache = get_cache('default')
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -180,6 +184,18 @@ class ProtocolViewSet(viewsets.ModelViewSet):
 
         subject = json.loads(Subject.json_from_identity(subject))
 
+        # Add subject to cache
+        cache_key = 'protocol{0}_sub_data'.format(protocol.id)
+        cache_data = cache.get(cache_key)
+        if cache_data:
+            subject['external_ids'] = []
+            subject['external_records'] = []
+            subject['organization_name'] = org.name
+            subjects = json.loads(cache_data)
+            subjects.append(subject)
+            cache.set(cache_key, json.dumps(subjects))
+            cache.expire(cache_key, 24 * 24 * 60)
+            print 'added to cache'
         return Response(
             [success, subject, errors],
             headers={'Access-Control-Allow-Origin': '*'},
@@ -272,6 +288,14 @@ class ProtocolViewSet(viewsets.ModelViewSet):
         Returns a list of subjects associated with a protocol.
         """
         p = self.get_object()
+        # Check cache
+        cache_data = cache.get('protocol{0}_sub_data'.format(p.id))
+        if cache_data:
+            print cache_data
+            return Response(
+                json.loads(cache_data),
+                headers={'Access-Control-Allow-Origin': '*'}
+            )
         if p.isUserAuthorized(request.user):
             subjects = p.getSubjects()
             organizations = p.organizations.all()
