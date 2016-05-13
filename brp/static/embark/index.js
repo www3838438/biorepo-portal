@@ -8,14 +8,12 @@ import SubjectView from './components/SubjectView';
 import { Provider } from 'react-redux';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import { render } from 'react-dom';
-import configureStore from './store/configureStore';
+import store from './store';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 injectTapEventPlugin();
 
 /* eslint-disable no-underscore-dangle*/
-const store = configureStore(window.__INITIAL_STATE__);
-
 // Very manually constraining this to the root path until we establish proper
 // routing and views. This allows us to bounce out of the single page app paradigm
 // and into existing ehb-datasource url paths

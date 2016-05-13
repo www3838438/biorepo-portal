@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "watch": "webpack --progress --colors --watch",
-    "build": "webpack --progress --colors --optimize-minimize"
+    "watch": "NODE_ENV=development webpack --config webpack.config.dev.js --progress --colors --watch ",
+    "build": "NODE_ENV=production webpack --config webpack.config.prod.js --progress --colors --optimize-minimize"
   },
   "jest": {
     "unmockedModulePathPatterns": [
