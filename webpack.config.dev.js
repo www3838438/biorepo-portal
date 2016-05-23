@@ -1,6 +1,6 @@
-var path = require('path');
-var ROOT_PATH = path.resolve(__dirname);
-var webpack = require('webpack');
+const path = require('path');
+const ROOT_PATH = path.resolve(__dirname);
+const webpack = require('webpack');
 
 module.exports = {
   entry: path.resolve(ROOT_PATH,

@@ -8,3 +8,4 @@ services/
 .git
 brp/conf/.env
 *.env
+node_modules
