@@ -10,15 +10,13 @@ from ehb_client.requests.exceptions import PageNotFound
 from django.db import models
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.core.cache import get_cache
+from django.core.cache import cache
 
 from portal.ehb_service_client import ServiceClient
 
 from api.serializers import eHBSubjectSerializer
 
 from rest_framework.response import Response
-
-cache = get_cache('default')
 
 
 class Command(BaseCommand):

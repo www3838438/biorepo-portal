@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from django.contrib.auth.models import User, Group
-from django.core.cache import get_cache
+from django.core.cache import cache
 
 from ehb_client.requests.exceptions import PageNotFound
 from ehb_client.requests.subject_request_handler import Subject
@@ -21,7 +21,6 @@ from portal.utilities import SubjectUtils
 
 from copy import deepcopy
 
-cache = get_cache('default')
 
 class UserViewSet(viewsets.ModelViewSet):
     """

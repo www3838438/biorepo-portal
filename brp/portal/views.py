@@ -8,7 +8,7 @@ from django.template import RequestContext, loader
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.core.cache import get_cache
+from django.core.cache import cache
 from portal.forms.subject_forms import NewSubjectForm, EditSubjectForm
 from portal.ehb_service_client import ServiceClient
 from portal.models.protocols import Protocol, ProtocolDataSource,\
@@ -24,8 +24,6 @@ from ehb_client.requests.external_record_request_handler import ExternalRecord
 from ehb_client.requests.subject_request_handler import Subject
 from ehb_datasources.drivers.exceptions import RecordDoesNotExist,\
     RecordCreationError, IgnoreEhbExceptions
-
-cache = get_cache('default')
 
 log = logging.getLogger(__name__)
 
