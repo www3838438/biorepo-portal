@@ -92,7 +92,7 @@ class BaseWithImmutableKey(Base):
     The immutable_key will serve as a unique identifier for the Organization
     which never changes
     '''
-    immutable_key = models.ForeignKey(ImmutableKey, editable=False, blank=True,
+    immutable_key = models.OneToOneField(ImmutableKey, editable=False, blank=True,
                                       unique=True, null=True)
 
     def _create_immutable_key(self):
