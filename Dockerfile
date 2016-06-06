@@ -9,6 +9,8 @@ RUN apk add --update \
     git \
     openldap-dev \
     linux-headers \
+    musl-dev \
+    postgresql-dev \
   && rm -rf /var/cache/apk/*
 
 RUN pip install "Django>=1.9.6,<1.10"
@@ -22,6 +24,7 @@ RUN pip install "git+https://github.com/chop-dbhi/ehb-client.git@17673df98be902f
 RUN pip install "git+https://github.com/chop-dbhi/ehb-datasources.git@fe6e74164e1e13b0042de69bcb90024104f23447#egg=ehb_datasources-master"
 RUN pip install "python-ldap>=2.4.25,<2.5"
 RUN pip install "https://github.com/unbit/uwsgi/archive/uwsgi-2.0.zip#egg=uwsgi"
+RUN pip install "psycopg2>=2.6.1,<2.7"
 
 ENV APP_ENV test
 ADD . /opt/app/
