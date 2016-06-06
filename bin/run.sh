@@ -1,7 +1,7 @@
 #!/bin/sh
 
 python /opt/app/manage.py migrate --noinput
-# python /opt/app/manage.py collectstatic --noinput
+python /opt/app/manage.py collectstatic --noinput
 
 if [ "$(ls -A /opt/app)" ]; then
     if [ "$FORCE_SCRIPT_NAME" = "" ]; then
