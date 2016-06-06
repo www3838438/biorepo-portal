@@ -11,7 +11,7 @@ dependencies:
 
 test:
     override:
-        - docker run --link ehb-service --link redis dbhi/biorepo-portal /opt/app/scripts/test.sh
+        - docker run --link ehb-service --link redis dbhi/biorepo-portal /opt/app/bin/test.sh
 
 deployment:
     hub:

@@ -1,0 +1,39 @@
+from django.apps import apps as global_apps
+from django.db import migrations
+from django.db.utils import OperationalError
+sql = '''
+
+'''
+
+reverse_sql = '''
+
+'''
+
+def forwards(app, schema_editor):
+    models = app.all_models['api']
+    try:
+        schema_editor.execute('alter table south_migrationhistory rename to legacy_south_migrationhistory;')
+        print 'Found legacy application'
+        for model in models:
+            schema_editor.execute('drop table api_{0};'.format(model))
+            schema_editor.execute('alter table portal_{0} rename to api_{0};'.format(model))
+    except Exception as e:
+        pass
+
+def backwards(app, schema_editor):
+    models = app.all_models['api']
+    try:
+        schema_editor.execute('alter table legacy_south_migrationhistory rename to south_migrationhistory;')
+        print 'Found migrated application'
+        for model in models:
+            schema_editor.execute('alter table api_{0} rename to portal_{0};'.format(model))
+    except Exception as e:
+        pass
+
+class Migration(migrations.Migration):
+    operations = [
+        migrations.RunPython(forwards, backwards),
+    ]
+    dependencies = [
+        ('api', '0001_initial'),
+    ]

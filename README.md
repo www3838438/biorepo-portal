@@ -45,10 +45,21 @@ npm run build
 
 What follows is a step by step walkthrough describing the configuration of a Protocol for data entry in the Biorepository Portal.
 
+In this walkthrough our example study will have two datasources (Nautilus LIMs and REDCap).
+
 #### Defining Datasources
 
-#### Definining Organizations
+#### Defining Organizations
 
 #### Defining a Protocol
 
 #### Creating Protocol Datasource
+
+
+## Contributions
+
+Please lint all code contributions using flake8 according to the `.flake8` configuration file found in the root of this repository.
+
+Please write tests for contributions when applicable and run the included test suite before submitting a pull request.
+
+Tests can be run with the following command: `./manage.py test`

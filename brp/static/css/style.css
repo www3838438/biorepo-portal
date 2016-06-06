@@ -54,6 +54,9 @@ a {
 .info {
     padding-top: 50px;
 }
+.reg-info {
+    padding-top: 10px;
+}
 .subject-table {
     width: 100%; table-layout: fixed;
 }
@@ -189,4 +192,13 @@ td.row-action:hover {
 .navbar-text {
     color: #7a7a7a;
     margin-top: 0px;
+    margin-bottom: 0px;
+}
+.nav>li>a:hover {
+    text-decoration: none;
+    background-color: #E9F5FD;
+}
+.nav>li>a:focus {
+    text-decoration: none;
+    background-color: #E9F5FD;
 }

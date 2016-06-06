@@ -1,35 +1,10 @@
-# This file collects all required third-party applications that are needed
-# to run this project. Later you can install all these apps in a row
-# using pip. Example::
-#
-#     pip install -U -r requirements.txt
-
-# Core requirements
-Django>=1.6,<1.7
-south==1.0.1
-git+git://github.com/joke2k/django-environ.git@e91c4f9cc65ffaf39c149a30e61340e0c0d1ab76
-django-session-security==2.2.1
-django-markdown-deux==1.0.5
-djangorestframework==3.1.1
-djangorestframework-jwt==1.5.0
-
-# eHB Interfacing
-git+git://github.com/chop-dbhi/ehb-client.git#egg=ehb-client
-git+git://github.com/chop-dbhi/ehb-datasources.git@fe6e74164e1e13b0042de69bcb90024104f23447
-
-# Backend support
-psycopg2==2.5.4
-
-# Cache backend support
-django-redis==4.2.0
-
-# For LDAP supoort, install python-ldap
-python-ldap==2.4.19
-
-#account registration moderation infrastructure
-django-siteauth==0.9b1
-git+git://github.com/bruth/django-registration2.git#egg=django-registration2
-markdown2==2.3.0
-
-raven==5.0.0
-django-nose==1.4.2
+Django>=1.9.6,<1.10
+django-environ>=0.4.0,<0.5
+django-markdown-deux>=1.0.5,<1.1
+django-session-security>=2.3.2,<2.4
+django_redis>=4.4.3,<4.5
+djangorestframework>=3.3.3,<3.4
+djangorestframework-jwt>=1.5.0,<1.6
+-e git+https://github.com/chop-dbhi/ehb-client.git@17673df98be902f219854e1dcb02b7f5bf66c99d#egg=ehb_client-master
+-e git+https://github.com/chop-dbhi/ehb-datasources.git@fe6e74164e1e13b0042de69bcb90024104f23447#egg=ehb_datasources-master
+python-ldap>=2.4.25,<2.5

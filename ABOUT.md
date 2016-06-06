@@ -85,4 +85,4 @@ Datasources are defined in the biorepository-portal, but the drivers that access
 those datasources are defined in the ehb-datasources repository.
 
 To add a new type of driver, you need to add it to the list in
-`brp/apps/portal/models/protocols.py`.
+`api/models/protocols.py`.
