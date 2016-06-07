@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'accounts',
     'brp',
     'api',
+    'dataentry',
 ]
 
 MIDDLEWARE_CLASSES = [
