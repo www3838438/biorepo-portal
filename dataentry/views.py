@@ -569,7 +569,7 @@ def pds_dataentry_create(request, pds_id, subject_id):
                         rec_id = iee.record_id
                         ehb_rec_id = ''
                         path = None
-                        label_id = request.REQUEST.get('label_id', 1)
+                        label_id = request.GET.get('label_id', 1)
                         label = er_label_rh.get(id=label_id)
                         try:
                             # this will create the ehb external_record entry
@@ -672,7 +672,7 @@ def pds_dataentry_create(request, pds_id, subject_id):
                 o_rh = ServiceClient.get_rh_for(
                     record_type=ServiceClient.ORGANIZATION)
                 org = o_rh.get(id=subject.organization_id)
-                label_id = request.REQUEST.get('label_id', 1)
+                label_id = request.GET.get('label_id', 1)
                 label = er_label_rh.get(id=label_id)
                 context = {
                     'recordCreateForm': form,
@@ -694,7 +694,7 @@ def pds_dataentry_create(request, pds_id, subject_id):
             # Show a confirmation form and on POST just ask driver to create
             # the new record, and redirect to start page
             try:
-                label_id = request.REQUEST.get('label_id', 1)
+                label_id = request.GET.get('label_id', 1)
                 label = er_label_rh.get(id=label_id)
                 ehb_rec_id = _create_external_system_record(
                     request, driver, pds, subject, label=label_id)
