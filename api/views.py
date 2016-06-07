@@ -507,6 +507,8 @@ class ProtocolDataSourceViewSet(viewsets.ModelViewSet):
             else:
                 return Response([])
             links = []
+            if not res:
+                return Response([])
             for link in res:
                 if 'links' in dc.keys() and link['id'] in dc['links']:
                     links.append(link)
