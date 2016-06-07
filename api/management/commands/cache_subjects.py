@@ -46,7 +46,7 @@ class Command(BaseCommand):
 
     def cache_records(self):
         protocols = Protocol.objects.all()
-        print protocols
+        print 'Caching {0} protocols...'.format(len(protocols))
         for protocol in protocols:
             print 'Caching {}'.format(protocol)
             subjects = protocol.getSubjects()
@@ -97,7 +97,7 @@ class Command(BaseCommand):
                         sub['organization_name'] = ehb_org.name
             cache_key = 'protocol{0}_sub_data'.format(protocol.id)
             cache.set(cache_key, json.dumps(subs))
-            cache.expire(cache_key, 60*60*24)
+            cache.persist(cache_key)
 
     def handle(self, *args, **options):
         self.cache_records()
