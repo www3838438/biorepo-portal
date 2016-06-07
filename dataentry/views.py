@@ -268,15 +268,11 @@ def pds_dataentry_start(request, pds_id, subject_id, record_id):
 
     def generateSubRecordSelectionForm(
             driver, record_id, form_url, print_url, attempt_count,
-            max_attempts, allow_print=False, allow_zpl=False,
-            allow_chop_print=False):
+            max_attempts):
         try:
             return driver.subRecordSelectionForm(
                 form_url=form_url,
                 print_url=print_url,
-                allow_print=allow_print,
-                allow_zpl=allow_zpl,
-                allow_chop_print=allow_chop_print,
                 record_id=record_id
             )
         except RecordDoesNotExist:
@@ -353,9 +349,6 @@ def pds_dataentry_start(request, pds_id, subject_id, record_id):
                 print_url,
                 0,
                 1,
-                allow_print=creds.allow_label_printing,
-                allow_zpl=creds.allow_zpl_export,
-                allow_chop_print=creds.allow_chop_printing
             )
             label = er_label_rh.get(id=record.label_id)
             if srsf:

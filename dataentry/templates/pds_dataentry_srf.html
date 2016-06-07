@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+<title>Subject Data Entry</title>
+{% endblock %}
+
+{% block topbar_block %}
+<p class="navbar-text">Subject Data Entry</p>
+{% endblock %}
+{% block top_links %}
+    <li><a href="{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/record/{{rec_id}}/start/">Forms</href></a></li>
+    <li><a href="{{root_path}}/#/dataentry/protocol/{{protocol.id}}/subject/{{subject.id}}">Records</href></a></li>
+    <li><a href="{{root_path}}/#/dataentry/protocol/{{protocol.id}}/">Subjects</href></a></li>
+    <li><a href="{{root_path}}/">Projects</href></a></li>
+{% endblock %}
+
+{% block main_content %}
+
+<div>
+	<table class="table table-bordered table-striped">
+	<thead>
+	    <tr>
+			<th>Project</th>
+			<th>Last Name</th>
+			<th>First Name</th>
+			<th>{{organization.subject_id_label}}</th>
+			<th>Birth Date</th>
+		</tr>
+	</thead>
+	<tbody>
+	    <tr>
+			<td style="padding-top:15px;">{{protocol.name}}</td>
+			<td style="padding-top:15px;">{{subject.last_name}}</td>
+			<td style="padding-top:15px;">{{subject.first_name}}</td>
+			<td style="padding-top:15px;">{{subject.organization_subject_id}}</td>
+			<td style="padding-top:15px;">{{subject.dob}}</td>
+		</tr>
+	</tbody>
+	</table>
+</div>
+
+{% if subject.external_ids %}
+<div>
+    <table class="table table-bordered table-striped">
+	<thead>
+	<tr>
+	    <th>External ID Label</th>
+	    <th>Identifier</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for ex_id in subject.external_ids %}
+	<tr>
+	    <td style="padding-top:15px;">{{ex_id.label_desc}}</td>
+	    <td style="padding-top:15px;">{{ex_id.record_id}}</td>
+	</tr>
+	{% endfor %}
+    </tbody>
+    </table>
+</div>
+{% endif %}
+
+<div style="margin-top:10px">
+
+<!-- ** Currently not structuring the REDCap forms as a form element to prevent modern browsers "unsaved form" prompt -->
+<!--<form id="subRecordForm" action="{{form_submission_url}}" method="post">{% csrf_token %}-->
+	{{subRecordForm|safe}}
+	<ul style="list-style-type:none;padding-bottom:30px">
+  {% if next_form_url %}
+    <li style="display:inline"><input id="subRecordFormSubmitContinue" class="btn btn-small btn-primary" value="Save and Continue" data-toggle="modal" data-backdrop="static" data-keyboard="false" href="#pleaseWaitModal"/></li>
+  {% endif %}
+		<li style="display:inline"><input id="subRecordFormSubmit" class="btn btn-small btn-primary" value="Save" data-toggle="modal" data-backdrop="static" data-keyboard="false" href="#pleaseWaitModal"/></li>
+		<li style="display:inline"><input class="btn btn-small btn-danger" type="button" value="Cancel" onclick="location.href='{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/record/{{rec_id}}/start/'"/></li>
+	</ul>
+<!--</form>-->
+
+</div>
+
+<div class="modal fade" id="pleaseWaitModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Saving...</h4>
+        </div>
+        <div class="modal-body">
+            <div id="pleaseWaitMsg"><p> Please wait for this action to complete. This may take several seconds.</p></div>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Error</h4>
+        </div>
+        <div class="modal-body">
+            <div id="pleaseWaitMsg"><p>The Biorepository was unable to save your form. It is likely that one of your free text forms contains data in an incorrect format. Please recheck your form and try again</p></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-small btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+
+
+{% endblock %}
+
+{% block script %}
+
+$('#subRecordFormSubmit').on('click', function(e){
+   e.preventDefault();
+   //This function is constructed by ehb_datasource driver
+   var next_form_url = ""
+   var start_url = "{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/record/{{rec_id}}/start/"
+   ajaxFormSubmit(next_form_url,start_url);
+});
+
+$('#subRecordFormSubmitContinue').on('click', function(e){
+   e.preventDefault();
+   var next_form_url = "{{next_form_url}}"
+   var start_url = "{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/record/{{rec_id}}/start/"
+   //This function is constructed by ehb_datasource driver
+   ajaxFormSubmit(next_form_url, start_url);
+});
+
+$(".radio_reset").on('click',function(){
+  $(this).parent().find("input").each(function(i) {
+    this.checked = false
+    // to handle branching logic
+    onchange = $(this).prop('onchange')
+    if(typeof onchange == 'function'){
+      this.onchange()
+    }
+  })
+});
+
+$(function () {
+    if ($.browser.msie) {
+        $('input:radio').click(function () {
+            this.blur();
+            this.focus();
+        });
+        $('input:checkbox').click(function () {
+            this.blur();
+            this.focus();
+        });
+    }
+});
+
+{% endblock %}
