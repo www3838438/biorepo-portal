@@ -1,5 +1,6 @@
 # encoding: utf-8
 import json
+import time
 
 from api.ehb_service_client import ServiceClient
 from api.models.protocols import Protocol
@@ -23,6 +24,7 @@ class Command(BaseCommand):
         try:
             pds_records = er_rh.get(
                 external_system_url=pds.data_source.url, path=pds.path, subject_id=subject['id'])
+            time.sleep(0.05)
         except PageNotFound:
             pds_records = []
 
@@ -44,6 +46,7 @@ class Command(BaseCommand):
 
     def cache_records(self):
         protocols = Protocol.objects.all()
+        print protocols
         for protocol in protocols:
             print 'Caching {}'.format(protocol)
             subjects = protocol.getSubjects()
@@ -51,7 +54,7 @@ class Command(BaseCommand):
             if subjects:
                 subs = [eHBSubjectSerializer(sub).data for sub in subjects]
             else:
-                return Response([])
+                continue
             ehb_orgs = []
             # We can't rely on Ids being consistent across apps so we must
             # append the name here for display downstream.
@@ -76,6 +79,7 @@ class Command(BaseCommand):
                         lbl = ''
                         addl_id_column = lbl
                 except:
+                    raise
                     pass
 
             for sub in subs:
