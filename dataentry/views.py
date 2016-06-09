@@ -890,6 +890,7 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
                     )
                 except:
                     next_form_url = ''
+                label = er_label_rh.get(id=record.label_id)
                 context = {
                     'subRecordForm': form,
                     'protocol': pds.protocol,
@@ -899,6 +900,7 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
                     'pds': pds,
                     'form_submission_url': form_submission_url,
                     'next_form_url': next_form_url,
+                    'label': label,
                     'rec_id': str(record_id),
                     'redcap_status': getRedcapStatus()
                 }
