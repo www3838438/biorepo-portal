@@ -6,7 +6,7 @@ from django.core.cache import cache
 from ehb_client.requests.exceptions import PageNotFound
 from ehb_client.requests.subject_request_handler import Subject
 from ehb_client.requests.external_record_request_handler import ExternalRecord
-
+from ehb_client.requests.exceptions import PageNotFound
 from rest_framework import viewsets
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
@@ -534,8 +534,11 @@ class ProtocolDataSourceViewSet(viewsets.ModelViewSet):
         '''
         pds = self.get_object()
         if pds.protocol.isUserAuthorized(request.user):
-            res = ServiceClient.ext_rec_client.get(id=kwargs['record_id'], links=True)
-            return Response(res)
+            try:
+                res = ServiceClient.ext_rec_client.get(id=kwargs['record_id'], links=True)
+                return Response(res)
+            except PageNotFound:
+                return Response([])
         else:
             return Response(
                 {"detail": "You are not authorized to view record links from this protocol"},
