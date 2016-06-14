@@ -3,7 +3,7 @@ import { SET_ACTIVE_RECORD, SET_EDIT_LABEL_MODE, SET_SELECTED_LABEL,
          SET_PENDING_LINKED_RECORD, SET_SELECTED_LINK_TYPE,
          REQUEST_RECORD_LINKS, RECEIVE_RECORD_LINKS, DISMISS_LINK_TYPE_MODAL,
          CREATE_RECORD_LINK_FAILURE, DELETE_RECORD_LINK_SUCCESS,
-         CREATE_RECORD_REQUEST, SET_RECORD_ERROR } from '../actions/record';
+         CREATE_RECORD_REQUEST, SET_RECORD_ERROR, SET_ADD_RECORD_MODE } from '../actions/record';
 
 const initialState = {
   isFetching: false,
@@ -102,6 +102,15 @@ function record(state = initialState, action) {
     case SET_RECORD_ERROR:
       return Object.assign({}, state, {
         newRecordError: action.error,
+      });
+    case SET_ADD_RECORD_MODE:
+      if (action.mode != null) {
+        return Object.assign({}, state, {
+          addRecordMode: action.mode,
+        });
+      }
+      return Object.assign({}, state, {
+        addRecordMode: !action.mode,
       });
     default:
       return state;

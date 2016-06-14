@@ -12,3 +12,4 @@ rc_driver
 *.db
 node_modules
 brp/static/embark/build/bundle.js
+reload_db.sh

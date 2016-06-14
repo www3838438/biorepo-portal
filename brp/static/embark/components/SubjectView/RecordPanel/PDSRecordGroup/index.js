@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import SkyLight from 'react-skylight';
 import FloatingActionButton from 'material-ui/lib/floating-action-button';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import NewRecordLabelSelect from './NewRecordLabelSelect';
@@ -15,6 +14,7 @@ class PDSRecordGroup extends React.Component {
     this.handleViewRecordClick = this.handleViewRecordClick.bind(this);
     this.handleLinkRecordClick = this.handleLinkRecordClick.bind(this);
     this.handleEditRecordClick = this.handleEditRecordClick.bind(this);
+    this.handleNewRecordClick = this.handleNewRecordClick.bind(this);
   }
 
   componentDidMount() {
@@ -60,6 +60,12 @@ class PDSRecordGroup extends React.Component {
   handleEditRecordClick() {
     const { dispatch } = this.props;
     dispatch(RecordActions.setEditLabelMode());
+  }
+
+  handleNewRecordClick(pds) {
+    const { dispatch } = this.props;
+    dispatch(PDSActions.setActivePDS(pds));
+    dispatch(RecordActions.setAddRecordMode(true));
   }
 
   isLinked(record) {
@@ -166,13 +172,11 @@ class PDSRecordGroup extends React.Component {
 
     return (
       <div>
-        <SkyLight ref="addRecordModal" dialogStyles={modalStyles}>
-          <NewRecordLabelSelect pds={this.props.pds} />
-        </SkyLight>
+        <NewRecordLabelSelect pds={this.props.pds} />
         <h5 className="category">{this.props.pds.display_label}
           {this.props.pds.authorized ?
             <FloatingActionButton
-              onClick={() => this.refs.addRecordModal.show()}
+              onClick={() => this.handleNewRecordClick(this.props.pds)}
               backgroundColor={'#7AC29A'}
               mini
               style={addButtonStyle}
