@@ -97,7 +97,7 @@ class NewRecordLabelSelect extends React.Component {
                     </SelectField>
                   </div>
                   <RaisedButton
-                    onClick={this.handleNewRecordClick}
+                    onMouseUp={this.handleNewRecordClick}
                     label={'Create New'}
                     labelColor={'#7AC29A'}
                     type="submit"
@@ -107,7 +107,7 @@ class NewRecordLabelSelect extends React.Component {
                     style={{ width: '100%' }}
                     labelColor={Colors.red400}
                     label="Cancel"
-                    onClick={this.handleCloseClick}
+                    onMouseUp={this.handleCloseClick}
                   />
                   {this.props.newRecordError != null ?
                     <div className="alert alert-danger">{this.props.newRecordError}</div>
