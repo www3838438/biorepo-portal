@@ -38,6 +38,9 @@ class LinkRecord extends React.Component {
     const { dispatch } = this.props;
     const activeRecord = this.props.activeRecord;
     const secondaryRecord = this.props.pendingLinkedRecord;
+    if (!this.validateModal()) {
+      return;
+    }
     dispatch(RecordActions.createRecordLink(activeRecord, secondaryRecord));
   }
 
@@ -48,7 +51,10 @@ class LinkRecord extends React.Component {
   }
 
   validateModal() {
-    // Make sure type is selected
+    if (this.props.selectedLinkType == null) {
+      return false;
+    }
+    return true;
   }
 
   render() {
