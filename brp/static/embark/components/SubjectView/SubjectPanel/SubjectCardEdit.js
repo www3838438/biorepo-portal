@@ -103,7 +103,7 @@ class SubjectCardEdit extends React.Component {
                   skey={'organization_subject_id'}
                 />
                 <SubjectTextField
-                  label={'Organization ID'}
+                  label={'Verify Organization ID'}
                   value={subject.organization_subject_id_validation}
                   skey={'organization_subject_id_validation'}
                 />
