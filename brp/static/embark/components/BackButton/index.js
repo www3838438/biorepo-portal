@@ -23,7 +23,7 @@ class BackButton extends React.Component {
       height: '75px',
       textAlign: 'center',
       borderRadius: '50%',
-      boxShadow: '4px 4px 4px rgba(204, 197, 185, 0.4)',
+      boxShadow: '5px 5px 5px rgba(204, 197, 185, 0.7)',
       cursor: 'pointer',
     };
     const arrowStyle = {
