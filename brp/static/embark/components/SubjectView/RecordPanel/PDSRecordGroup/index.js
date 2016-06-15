@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import FloatingActionButton from 'material-ui/lib/floating-action-button';
+import RaisedButton from 'material-ui/lib/raised-button';
 import ContentAdd from 'material-ui/lib/svg-icons/content/add';
 import NewRecordLabelSelect from './NewRecordLabelSelect';
 import * as SubjectActions from '../../../../actions/subject';
@@ -180,6 +181,7 @@ class PDSRecordGroup extends React.Component {
               backgroundColor={'#7AC29A'}
               mini
               style={addButtonStyle}
+              disableTouchRipple={true}
             >
               <ContentAdd />
             </FloatingActionButton>
