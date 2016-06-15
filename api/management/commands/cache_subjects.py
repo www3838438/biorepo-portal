@@ -17,10 +17,8 @@ from rest_framework.response import Response
 
 class Command(BaseCommand):
 
-    def getExternalRecords(self, pds, subject):
+    def getExternalRecords(self, pds, subject, lbls):
         er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
-        er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
-        lbls = er_label_rh.query()
         try:
             pds_records = er_rh.get(
                 external_system_url=pds.data_source.url, path=pds.path, subject_id=subject['id'])
@@ -46,6 +44,8 @@ class Command(BaseCommand):
 
     def cache_records(self):
         protocols = Protocol.objects.all()
+        er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
+        lbls = er_label_rh.query()
         print 'Caching {0} protocols...'.format(len(protocols))
         for protocol in protocols:
             print 'Caching {}'.format(protocol)
@@ -86,7 +86,7 @@ class Command(BaseCommand):
                 sub['external_records'] = []
                 sub['external_ids'] = []
                 for pds in protocoldatasources:
-                    sub['external_records'].extend(self.getExternalRecords(pds, sub))
+                    sub['external_records'].extend(self.getExternalRecords(pds, sub, lbls))
                 if manageExternalIDs:
                     # Break out external ids into a separate object for ease of use
                     for record in sub['external_records']:

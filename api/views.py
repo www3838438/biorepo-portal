@@ -69,11 +69,9 @@ class ProtocolViewSet(viewsets.ModelViewSet):
 
         return Response(protocols)
 
-    def getExternalRecords(self, pds, subject):
+    def getExternalRecords(self, pds, subject, lbls):
         # TODO: Need to cache this heavily!
         er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
-        er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
-        lbls = er_label_rh.query()
         try:
             pds_records = er_rh.get(
                 external_system_url=pds.data_source.url, path=pds.path, subject_id=subject['id'])
@@ -233,6 +231,8 @@ class ProtocolViewSet(viewsets.ModelViewSet):
         Return a single requested subject
         """
         p = self.get_object()
+        er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
+        lbls = er_label_rh.query()
         if p.isUserAuthorized(request.user):
             protocoldatasources = p.getProtocolDataSources()
             manageExternalIDs = False
@@ -251,7 +251,7 @@ class ProtocolViewSet(viewsets.ModelViewSet):
             sub['organization_name'] = organization.name
             sub['external_records'] = []
             for pds in protocoldatasources:
-                sub['external_records'].extend(self.getExternalRecords(pds, sub))
+                sub['external_records'].extend(self.getExternalRecords(pds, sub, lbls))
             if manageExternalIDs:
                 # Break out external ids into a separate object for ease of use
                 sub['external_ids'] = []
@@ -285,6 +285,8 @@ class ProtocolViewSet(viewsets.ModelViewSet):
         Returns a list of subjects associated with a protocol.
         """
         p = self.get_object()
+        er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
+        lbls = er_label_rh.query()
         # Check cache
         cache_data = cache.get('protocol{0}_sub_data'.format(p.id))
         if cache_data:
@@ -329,7 +331,7 @@ class ProtocolViewSet(viewsets.ModelViewSet):
                 sub['external_records'] = []
                 sub['external_ids'] = []
                 for pds in protocoldatasources:
-                    sub['external_records'].extend(self.getExternalRecords(pds, sub))
+                    sub['external_records'].extend(self.getExternalRecords(pds, sub, lbls))
                 if manageExternalIDs:
                     # Break out external ids into a separate object for ease of use
                     for record in sub['external_records']:
