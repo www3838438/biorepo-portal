@@ -4,9 +4,9 @@ const webpack = require('webpack');
 
 module.exports = {
   entry: path.resolve(ROOT_PATH,
-      'brp/static/embark/index'),
+      'react_ui/index'),
   output: {
-    path: path.resolve(ROOT_PATH, 'brp/static/embark/build'),
+    path: path.resolve(ROOT_PATH, 'brp/static/js'),
     filename: 'bundle.js',
   },
   module: {
