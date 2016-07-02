@@ -450,7 +450,7 @@ class ProtocolDataSourceViewSet(viewsets.ModelViewSet):
                         for sub in subjects:
                             for rec in ex_rec["external_record"]:
                                 if rec.subject_id == sub["id"]:
-                                    sub["external_records"].append(rec.json_from_identity(rec))
+                                    sub["external_records"].append(json.loads(rec.json_from_identity(rec)))
 
                 return Response({
                     "subjects": subjects,
