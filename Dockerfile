@@ -9,6 +9,7 @@ RUN apk add --update \
     git \
     openldap-dev \
     linux-headers \
+    pcre-dev \
     musl-dev \
     postgresql-dev \
   && rm -rf /var/cache/apk/*
