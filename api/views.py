@@ -190,7 +190,7 @@ class ProtocolViewSet(viewsets.ModelViewSet):
             subjects = json.loads(cache_data)
             subjects.append(subject)
             cache.set(cache_key, json.dumps(subjects))
-            cache.expire(cache_key, 24 * 24 * 60)
+            cache.persist(cache_key)
         return Response(
             [success, subject, errors],
             headers={'Access-Control-Allow-Origin': '*'},
