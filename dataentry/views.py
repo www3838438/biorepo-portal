@@ -106,6 +106,7 @@ def getProtocolSubjects(protocol):
         if subs:
             cache_payload = [json.loads(subject.json_from_identity(subject)) for subject in subs]
             cache.set(ck, json.dumps(cache_payload))
+            cache.persist(ck)
         return subs
 
 
@@ -555,7 +556,7 @@ def pds_dataentry_create(request, pds_id, subject_id):
                                             sub['external_ids'].append(exRec)
                                         sub['external_records'].append(exRec)
                                 cache.set(cache_key, json.dumps(subs))
-                                cache.expire(cache_key, 24 * 24 * 60)
+                                cache.persist(cache_key)
                             return HttpResponseRedirect(path)
                         except RecordCreationError as rce:  # exception from the eHB
                             log.error(rce.errmsg)
@@ -715,7 +716,7 @@ def pds_dataentry_create(request, pds_id, subject_id):
                                 sub['external_ids'].append(exRec)
                             sub['external_records'].append(exRec)
                     cache.set(cache_key, json.dumps(subs))
-                    cache.expire(cache_key, 24 * 24 * 60)
+                    cache.persist(cache_key)
                 path = '%s/dataentry/protocoldatasource/%s/subject/%s/record/%s/start/' % (
                     ServiceClient.self_root_path,
                     pds.id,
