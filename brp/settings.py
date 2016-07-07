@@ -265,7 +265,7 @@ LOGGING = {
             'maxBytes': 1024 * 1024 * 5,  # 5 MB
             'backupCount': 5,
             'formatter': 'standard',
-        },
+        }
     },
     'loggers': {
         '': {
@@ -276,7 +276,7 @@ LOGGING = {
         'django.request': {
             'handlers': ['request_handler'],
             'level': 'DEBUG',
-            'propagate': False
+            'propagate': True
         },
         'ehb_client.requests.external_record_request_handler': {
             'handlers': ['ehb'],
@@ -288,6 +288,19 @@ LOGGING = {
         }
     }
 }
+
+if env.bool('LOGSTASH_ENABLED'):
+    LOGGING['handlers']['logstash'] = {
+        'level': 'DEBUG',
+        'class': 'logstash.TCPLogstashHandler',
+        'host': env('LOGSTASH_HOST'),
+        'port': env.int('LOGSTASH_PORT'),  # Default value: 5959
+        'version': 1,  # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
+        'message_type': 'logstash',  # 'type' field in logstash message. Default value: 'logstash'.
+        'fqdn': False,  # Fully qualified domain name. Default value: false.
+        'tags': None,  # list of tags. Default: None.
+    }
+    LOGGING['loggers']['django.request']['handlers'].append('logstash')
 
 if FORCE_SCRIPT_NAME:
     ADMIN_MEDIA_PREFIX = os.path.join(

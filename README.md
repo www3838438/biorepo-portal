@@ -30,6 +30,10 @@ Demonstration accounts for both the Portal and the eHB have a user name of `admi
 * Node 5.4.0+ [[instructions](https://nodejs.org/en/download/current/)]
 * npm 3.3.12+ (packaged with Node)
 
+*To Enable Logstash integration*
+
+* `pip install python-logstash`
+
 ```bash
 # Retrieve source code
 git clone https://github.com/chop-dbhi/biorepo-portal.git
