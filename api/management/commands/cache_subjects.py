@@ -17,6 +17,9 @@ from rest_framework.response import Response
 
 class Command(BaseCommand):
 
+    def add_arguments(self, parser):
+        parser.add_argument('protocol_id', nargs='+', type=str)
+
     def getExternalRecords(self, pds, subject, lbls):
         er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
         try:
@@ -42,11 +45,15 @@ class Command(BaseCommand):
 
         return r
 
-    def cache_records(self):
-        protocols = Protocol.objects.all()
+    def cache_records(self, protocol_id):
+        protocol_id = protocol_id[0]
+        if protocol_id == 'all':
+            protocols = Protocol.objects.all()
+        else:
+            protocols = Protocol.objects.filter(id=int(protocol_id)).all()
         er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
         lbls = er_label_rh.query()
-        print 'Caching {0} protocols...'.format(len(protocols))
+        print 'Caching {0} protocol(s)...'.format(len(protocols))
         for protocol in protocols:
             print 'Caching {}'.format(protocol)
             subjects = protocol.getSubjects()
@@ -100,4 +107,4 @@ class Command(BaseCommand):
             cache.persist(cache_key)
 
     def handle(self, *args, **options):
-        self.cache_records()
+        self.cache_records(options['protocol_id'])
