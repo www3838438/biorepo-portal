@@ -60,7 +60,13 @@ class SubjectSelect extends React.Component {
     const protocol = this.getActiveProtocol();
 
     let manageExternalIDs = false;
-
+    const subjectCountStyle = {
+      paddingLeft: '10px',
+      paddingRight: '10px',
+      paddingBottom: '10px',
+      color: '#7a7a7a',
+      fontWeight: 'bold',
+    };
     if (protocol != null) {
       if (parseInt(this.props.params.id, 10) === parseInt(protocol.id, 10)) {
         this.props.protocol.activeProtocol = protocol;
@@ -121,6 +127,7 @@ class SubjectSelect extends React.Component {
               </li>
             </ul>
           </div>
+          <div style={subjectCountStyle}>{subs.length} Subjects</div>
           <div className="subject-table">
             {!this.props.subject.isFetching ?
               <Griddle
