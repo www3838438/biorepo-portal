@@ -585,6 +585,26 @@ def pds_dataentry_create(request, pds_id, subject_id):
                                 ehb_rec_id)
                             notify_record_creation_listeners(
                                 driver, rec_id, pds, request.user, subject_id)
+                            cache_key = 'protocol{0}_sub_data'.format(pds.protocol.id)
+                            cache_data = cache.get(cache_key)
+                            if cache_data:
+                                subs = json.loads(cache_data)
+                                for sub in subs:
+                                    if sub['id'] == int(subject_id):
+                                        er = er_rh.get(id=ehb_rec_id)
+                                        exRec = json.loads(er.json_from_identity(er))
+                                        exRec['pds'] = pds.id
+                                        exRec['label_id'] = label['id']
+                                        if label['label'] == '':
+                                            label['label'] = 'Record'
+                                        exRec['label_desc'] = label['label']
+                                        if exRec['external_system'] == 3:
+                                            sub['external_ids'].append(exRec)
+                                        sub['external_records'].append(exRec)
+                                cache.set(cache_key, json.dumps(subs))
+                                cache.persist(cache_key)
+
+
                         except RecordCreationError as rce:  # exception from the eHB
                             log.error(rce.errmsg)
                             record_already_exists = 6
