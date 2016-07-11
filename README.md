@@ -1,3 +1,11 @@
+# The Biorepository Portal Project
+
+[![CircleCI](https://circleci.com/gh/chop-dbhi/biorepo-portal/tree/master.svg?style=svg)](https://circleci.com/gh/chop-dbhi/biorepo-portal/tree/master)
+[![ReadTheDocs](https://readthedocs.org/projects/biorepository-portal/badge/?version=latest)](http://biorepository-portal.readthedocs.io/en/latest/)
+
+For more information and further documentation please see [here](http://biorepository-portal.readthedocs.io/en/latest/)
+
+
 ## Quickstart
 
 #### Requirements
@@ -44,20 +52,6 @@ npm install
 npm run build
 
 ```
-
-## Configuration
-
-What follows is a step by step walkthrough describing the configuration of a Protocol for data entry in the Biorepository Portal.
-
-In this walkthrough our example study will have two datasources (Nautilus LIMs and REDCap).
-
-#### Defining Datasources
-
-#### Defining Organizations
-
-#### Defining a Protocol
-
-#### Creating Protocol Datasource
 
 
 ## Contributions

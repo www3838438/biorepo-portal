@@ -72,8 +72,8 @@ class Organization(BaseWithImmutableKey):
 
 class DataSource(Base):
     '''
-    This class represents an external data source used for a given protocol.
-    It is the link between the brp app and the ehb-service. The field
+    This class represents an external data source used within the Biorepository
+    Portal. It is the link between the brp app and the ehb-service. The field
     ehb_service_es_id is the id of the ExternalSystem record stored in the
     ehb-service corresponding to this DataSource. The name field should match
     the name field in the ExternalSystem record
@@ -176,7 +176,7 @@ class DataSource(Base):
 
 class Protocol(BaseWithImmutableKey):
     '''
-    This class holds the information necessary for an ehb-cccr protocol
+    This class holds the information necessary for Protocol
     '''
 
     class Meta(BaseWithImmutableKey.Meta):
