@@ -570,7 +570,8 @@ def pds_dataentry_create(request, pds_id, subject_id):
                         rec_id = iee.record_id
                         ehb_rec_id = ''
                         path = None
-                        label_id = request.GET.get('label_id', 1)
+                        data = extract_data_from_post_request(request)
+                        label_id = data.get('label_id', 1)
                         label = er_label_rh.get(id=label_id)
                         try:
                             # this will create the ehb external_record entry

@@ -44,7 +44,8 @@ class EditLabelModal extends React.Component {
   render() {
     const labels = this.props.activePDS.driver_configuration.labels;
     const editLabelModalStyle = {
-      left: '50%',
+      left: '45%',
+      top: '25%',
       marginLeft: '-5em',
       marginBottom: '3em',
       position: 'fixed',
@@ -68,7 +69,7 @@ class EditLabelModal extends React.Component {
     return (
       <section>
         <div style={backdropStyle}></div>
-        <div className="col-sm-2 edit-label-modal" style={editLabelModalStyle}>
+        <div className="col-sm-3 edit-label-modal" style={editLabelModalStyle}>
           <div className="card" style={cardStyle}>
             <h6 className="category">Edit Record Label</h6>
             <div className="more">

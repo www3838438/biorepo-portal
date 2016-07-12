@@ -43,7 +43,8 @@ class NewRecordLabelSelect extends React.Component {
   render() {
     const labels = this.props.pds.driver_configuration.labels;
     const modalStyle = {
-      left: '50%',
+      left: '45%',
+      top: '20%',
       marginLeft: '-5em',
       marginBottom: '3em',
       position: 'fixed',
@@ -68,7 +69,7 @@ class NewRecordLabelSelect extends React.Component {
       this.props.isCreating && this.props.pds.id == this.props.activePDS.id ?
         <section>
           <div style={backdropStyle}></div>
-          <div className="col-sm-2 edit-label-modal" style={modalStyle}>
+          <div className="col-sm-3 edit-label-modal" style={modalStyle}>
             <div className="card" style={cardStyle}>
               <h4 style={{ textAlign: 'center' }}>
                 Please wait. This action may take several seconds...
@@ -80,7 +81,7 @@ class NewRecordLabelSelect extends React.Component {
           this.props.addRecordMode && this.props.pds.id == this.props.activePDS.id ?
             <section>
               <div style={backdropStyle}></div>
-              <div className="col-sm-2 edit-label-modal" style={modalStyle}>
+              <div className="col-sm-3 edit-label-modal" style={modalStyle}>
                 <div className="card" style={cardStyle}>
                   <h6 className="category">Select label for {this.props.pds.display_label} Record</h6>
                   <div className="more">
