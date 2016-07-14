@@ -33,10 +33,12 @@ class ServiceClient(object):
     ORGANIZATION = 3
     GROUP = 4
     EXTERNAL_RECORD_LABEL = 5
+    EXTERNAL_RECORD_RELATION = 6
     req_handlers = {
         EXTERNAL_SYSTEM: ext_sys_client,
         EXTERNAL_RECORD: ext_rec_client,
         EXTERNAL_RECORD_LABEL: ext_rec_label_client,
+        EXTERNAL_RECORD_RELATION: ext_rec_rel_client,
         SUBJECT: subj_client,
         ORGANIZATION: org_client,
         GROUP: group_client
@@ -63,6 +65,8 @@ class ServiceClient(object):
                     return ServiceClient.ext_rec_client
                 elif c.__name__ == 'ExternalRecordLabel':
                     return ServiceClient.ext_rec_label_client
+                elif c.__name__ == 'ExternalRecordRelation':
+                    return ServiceClient.ext_rec_rel_client
                 elif c.__name__ == 'Organization':
                     return ServiceClient.org_client
                 elif c.__name__ == 'Group':

@@ -1,13 +1,13 @@
+import logging
+import json
+
 from .models.constants import ProtocolConstants
-from .models.protocols import Organization, ProtocolUserCredentials
 from .ehb_service_client import ServiceClient
 
 from ehb_client.requests.group_request_handler import Group
 from ehb_client.requests.exceptions import PageNotFound
 from ehb_client.requests.external_record_request_handler import ExternalRecord
 from ehb_datasources.drivers.exceptions import RecordCreationError
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +21,7 @@ class DriverUtils(object):
         user and configures the driver.  If the user does not have
         credentials for this data source a DoesNotExist exception is raised
         '''
+        from .models.protocols import ProtocolUserCredentials
         creds = ProtocolUserCredentials.objects.get(
             protocol=protocol_data_source.protocol,
             data_source=protocol_data_source,
@@ -32,10 +33,38 @@ class DriverUtils(object):
         return driver
 
 
-class SubjectUtils(object):
+class RecordUtils(object):
 
     @staticmethod
+    def serialize_external_records(pds, records, labels):
+        '''
+        Returns serialized form of eHB external records from the eHB to API
+        friendly form. API friendly meaning it contains ProtocolDatasource ID,
+        and label description.
+        '''
+
+        serialized_records = []
+
+        for ex_rec in records:
+            # Convert ehb-client object to JSON and then parse as py dict
+            e = json.loads(ex_rec.json_from_identity(ex_rec))
+            # Map label descriptions from the eHB to External Records
+            for label in labels:
+                if e['label'] == label['id']:
+                    if label['label'] == '':
+                        e['label_desc'] = 'Record'
+                    else:
+                        e['label_desc'] = label['label']
+            e['pds'] = pds.id
+            serialized_records.append(e)
+
+        return serialized_records
+
+
+class SubjectUtils(object):
+    @staticmethod
     def protocol_subject_record_group_name(protocol, subject):
+        from .models.protocols import Organization
         orh = ServiceClient.get_rh_for(record_type=ServiceClient.ORGANIZATION)
         ehb_org = orh.get(id=subject.organization_id)
         brp_org = Organization.objects.get(name=ehb_org.name)
