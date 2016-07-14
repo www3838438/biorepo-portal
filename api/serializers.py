@@ -5,8 +5,6 @@ from api.models.protocols import Organization, DataSource, Protocol,\
     ProtocolDataSource, ProtocolDataSourceLink, ProtocolUser,\
     ProtocolUserCredentials
 
-from ehb_client.requests.subject_request_handler import Subject as ehbSubject
-
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -64,27 +62,6 @@ class ProtocolUserSerializer(serializers.HyperlinkedModelSerializer):
 class ProtocolUserCredentialsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ProtocolUserCredentials
-
-
-class eHBGroupSerializer(serializers.Serializer):
-    """
-    TODO
-    """
-    pass
-
-
-class eHBSubjectGroupSerializer(serializers.Serializer):
-    """
-    TODO
-    """
-    pass
-
-
-class eHBExternalSystemSerializer(serializers.Serializer):
-    """
-    TODO
-    """
-    pass
 
 
 class eHBOrganizationSerializer(serializers.Serializer):
