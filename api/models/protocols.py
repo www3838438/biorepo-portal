@@ -3,11 +3,13 @@ import json
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 
-from api.models.base import Base, BaseWithImmutableKey
 from ..ehb_service_client import ServiceClient
-from api.models.constants import ProtocolUserConstants, \
+from ..utilities import RecordUtils
+from .base import Base, BaseWithImmutableKey
+from .constants import ProtocolUserConstants, \
     ProtocolDataSourceConstants
 
 from ehb_client.requests.exceptions import PageNotFound, \
@@ -299,6 +301,25 @@ class ProtocolDataSource(Base):
                 'Options. If there is no configuration enter "{}"')
             raise ValidationError(msg)
 
+    def getSubjectExternalRecords(self, subject):
+        '''
+        Return all external records for a given subject on this Protocol
+        '''
+        er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
+        erl_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
+        labels = cache.get('ehb_labels')
+        if not labels:
+            labels = erl_rh.query()
+            cache.set('ehb_labels', labels)
+            cache.persist('ehb_labels')
+        try:
+            pds_records = er_rh.get(
+                external_system_url=self.data_source.url, path=self.path, subject_id=subject['id'])
+        except PageNotFound:
+            return []
+
+        return RecordUtils.serialize_external_records(self, pds_records, labels)
+
     def getDriver(self, protocol_user_credentials):
         driver = None
         if self.driver == ProtocolDataSourceConstants.redcap_driver:
@@ -430,7 +451,7 @@ class ProtocolUser(Base):
     protocol = models.ForeignKey(Protocol)
     user = models.ForeignKey(User)
     roles = (
-      (ProtocolUserConstants.research_coordinator, 'Research Coordinator'),
+        (ProtocolUserConstants.research_coordinator, 'Research Coordinator'),
     )
     role = models.IntegerField(choices=roles)
 
