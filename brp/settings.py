@@ -138,8 +138,8 @@ REGISTRATION_MODERATION = True
 
 ADMINS = (
     ('Tyler Rivera', 'riverat2@email.chop.edu'),
-    # ('Alex Felmeister', 'felmeistera@email.chop.edu'),
-    # ('Alex Gonzalez', 'gonzalezak@email.chop.edu'),
+    ('Alex Felmeister', 'felmeistera@email.chop.edu'),
+    ('Alex Gonzalez', 'gonzalezak@email.chop.edu'),
 )
 MANAGERS = ADMINS
 
@@ -282,6 +282,10 @@ LOGGING = {
             'handlers': ['ehb'],
             'propagate': False
         },
+        'api.views': {
+            'handlers': ['ehb'],
+            'propagate': False,
+        },
         'portal': {
             'handlers': ['ehb'],
             'propagate': True
@@ -301,6 +305,8 @@ if env.bool('LOGSTASH_ENABLED'):
         'tags': None,  # list of tags. Default: None.
     }
     LOGGING['loggers']['django.request']['handlers'].append('logstash')
+    LOGGING['loggers']['api.views']['handlers'].append('logstash')
+    LOGGING['loggers']['portal']['handlers'].append('logstash')
 
 if FORCE_SCRIPT_NAME:
     ADMIN_MEDIA_PREFIX = os.path.join(
