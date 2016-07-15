@@ -10,7 +10,7 @@ from django.conf import settings
 
 class AutoDateTimeField(models.DateTimeField):
     def pre_save(self, model_instance, add):
-        return datetime.now()
+        return timezone.now()
 
 
 class CreatedModified(models.Model):
