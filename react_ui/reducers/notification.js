@@ -18,8 +18,8 @@ function notification(state = initialState, action) {
         items: state.items.concat(action.notification),
       });
     case REMOVE_NOTIFICATION:
-      notifications = state.items.filter(() => {
-        if (this.message !== action.notification.message) {
+      notifications = state.items.filter((note) => {
+        if (note.message !== action.notification.message) {
           return notification;
         }
         return null;

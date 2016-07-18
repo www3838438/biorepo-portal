@@ -135,7 +135,7 @@ export function addSubjectRequest() {
   };
 }
 
-export function addSubjectSuccess(protocolId) {
+export function addSubjectSuccess(subject) {
   return dispatch => {
     dispatch(NotificationActions.addNotification(
       {
@@ -145,9 +145,9 @@ export function addSubjectSuccess(protocolId) {
       }
     ));
     dispatch(setAddSubjectMode());
-    dispatch(fetchSubjects(protocolId));
     dispatch({
       type: ADD_SUBJECT_SUCCESS,
+      subject,
     });
   };
 }
@@ -175,7 +175,7 @@ export function addSubject(protocolId, subject) {
     })
       .then(response => response.json())
       .then(checkAddSubject)
-      .then(dispatch(addSubjectSuccess(protocolId)))
+      .then(sub => dispatch(addSubjectSuccess(sub)))
       .catch(errors => dispatch(addSubjectFailure(errors)));
   };
 }
