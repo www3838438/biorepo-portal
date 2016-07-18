@@ -342,7 +342,7 @@ class ProtocolSubjectDetailView(BRPApiView):
                 status=403
             )
 
-    def put(self, request, subject, *args, **kwargs):
+    def put(self, request, pk, subject, *args, **kwargs):
         subject_update = json.loads(request.body)
         # See if subject exists
         try:
@@ -364,6 +364,18 @@ class ProtocolSubjectDetailView(BRPApiView):
             return Response(json.dumps({'error': 'Unable to update subject'}), status=400)
         sub = json.loads(Subject.json_from_identity(update['subject']))
         sub['organization_name'] = org.name
+        cache_key = 'protocol{0}_sub_data'.format(pk)
+        cache_data = self.cache.get(cache_key)
+        if cache_data:
+            sub['external_ids'] = []
+            sub['external_records'] = []
+            sub['organization_name'] = org.name
+            subjects = json.loads(cache_data)
+            for i in range(0, len(subjects)):
+                if subjects[i]['id'] == sub['id']:
+                    subjects[i] = sub
+            self.cache.set(cache_key, json.dumps(subjects))
+            self.cache.persist(cache_key)
         return Response(
             sub,
             headers={'Access-Control-Allow-Origin': '*'}
