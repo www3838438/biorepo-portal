@@ -105,7 +105,7 @@
 		"modified": "2016-01-12T12:42:03.487Z",
 		"display_label": "Health Data",
 		"path": "Demo",
-		"driver_configuration": "{\r\n    \"unique_event_names\": [\r\n        \"visit_arm_1\",\r\n        \"breakfast_at_visit_arm_1\",\r\n        \"lunch_at_visit_arm_1\",\r\n        \"dinner_at_visit_arm_1\"\r\n    ],\r\n    \"event_labels\": [\r\n        \"Visit Baseline\",\r\n        \"Breakfast\",\r\n        \"Lunch\",\r\n        \"Dinner\"\r\n    ],\r\n    \"form_data\": {\r\n        \"baseline_visit_data\": [\r\n            1,\r\n            0,\r\n            0,\r\n            0\r\n        ],\r\n        \"meal_description_form\": [\r\n            0,\r\n            1,\r\n            1,\r\n            1\r\n        ]\r\n    },\r\n    \"record_id_field_name\": \"study_id\"\r\n}"
+		"driver_configuration": "{\r\n    \"unique_event_names\": [\r\n        \"visit_arm_1\",\r\n        \"breakfast_at_visit_arm_1\",\r\n        \"lunch_at_visit_arm_1\",\r\n        \"dinner_at_visit_arm_1\"\r\n    ],\r\n    \"event_labels\": [\r\n        \"Visit Baseline\",\r\n        \"Breakfast\",\r\n        \"Lunch\",\r\n        \"Dinner\"\r\n    ],\r\n    \"form_data\": {\r\n        \"baseline_visit_data\": [\r\n            1,\r\n            0,\r\n            0,\r\n            0\r\n        ],\r\n        \"meal_description_form\": [\r\n            0,\r\n            1,\r\n            1,\r\n            1\r\n        ]\r\n    },\r\n    \"record_id_field_name\": \"study_id\",\r\n    \"links\": [1]\r\n}"
 	}
 }, {
 	"pk": 2,
