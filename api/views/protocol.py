@@ -342,21 +342,21 @@ class ProtocolSubjectDetailView(BRPApiView):
                 status=403
             )
 
-    def put(self, request, *args, **kwargs):
-        subject = json.loads(request.body)
+    def put(self, request, subject, *args, **kwargs):
+        subject_update = json.loads(request.body)
         # See if subject exists
         try:
-            ehb_sub = self.s_rh.get(id=subject['id'])
-            org = Organization.objects.get(id=subject['organization_id'])
+            ehb_sub = self.s_rh.get(id=subject)
+            org = Organization.objects.get(id=subject_update['organization'])
         except:
-            return Response({'error': 'Subject not found'}, status=404)
+            return Response({'error': 'subject not found'}, status=404)
         ehb_org = org.getEhbServiceInstance()
         ehb_sub.old_subject = deepcopy(ehb_sub)
-        ehb_sub.first_name = subject['first_name']
-        ehb_sub.last_name = subject['last_name']
-        ehb_sub.organization_subject_id = subject['organization_subject_id']
+        ehb_sub.first_name = subject_update['first_name']
+        ehb_sub.last_name = subject_update['last_name']
+        ehb_sub.organization_subject_update_id = subject_update['organization_subject_id']
         ehb_sub.organization_id = ehb_org.id
-        ehb_sub.dob = datetime.strptime(subject['dob'], '%Y-%m-%d')
+        ehb_sub.dob = datetime.strptime(subject_update['dob'], '%Y-%m-%d')
         update = self.s_rh.update(ehb_sub)[0]
         if update['errors']:
             return Response(json.dumps({'error': 'Unable to update subject'}), status=400)
@@ -371,8 +371,8 @@ class ProtocolSubjectDetailView(BRPApiView):
         try:
             subject = self.s_rh.get(id=subject)
             protocol = Protocol.objects.get(pk=pk)
-            response = self.s_rh.delete(id=subject.id)
-            success = SubjectUtils.delete_protocol_subject_record_group(protocol, subject)
+            self.s_rh.delete(id=subject.id)
+            SubjectUtils.delete_protocol_subject_record_group(protocol, subject)
         except:
             return Response({'error': 'Unable to delete subject'}, status=400)
 
