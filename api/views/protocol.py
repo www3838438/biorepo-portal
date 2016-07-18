@@ -347,8 +347,10 @@ class ProtocolSubjectDetailView(BRPApiView):
         # See if subject exists
         try:
             ehb_sub = self.s_rh.get(id=subject)
-            org = Organization.objects.get(id=subject_update['organization'])
+            org = Organization.objects.get(id=subject_update['organization_id'])
+
         except:
+            raise
             return Response({'error': 'subject not found'}, status=404)
         ehb_org = org.getEhbServiceInstance()
         ehb_sub.old_subject = deepcopy(ehb_sub)

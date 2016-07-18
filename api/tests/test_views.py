@@ -189,7 +189,7 @@ class ProtocolViewTests(BRPTestCase):
             'first_name': 'Johnny',
             'last_name': 'Sample',
             'organization_subject_id': '42424242',
-            'organization': '1',
+            'organization_id': '1',
             'dob': '2000-01-01'
         }
         url = reverse(
