@@ -102,14 +102,8 @@ class SubjectUtils(object):
             n = SubjectUtils.protocol_subject_record_group_name(protocol, subject)
             gh = ServiceClient.get_rh_for(record_type=ServiceClient.GROUP)
             ck = protocol._settings_prop('CLIENT_KEY', 'key', '')
-            grp = Group(
-                name=n,
-                description='A BRP Protocol Subject Record Group',
-                is_locking=True,
-                client_key=ck
-            )
-            r = gh.delete(grp)
-            return r[0].get('success')
+            gh.delete(name=n, client_key=ck)
+            return True
         except:
             return False
 
