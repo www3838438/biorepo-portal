@@ -168,6 +168,8 @@ class ProtocolViewTests(BRPTestCase):
         client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
         response = client.post(url, subject, format='json')
         success, subject, errors = response.data
+        if errors:
+            print errors
         self.assertTrue(success)
         self.assertEqual(len(errors), 0)
         url = reverse(
@@ -177,6 +179,31 @@ class ProtocolViewTests(BRPTestCase):
                 'subject': subject['id']
             })
         response = client.delete(url)
+
+    def test_update_subject_on_protocol(self):
+        '''
+        Ensure that we can create a subject on a Protocol
+        '''
+        subject = {
+            'id': 1,
+            'first_name': 'Johnny',
+            'last_name': 'Sample',
+            'organization_subject_id': '42424242',
+            'organization': '1',
+            'dob': '2000-01-01'
+        }
+        url = reverse(
+            'protocol-subject-view',
+            kwargs={
+                'pk': self.test_protocol.id,
+                'subject': self.test_user.id
+            })
+        token = Token.objects.get(user__username='admin')
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        response = client.put(url, subject, format='json')
+        self.assertTrue(response.status_code, 200)
+        self.assertEqual(response.data['first_name'], 'Johnny')
 
     def test_retrieve_subject_detail_from_protocol(self):
         '''
