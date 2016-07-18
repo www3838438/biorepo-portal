@@ -5,11 +5,13 @@ from datetime import datetime
 from copy import deepcopy
 
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
 
 from base import BRPApiView
 from api.models.protocols import Organization, Protocol, ProtocolUserCredentials
 from api.serializers import OrganizationSerializer, ProtocolSerializer, \
     eHBSubjectSerializer, ProtocolDataSourceSerializer, DataSourceSerializer
+from api.utilities import SubjectUtils
 from ehb_client.requests.exceptions import PageNotFound
 from ehb_client.requests.subject_request_handler import Subject
 from rest_framework.response import Response
@@ -42,7 +44,10 @@ class ProtocolDataSourceView(BRPApiView):
         Also determines authorization for each protocol datasource based on
         the user making the request.
         """
-        p = Protocol.objects.get(pk=pk)
+        try:
+            p = Protocol.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'error': 'Protocol requested not found'}, status=404)
 
         ds = []
 
@@ -95,7 +100,11 @@ class ProtocolOrganizationView(BRPApiView):
         """
         Provide a list of organizations associated with a protocol
         """
-        p = Protocol.objects.get(pk=pk)
+        try:
+            p = Protocol.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'error': 'Protocol requested not found'}, status=404)
+
         if p.isUserAuthorized(request.user):
             q = p.organizations.all()
             orgs = [OrganizationSerializer(org).data for org in q]
@@ -110,7 +119,10 @@ class ProtocolSubjectsView(BRPApiView):
         """
         Returns a list of subjects associated with a protocol.
         """
-        p = Protocol.objects.get(pk=pk)
+        try:
+            p = Protocol.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'error': 'Protocol requested not found'}, status=404)
         # Check cache
         cache_data = cache.get('protocol{0}_sub_data'.format(p.id))
         if cache_data:
@@ -194,7 +206,11 @@ class ProtocolSubjectDetailView(BRPApiView):
             "dob": "2000-01-01"
         }
         '''
-        protocol = Protocol.objects.get(pk=pk)
+        try:
+            protocol = Protocol.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'error': 'Protocol requested not found'}, status=404)
+
         subject = json.loads(request.body)
 
         new_subject = Subject(
@@ -291,7 +307,11 @@ class ProtocolSubjectDetailView(BRPApiView):
 
     def get(self, request, pk, subject, *args, **kwargs):
         ''' get subject '''
-        p = Protocol.objects.get(pk=pk)
+        try:
+            p = Protocol.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'error': 'Protocol requested not found'}, status=404)
+
         if p.isUserAuthorized(request.user):
             protocoldatasources = p.getProtocolDataSources()
             manageExternalIDs = False
@@ -322,21 +342,21 @@ class ProtocolSubjectDetailView(BRPApiView):
                 status=403
             )
 
-    def put(self, request, *args, **kwargs):
-        subject = json.loads(request.body)
+    def put(self, request, subject, *args, **kwargs):
+        subject_update = json.loads(request.body)
         # See if subject exists
         try:
-            ehb_sub = self.s_rh.get(id=subject['id'])
-            org = Organization.objects.get(id=subject['organization_id'])
+            ehb_sub = self.s_rh.get(id=subject)
+            org = Organization.objects.get(id=subject_update['organization'])
         except:
-            return Response({'error': 'Subject not found'}, status=404)
+            return Response({'error': 'subject not found'}, status=404)
         ehb_org = org.getEhbServiceInstance()
         ehb_sub.old_subject = deepcopy(ehb_sub)
-        ehb_sub.first_name = subject['first_name']
-        ehb_sub.last_name = subject['last_name']
-        ehb_sub.organization_subject_id = subject['organization_subject_id']
+        ehb_sub.first_name = subject_update['first_name']
+        ehb_sub.last_name = subject_update['last_name']
+        ehb_sub.organization_subject_update_id = subject_update['organization_subject_id']
         ehb_sub.organization_id = ehb_org.id
-        ehb_sub.dob = datetime.strptime(subject['dob'], '%Y-%m-%d')
+        ehb_sub.dob = datetime.strptime(subject_update['dob'], '%Y-%m-%d')
         update = self.s_rh.update(ehb_sub)[0]
         if update['errors']:
             return Response(json.dumps({'error': 'Unable to update subject'}), status=400)
@@ -346,3 +366,14 @@ class ProtocolSubjectDetailView(BRPApiView):
             sub,
             headers={'Access-Control-Allow-Origin': '*'}
         )
+
+    def delete(self, request, pk, subject, *args, **kwargs):
+        try:
+            subject = self.s_rh.get(id=subject)
+            protocol = Protocol.objects.get(pk=pk)
+            self.s_rh.delete(id=subject.id)
+            SubjectUtils.delete_protocol_subject_record_group(protocol, subject)
+        except:
+            return Response({'error': 'Unable to delete subject'}, status=400)
+
+        return Response({'info': 'Subject deleted'}, status=200)

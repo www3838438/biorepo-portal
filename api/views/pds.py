@@ -2,6 +2,8 @@ import logging
 import json
 from datetime import datetime
 
+from django.core.exceptions import ObjectDoesNotExist
+
 from base import BRPApiView
 
 from api.models.protocols import ProtocolDataSource, ProtocolUserCredentials
@@ -37,7 +39,11 @@ class PDSRecordLinkDetailView(BRPApiView):
     def get(self, request, pk, subject, record, *args, **kwargs):
         '''Retrieve links for a given record
         '''
-        pds = ProtocolDataSource.objects.get(pk=pk)
+        try:
+            pds = ProtocolDataSource.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'error': 'ProtocolDatasource requested not found'}, status=404)
+
         if pds.protocol.isUserAuthorized(request.user):
             try:
                 res = self.er_rh.get(id=record, links=True)
@@ -53,7 +59,11 @@ class PDSRecordLinkDetailView(BRPApiView):
     def post(self, request, pk, subject, record, *args, **kwargs):
         '''Create a link between two subject records in the eHB
         '''
-        pds = ProtocolDataSource.objects.get(pk=pk)
+        try:
+            pds = ProtocolDataSource.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'error': 'ProtocolDatasource requested not found'}, status=404)
+
         if pds.protocol.isUserAuthorized(request.user):
             data = json.loads(request.body)
             primary_rec = data['primaryRecord']
@@ -72,7 +82,11 @@ class PDSRecordLinkDetailView(BRPApiView):
     def delete(self, request, pk, subject, record, *args, **kwargs):
         '''Delete a link between two subject records in the eHB
         '''
-        pds = ProtocolDataSource.objects.get(pk=pk)
+        try:
+            pds = ProtocolDataSource.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'error': 'ProtocolDatasource requested not found'}, status=404)
+
         if pds.protocol.isUserAuthorized(request.user):
             data = json.loads(request.body)
             primary_rec = data['primaryRecord']
@@ -87,7 +101,11 @@ class PDSRecordLinkDetailView(BRPApiView):
 
 class PDSAvailableLinksView(BRPApiView):
     def get(self, request, pk, *args, **kwargs):
-        pds = ProtocolDataSource.objects.get(pk=pk)
+        try:
+            pds = ProtocolDataSource.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'error': 'ProtocolDatasource requested not found'}, status=404)
+
         if pds.protocol.isUserAuthorized(request.user):
             res = self.err_rh.get()
             if pds.driver_configuration != '':
@@ -106,7 +124,11 @@ class PDSAvailableLinksView(BRPApiView):
 class PDSSubjectRecordDetailView(BRPApiView):
 
     def get(self, request, pk, subject, record, *args, **kwargs):
-        pds = ProtocolDataSource.objects.get(pk=pk)
+        try:
+            pds = ProtocolDataSource.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'error': 'ProtocolDatasource requested not found'}, status=404)
+
         if pds.protocol.isUserAuthorized(request.user):
             res = self.er_rh.get(id=record)
             d = json.loads(res.json_from_identity(res))
@@ -124,7 +146,11 @@ class PDSSubjectRecordDetailView(BRPApiView):
 
         If successful the updated external record is returned
         '''
-        pds = ProtocolDataSource.objects.get(pk=pk)
+        try:
+            pds = ProtocolDataSource.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'error': 'ProtocolDatasource requested not found'}, status=404)
+
         if pds.protocol.isUserAuthorized(request.user):
             ex_rec = json.loads(request.body)
             rec = self.er_rh.get(id=ex_rec['id'])
@@ -149,20 +175,24 @@ class PDSSubjectRecordDetailView(BRPApiView):
 class PDSSubjectRecordsView(BRPApiView):
 
     def get(self, request, pk, subject, *args, **kwargs):
-        p = ProtocolDataSource.objects.get(pk=pk)
+        try:
+            pds = ProtocolDataSource.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'error': 'ProtocolDatasource requested not found'}, status=404)
+
         ex_recs = []
 
-        if p.protocol.isUserAuthorized(request.user):
+        if pds.protocol.isUserAuthorized(request.user):
             try:
                 ProtocolUserCredentials.objects.get(
-                    protocol=p.protocol, data_source=p, user=request.user)
+                    protocol=pds.protocol, data_source=pds, user=request.user)
             except ProtocolUserCredentials.DoesNotExist:
                 return Response([], status=403)
 
             res = self.er_rh.query({
                 "subject_id": subject,
-                "external_system_id": p.data_source.ehb_service_es_id,
-                "path": p.path
+                "external_system_id": pds.data_source.ehb_service_es_id,
+                "path": pds.path
             })[0]
 
             if res["success"]:
@@ -191,12 +221,16 @@ class PDSSubjectView(BRPApiView):
         Returns a list of subjects associated with the protocol datasource and
         their external records
         """
-        p = ProtocolDataSource.objects.get(pk=pk)
-        subjects = p.protocol.getSubjects()
-        organizations = p.protocol.organizations.all()
-        if p.protocol.isUserAuthorized(request.user):
+        try:
+            pds = ProtocolDataSource.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response({'error': 'ProtocolDatasource requested not found'}, status=404)
+
+        subjects = pds.protocol.getSubjects()
+        organizations = pds.protocol.organizations.all()
+        if pds.protocol.isUserAuthorized(request.user):
             if subjects:
-                params = self.buildQueryParams(subjects, p.data_source.ehb_service_es_id, p.path)
+                params = self.buildQueryParams(subjects, pds.data_source.ehb_service_es_id, pds.path)
                 # TODO: Cache check
                 res = self.er_rh.query(*params)
                 subjects = [eHBSubjectSerializer(subject).data for subject in subjects]

@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from .models.protocols import Organization, DataSource, Protocol, \
+from ..models.protocols import Organization, DataSource, Protocol, \
     ProtocolUser
 
 
@@ -64,24 +64,24 @@ class ProtocolTest(TestCase):
 
     def setUp(self):
         # This also calls out to the eHB to create a DataSource.
-        ds = DataSource.objects.create(
+        self.ds = DataSource.objects.create(
             name='TestDataSource',
             url='http://example.com',
             description='A test data source',
             ehb_service_es_id=1)
-        # user = User.objects.create(
-        #     username='TestUser',
-        #     first_name='John',
-        #     last_name='Doe',
-        #     email='test_user@example.com'
-        # )
+        self.user = User.objects.create(
+            username='TestUser',
+            first_name='John',
+            last_name='Doe',
+            email='test_user@example.com'
+        )
         # p = ProtocolUser.objects.create(
         #     role=1,
         # )
         # p.datasources = [ds]
         # p.users = [user]
         # p.save()
-        protocol = Protocol.objects.create(
+        self.protocol = Protocol.objects.create(
             name='TestProtocol'
         )
 
@@ -91,8 +91,8 @@ class ProtocolTest(TestCase):
 
     def tearDown(self):
         p = Protocol.objects.get(name='TestProtocol')
-        p.delete()
-
+        self.protocol.delete()
+        self.user.delete()
 
 class ProtocolDataSourceTest(TestCase):
 
