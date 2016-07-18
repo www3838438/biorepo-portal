@@ -33,6 +33,11 @@ export class NewSubjectForm extends React.Component {
     dispatch(SubjectActions.setAddSubjectMode());
   }
 
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch(SubjectActions.fetchSubjects(this.props.protocol.activeProtocolId));
+  }
+
   validateDate(date) {
     const { dispatch } = this.props;
     if (!moment(date, ['YYYY-MM-DD']).isValid()) {
