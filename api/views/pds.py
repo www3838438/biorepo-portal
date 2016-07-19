@@ -242,8 +242,10 @@ class PDSSubjectView(BRPApiView):
                     ehb_orgs.append(o.getEhbServiceInstance())
                 for sub in subjects:
                     sub.update({"external_records": []})
+                    sub['organization'] = sub['organization_id']
+                    sub.pop('organization_id')
                     for ehb_org in ehb_orgs:
-                        if sub['organization_id'] == ehb_org.id:
+                        if sub['organization'] == ehb_org.id:
                             sub['organization_name'] = ehb_org.name
                 for ex_rec in res:
                     if ex_rec["success"]:

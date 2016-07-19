@@ -92,6 +92,8 @@ class Command(BaseCommand):
             for sub in subs:
                 sub['external_records'] = []
                 sub['external_ids'] = []
+                sub['organization'] = sub['organization_id']
+                sub.pop('organization_id')
                 for pds in protocoldatasources:
                     sub['external_records'].extend(self.getExternalRecords(pds, sub, lbls))
                 if manageExternalIDs:
@@ -100,7 +102,7 @@ class Command(BaseCommand):
                         if record['external_system'] == 3:
                             sub['external_ids'].append(record)
                 for ehb_org in ehb_orgs:
-                    if sub['organization_id'] == ehb_org.id:
+                    if sub['organization'] == ehb_org.id:
                         sub['organization_name'] = ehb_org.name
             cache_key = 'protocol{0}_sub_data'.format(protocol.id)
             cache.set(cache_key, json.dumps(subs))

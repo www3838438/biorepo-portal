@@ -166,6 +166,8 @@ class ProtocolSubjectsView(BRPApiView):
             for sub in subs:
                 sub['external_records'] = []
                 sub['external_ids'] = []
+                sub['organization'] = sub['organization_id']
+                sub.pop('organization_id')
                 for pds in protocoldatasources:
                     sub['external_records'].extend(pds.getSubjectExternalRecords(sub))
                 if manageExternalIDs:
@@ -174,7 +176,7 @@ class ProtocolSubjectsView(BRPApiView):
                         if record['external_system'] == 3:
                             sub['external_ids'].append(record)
                 for ehb_org in ehb_orgs:
-                    if sub['organization_id'] == ehb_org.id:
+                    if sub['organization'] == ehb_org.id:
                         sub['organization_name'] = ehb_org.name
         else:
             return Response(
@@ -350,7 +352,7 @@ class ProtocolSubjectDetailView(BRPApiView):
         # See if subject exists
         try:
             ehb_sub = self.s_rh.get(id=subject)
-            org = self.o_rh.get(id=subject_update['organization_id'])
+            org = self.o_rh.get(id=subject_update['organization'])
         except:
             return Response({'error': 'subject not found'}, status=404)
         ehb_sub.old_subject = deepcopy(ehb_sub)
