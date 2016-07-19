@@ -6,6 +6,7 @@ import Divider from 'material-ui/lib/divider';
 import * as Colors from 'material-ui/lib/styles/colors';
 import SubjectOrgSelectField from '../SubjectView/SubjectPanel/SubjectOrgSelectField';
 import SubjectTextField from '../SubjectView/SubjectPanel/SubjectTextField';
+import LoadingGif from '../LoadingGif';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -59,7 +60,7 @@ export class NewSubjectForm extends React.Component {
     const { dispatch } = this.props;
 
     let valid = true;
-    const errors = {};
+    const errors = [];
 
     if (subject == null) {
       valid = false;
@@ -70,32 +71,32 @@ export class NewSubjectForm extends React.Component {
     }
 
     if (!subject.organization) {
-      errors.org = true;
+      errors.push('Organization field is required');
       valid = false;
     }
 
     if (!subject.first_name) {
-      errors.first_name = true;
+      errors.push('First name field is required');
       valid = false;
     }
 
     if (!subject.last_name) {
-      errors.last_name = true;
+      errors.push('Last name field is required');
       valid = false;
     }
 
     if (!this.validateDate(subject.dob)) {
-      errors.dob = true;
+      errors.push('Date of birth field is required');
       valid = false;
     }
 
     if (!subject.organization_subject_id) {
-      errors.org_id = true;
+      errors.push('Organization subject ID is required');
       valid = false;
     }
 
     if (subject.organization_subject_id !== subject.organization_subject_id_validation) {
-      errors.org_id_valid = true;
+      errors.push('Organization subject IDs do not match');
       valid = false;
     }
 
@@ -104,7 +105,9 @@ export class NewSubjectForm extends React.Component {
   }
 
   renderErrors() {
-    const errors = this.props.newFormErrors.server;
+    const serverErrors = this.props.newFormErrors.server;
+    const formErrors = this.props.newFormErrors.form;
+    const errors = serverErrors.concat(formErrors);
     const style = {
       fontSize: '12px',
       marginTop: '15px',
@@ -195,23 +198,28 @@ export class NewSubjectForm extends React.Component {
                   <SubjectTextField
                     new
                     error={this.props.newFormErrors.form.dob}
-                    label={'Date of Birth'}
+                    label={'Date of Birth (YYYY-MM-DD)'}
                     value={null}
                     skey={'dob'}
                   />
-                  <RaisedButton
-                    label={'Add Subject'}
-                    labelColor={'#7AC29A'}
-                    type="submit"
-                    style={{ width: '100%' }}
-                  />
-                  <Divider />
-                  <RaisedButton
-                    label={'Cancel'}
-                    labelColor={Colors.red400}
-                    onClick={this.handleCloseClick}
-                    style={{ width: '100%' }}
-                  />
+                  {this.props.savingSubject ? <LoadingGif style={{ width: '100%' }} /> :
+                    <div>
+                      <RaisedButton
+                        label={'Add Subject'}
+                        labelColor={'#7AC29A'}
+                        type="submit"
+                        style={{ width: '100%' }}
+                      />
+                      <Divider />
+                      <RaisedButton
+                        label={'Cancel'}
+                        labelColor={Colors.red400}
+                        onClick={this.handleCloseClick}
+                        style={{ width: '100%' }}
+                      />
+                    </div>
+                  }
+
                 </form>
               {this.renderErrors()}
               </div>

@@ -32,7 +32,6 @@ class SubjectOrgSelectField extends React.Component {
     if (this.props.error) {
       errorText = 'Please select an organization.';
     }
-
     return (
       <SelectField
         onChange={this.onChange}

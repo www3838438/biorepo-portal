@@ -43,13 +43,10 @@ class SubjectCardEdit extends React.Component {
   }
 
   validateDate(date) {
-    const { dispatch } = this.props;
     if (!moment(date, ['YYYY-MM-DD']).isValid()) {
-      dispatch(SubjectActions.setUpdateFormError('Must be a valid date (YYYY-MM-DD).'));
       return false;
     }
     if (!/^\d{4}-\d{1,2}-\d{1,2}$/.test(date)) {
-      dispatch(SubjectActions.setUpdateFormError('Must be a valid date (YYYY-MM-DD).'));
       return false;
     }
     if (date === '') {
@@ -59,21 +56,74 @@ class SubjectCardEdit extends React.Component {
   }
 
   isValid() {
-    // Validation checks for the Subject edit form
     const subject = this.props.subject.activeSubject;
-    if (subject.first_name === '') {
-      return false;
+    const { dispatch } = this.props;
+
+    let valid = true;
+    const errors = [];
+
+    if (subject == null) {
+      valid = false;
     }
-    if (subject.last_name === '') {
-      return false;
+
+    if (Object.keys(subject).length === 0) {
+      valid = false;
     }
+
+    if (!subject.organization) {
+      errors.push('Organization field is required');
+      valid = false;
+    }
+
+    if (!subject.first_name) {
+      errors.push('First name field is required');
+      valid = false;
+    }
+
+    if (!subject.last_name) {
+      errors.push('Last name field is required');
+      valid = false;
+    }
+
     if (!this.validateDate(subject.dob)) {
-      return false;
+      errors.push('DOB is required in the form YYYY-MM-DD');
+      valid = false;
     }
+
+    if (!subject.organization_subject_id) {
+      errors.push('Organization subject ID is required');
+      valid = false;
+    }
+
     if (subject.organization_subject_id !== subject.organization_subject_id_validation) {
-      return false;
+      errors.push('Organization subject IDs do not match');
+      valid = false;
     }
-    return true;
+    if (errors.length > 0) {
+      dispatch(SubjectActions.setUpdateFormErrors(errors));
+    }
+    return valid;
+  }
+
+  renderErrors() {
+    const serverErrors = this.props.subject.updateFormErrors.server;
+    const formErrors = this.props.subject.updateFormErrors.form;
+    const errors = serverErrors.concat(formErrors);
+    const style = {
+      fontSize: '12px',
+      marginTop: '15px',
+    };
+    if (errors) {
+      return errors.map((error, i) => (
+        <div key={i} style={style} className="alert alert-danger">
+          <div className="container">
+            {error}
+          </div>
+        </div>
+        )
+      );
+    }
+    return null;
   }
 
   render() {
@@ -86,7 +136,7 @@ class SubjectCardEdit extends React.Component {
             </div>
             <div className="content">
               <form id="subject-form" onSubmit={this.handleSaveClick}>
-                <SubjectOrgSelectField value={subject.organization_id} />
+                <SubjectOrgSelectField value={subject.organization} />
                 <SubjectTextField
                   label={'First Name'}
                   value={subject.first_name}
@@ -108,7 +158,7 @@ class SubjectCardEdit extends React.Component {
                   skey={'organization_subject_id_validation'}
                 />
                 <SubjectTextField
-                  label={'Date of Birth'}
+                  label={'Date of Birth (YYYY-MM-DD)'}
                   value={subject.dob}
                   skey={'dob'}
                 />
@@ -133,15 +183,7 @@ class SubjectCardEdit extends React.Component {
                 <LoadingGif />
               }
               </form>
-              {this.props.subject.updateFormError != null ?
-                <div
-                  style={{ marginTop: '10px' }}
-                  className="alert alert-danger"
-                >
-                  {this.props.subject.updateFormError}
-                </div> :
-                null
-              }
+              {this.renderErrors()}
             </div>
           </div>
         </div>
@@ -174,7 +216,7 @@ function mapStateToProps(state) {
     subject: {
       items: state.subject.items,
       activeSubject: state.subject.activeSubject,
-      updateFormError: state.subject.updateFormError,
+      updateFormErrors: state.subject.updateFormErrors,
     },
     pds: {
       items: state.pds.items,

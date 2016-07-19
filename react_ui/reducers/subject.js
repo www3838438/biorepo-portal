@@ -4,8 +4,8 @@ import { REQUEST_SUBJECTS, RECEIVE_SUBJECTS, SET_ACTIVE_SUBJECT,
          HIDE_ACTION_PANEL, UPDATE_SUBJECT_SUCCESS, UPDATE_SUBJECT_REQUEST,
          SET_LINK_MODE, ADD_SUBJECT_SUCCESS, ADD_SUBJECT_FAILURE,
          SET_ADD_SUBJECT_MODE, SET_NEW_SUBJECT, REQUEST_SUBJECT_SUCCESS,
-         SET_NEW_SUBJECT_FORM_ERRORS, SET_UPDATE_FORM_ERROR,
-         UPDATE_SUBJECT_FAILURE } from '../actions/subject';
+         SET_NEW_SUBJECT_FORM_ERRORS, SET_UPDATE_FORM_ERRORS,
+         UPDATE_SUBJECT_FAILURE, ADD_SUBJECT_REQUEST } from '../actions/subject';
 
 let initialNewSubject = {
   organization: null,
@@ -21,20 +21,24 @@ const initialState = {
   items: [],
   activeSubject: null,
   activeSubjectRecords: [],
-  newSubject: initialNewSubject,
+  newSubject: Object.assign({}, initialNewSubject),
   isSaving: false,
   showInfoPanel: false,
   showActionPanel: false,
   addRecordMode: false,
   linkMode: false,
   newFormErrors: {
-    server: null,
-    form: {},
+    server: [],
+    form: [],
   },
-  updateFormError: null,
+  updateFormErrors: {
+    server: [],
+    form: [],
+  },
 };
 
 function subject(state = initialState, action) {
+  const newSub = Object.assign({}, initialNewSubject);
   switch (action.type) {
     case REQUEST_SUBJECTS:
       return Object.assign({}, state, {
@@ -91,7 +95,10 @@ function subject(state = initialState, action) {
     case UPDATE_SUBJECT_FAILURE:
       return Object.assign({}, state, {
         isSaving: false,
-        updateFormError: 'Error saving subject. Server error.',
+        updateFormErrors: {
+          form: [],
+          server: ['Error saving subject. Server error.'],
+        },
       });
     case UPDATE_SUBJECT_SUCCESS:
       action.subject.organization_subject_id_validation = action.subject.organization_subject_id;
@@ -100,7 +107,10 @@ function subject(state = initialState, action) {
       action.subject.external_records = state.activeSubject.external_records;
       return Object.assign({}, state, {
         isSaving: false,
-        updateFormError: null,
+        updateFormErrors: {
+          form: [],
+          server: [],
+        },
         activeSubject: action.subject,
       });
     case SET_LINK_MODE:
@@ -113,49 +123,58 @@ function subject(state = initialState, action) {
         linkMode: !state.linkMode,
       });
     case SET_ADD_SUBJECT_MODE:
-      initialNewSubject = Object.assign({}, initialNewSubject);
       if (action.mode != null) {
         return Object.assign({}, state, {
           addSubjectMode: action.mode,
           newFormErrors: {
-            server: null,
-            form: {},
+            server: [],
+            form: [],
           },
-          newSubject: initialNewSubject,
+          newSubject: newSub,
         });
       }
       return Object.assign({}, state, {
         addSubjectMode: !state.addSubjectMode,
         newFormErrors: {
-          server: null,
-          form: {},
+          server: [],
+          form: [],
         },
-        newSubject: initialNewSubject,
+        newSubject: newSub,
       });
 
-
+    case ADD_SUBJECT_REQUEST:
+      return Object.assign({}, state, {
+        isSaving: true,
+      });
     case ADD_SUBJECT_SUCCESS:
       return Object.assign({}, state, {
         newFormErrors: {
-          server: null,
+          server: [],
+          form: [],
         },
+        isSaving: false,
       });
     case ADD_SUBJECT_FAILURE:
       return Object.assign({}, state, {
         newFormErrors: {
           server: action.errors,
-          form: {},
+          form: [],
         },
+        isSaving: false,
       });
     case SET_NEW_SUBJECT_FORM_ERRORS:
       return Object.assign({}, state, {
         newFormErrors: {
+          server: [],
           form: action.errors,
         },
       });
-    case SET_UPDATE_FORM_ERROR:
+    case SET_UPDATE_FORM_ERRORS:
       return Object.assign({}, state, {
-        updateFormError: action.error,
+        updateFormErrors: {
+          server: [],
+          form: action.errors,
+        },
       });
     default:
       return state;

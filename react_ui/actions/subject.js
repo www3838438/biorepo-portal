@@ -20,7 +20,7 @@ export const SET_NEW_SUBJECT = 'SET_NEW_SUBJECT';
 export const REQUEST_SUBJECT_RECORDS = 'REQUEST_SUBJECT_RECORDS';
 export const RECEIVE_SUBJECT_RECORDS = 'RECEIVE_SUBJECT_RECORDS';
 export const SET_NEW_SUBJECT_FORM_ERRORS = 'SET_NEW_SUBJECT_FORM_ERRORS';
-export const SET_UPDATE_FORM_ERROR = 'SET_UPDATE_FORM_ERROR';
+export const SET_UPDATE_FORM_ERRORS = 'SET_UPDATE_FORM_ERRORS';
 
 function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
@@ -131,7 +131,6 @@ export function fetchSubject(protocolId, subjectId) {
 export function addSubjectRequest() {
   return {
     type: ADD_SUBJECT_REQUEST,
-    isSaving: true,
   };
 }
 
@@ -147,6 +146,7 @@ export function addSubjectSuccess(subject) {
     dispatch(setAddSubjectMode());
     dispatch({
       type: ADD_SUBJECT_SUCCESS,
+      isSaving: false,
       subject,
     });
   };
@@ -277,9 +277,9 @@ export function fetchSubjectRecords(pds, subject) {
   };
 }
 
-export function setUpdateFormError(errorStr) {
+export function setUpdateFormErrors(errors) {
   return {
-    type: SET_UPDATE_FORM_ERROR,
-    error: errorStr,
+    type: SET_UPDATE_FORM_ERRORS,
+    errors,
   };
 }
