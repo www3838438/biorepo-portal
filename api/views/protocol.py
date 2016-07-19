@@ -8,7 +8,7 @@ from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 
 from base import BRPApiView
-from api.models.protocols import Organization, Protocol, ProtocolUserCredentials
+from api.models.protocols import Protocol, ProtocolUserCredentials
 from api.serializers import OrganizationSerializer, ProtocolSerializer, \
     eHBSubjectSerializer, ProtocolDataSourceSerializer, DataSourceSerializer
 from api.utilities import SubjectUtils
@@ -107,7 +107,7 @@ class ProtocolOrganizationView(BRPApiView):
 
         if p.isUserAuthorized(request.user):
             q = p.organizations.all()
-            orgs = [OrganizationSerializer(org).data for org in q]
+            orgs = [OrganizationSerializer(org.getEhbServiceInstance()).data for org in q]
         return Response(
             orgs,
             headers={'Access-Control-Allow-Origin': '*'}
@@ -220,8 +220,11 @@ class ProtocolSubjectDetailView(BRPApiView):
             organization_subject_id=subject['organization_subject_id'],
             dob=datetime.strptime(subject['dob'], '%Y-%m-%d')
         )
+        try:
+            org = self.o_rh.get(id=subject['organization'])
+        except:
+            return Response({'error': 'Invalid Organization Selected'}, status=400)
 
-        org = Organization.objects.get(pk=new_subject.organization_id)
         errors = []
         try:
             subject = self.s_rh.get(
@@ -347,17 +350,14 @@ class ProtocolSubjectDetailView(BRPApiView):
         # See if subject exists
         try:
             ehb_sub = self.s_rh.get(id=subject)
-            org = Organization.objects.get(id=subject_update['organization_id'])
-
+            org = self.o_rh.get(id=subject_update['organization_id'])
         except:
-            raise
             return Response({'error': 'subject not found'}, status=404)
-        ehb_org = org.getEhbServiceInstance()
         ehb_sub.old_subject = deepcopy(ehb_sub)
         ehb_sub.first_name = subject_update['first_name']
         ehb_sub.last_name = subject_update['last_name']
         ehb_sub.organization_subject_update_id = subject_update['organization_subject_id']
-        ehb_sub.organization_id = ehb_org.id
+        ehb_sub.organization_id = org.id
         ehb_sub.dob = datetime.strptime(subject_update['dob'], '%Y-%m-%d')
         update = self.s_rh.update(ehb_sub)[0]
         if update['errors']:
