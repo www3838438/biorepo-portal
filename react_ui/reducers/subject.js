@@ -58,7 +58,7 @@ function subject(state = initialState, action) {
       });
     case REQUEST_SUBJECT_SUCCESS:
       action.subject.organization_subject_id_validation = action.subject.organization_subject_id;
-      action.subject.organization_id = action.subject.organization;
+      action.subject.organization = action.subject.organization;
       return Object.assign({}, state, {
         items: action.subjects,
         isFetching: false,
@@ -102,7 +102,7 @@ function subject(state = initialState, action) {
       });
     case UPDATE_SUBJECT_SUCCESS:
       action.subject.organization_subject_id_validation = action.subject.organization_subject_id;
-      action.subject.organization_id = action.subject.organization;
+      action.subject.organization = action.subject.organization;
       action.subject.external_ids = state.activeSubject.external_ids;
       action.subject.external_records = state.activeSubject.external_records;
       return Object.assign({}, state, {

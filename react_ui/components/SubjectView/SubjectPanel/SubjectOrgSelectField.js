@@ -16,7 +16,7 @@ class SubjectOrgSelectField extends React.Component {
     if (!this.props.new) {
       // Changing the input fields should update the state of the active subject
       const sub = this.props.subject;
-      sub.organization_id = value;
+      sub.organization = value;
       dispatch(SubjectActions.setActiveSubject(sub));
     } else {
       const newSub = this.props.newSubject;
