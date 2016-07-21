@@ -368,7 +368,10 @@ class ProtocolSubjectDetailView(BRPApiView):
         cache_key = 'protocol{0}_sub_data'.format(pk)
         cache_data = self.cache.get(cache_key)
         if cache_data:
-            sub['external_ids'] = subject_update['external_ids']
+            if 'external_ids' in subject_update.keys():
+                sub['external_ids'] = subject_update['external_ids']
+            else:
+                sub['external_ids'] = []
             sub['external_records'] = subject_update['external_records']
             sub['organization_name'] = org.name
             subjects = json.loads(cache_data)
