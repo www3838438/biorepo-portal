@@ -214,7 +214,6 @@ class ProtocolSubjectDetailView(BRPApiView):
             return Response({'error': 'Protocol requested not found'}, status=404)
 
         subject = json.loads(request.body)
-
         new_subject = Subject(
             first_name=subject['first_name'],
             last_name=subject['last_name'],
@@ -358,7 +357,7 @@ class ProtocolSubjectDetailView(BRPApiView):
         ehb_sub.old_subject = deepcopy(ehb_sub)
         ehb_sub.first_name = subject_update['first_name']
         ehb_sub.last_name = subject_update['last_name']
-        ehb_sub.organization_subject_update_id = subject_update['organization_subject_id']
+        ehb_sub.organization_subject_id = subject_update['organization_subject_id']
         ehb_sub.organization_id = org.id
         ehb_sub.dob = datetime.strptime(subject_update['dob'], '%Y-%m-%d')
         update = self.s_rh.update(ehb_sub)[0]
