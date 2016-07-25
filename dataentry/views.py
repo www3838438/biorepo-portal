@@ -1,6 +1,7 @@
 import socket
 import json
 import logging
+import datetime
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404,\
     HttpResponseForbidden
@@ -10,15 +11,11 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.core.cache import cache
 from api.ehb_service_client import ServiceClient
-from api.models.protocols import Protocol, ProtocolDataSource,\
-    Organization, ProtocolUserCredentials, ProtocolDataSourceLink
+from api.models.protocols import ProtocolDataSource,\
+    ProtocolUserCredentials, ProtocolDataSourceLink
 from api.utilities import SubjectUtils, DriverUtils
-from django.db import IntegrityError
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
 
-from ehb_client.requests.exceptions import ErrorConstants, PageNotFound
-from ehb_client.requests.base import RequestBase
+from ehb_client.requests.exceptions import PageNotFound
 from ehb_client.requests.external_record_request_handler import ExternalRecord
 from ehb_client.requests.subject_request_handler import Subject
 from ehb_datasources.drivers.exceptions import RecordDoesNotExist,\
@@ -41,6 +38,7 @@ def connectionRefused(func):
             return HttpResponse('The system was unable to connect to either the eHB service or another datasource.')
     return callfunc
 
+
 def _auth_unauth_source_lists(protocol, user, ignore_current_pds=None):
     authorized_sources = []
     unauthorized_sources = []
@@ -59,6 +57,7 @@ def _auth_unauth_source_lists(protocol, user, ignore_current_pds=None):
     unauthorized_sources = sorted(
         unauthorized_sources, key=lambda source: source.display_label)
     return (authorized_sources, unauthorized_sources)
+
 
 def getExternalIdentifiers(pds, subject, labels):
     er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
@@ -342,7 +341,6 @@ def pds_dataentry_start(request, pds_id, subject_id, record_id):
                 user=request.user,
                 data_source=pds
             )
-
             srsf = generateSubRecordSelectionForm(
                 driver,
                 record.record_id,
@@ -383,10 +381,9 @@ def pds_dataentry_start(request, pds_id, subject_id, record_id):
                 'User {0} attempted access on {1}. Credentials not found'.format(
                     request.user,
                     pds.data_source.name))
-            error_msgs.append((
-                    'Your user credentials were not found for'
-                    ' %s. Please contact system administrator.') % (
-                    pds.data_source.name))
+            error_msgs.append(
+                ('Your user credentials were not found for'
+                 ' %s. Please contact system administrator.') % (pds.data_source.name))
     '''
     Either multiple records exist in the ehb-service for this
     system/path/subject and hence proper record cannot be identified # OR the
@@ -424,26 +421,6 @@ def _create_external_system_record(request, driver, pds, subject, record_id=None
     return er.id
 
 
-def _auth_unauth_source_lists(protocol, user, ignore_current_pds=None):
-    authorized_sources = []
-    unauthorized_sources = []
-    for pds in protocol.getProtocolDataSources():
-        if ignore_current_pds and pds == ignore_current_pds:
-            continue
-        try:
-            ProtocolUserCredentials.objects.get(
-                protocol=protocol, data_source=pds, user=user)
-            # creds exist so add this to authorized sources
-            authorized_sources.append(pds)
-        except ProtocolUserCredentials.DoesNotExist:
-            unauthorized_sources.append(pds)
-    authorized_sources = sorted(
-        authorized_sources, key=lambda source: source.display_label)
-    unauthorized_sources = sorted(
-        unauthorized_sources, key=lambda source: source.display_label)
-    return (authorized_sources, unauthorized_sources)
-
-
 @login_required
 @connectionRefused
 def pds_dataentry_create(request, pds_id, subject_id):
@@ -452,7 +429,7 @@ def pds_dataentry_create(request, pds_id, subject_id):
     implement the form.'''
 
     pds = getProtocolDataSource(pk=pds_id)
-    log.info('Attempting record creation for {0} on Protocol Datasource {1}'.format(subject_id, pds_id))
+    log.debug('Attempting record creation for {0} on Protocol Datasource {1}'.format(subject_id, pds_id))
 
     MANAGE_EXTERNAL_IDS = False
     # Check to see if this PDS is managing external identifiers
@@ -521,11 +498,22 @@ def pds_dataentry_create(request, pds_id, subject_id):
                         log.error('Subject record group not found for {0}'.format(subject_id))
                         raise Exception('No subject record group found')
                     try:
+                        ts = datetime.datetime.now()
                         rec_id = driver.process_new_record_form(
                             request=request,
                             record_id_prefix=rec_id_prefix,
                             record_id_validator=rec_id_validator
                         )
+                        response_time = (datetime.datetime.now() - ts).microseconds / 1000
+                        log_data = {
+                            'response_time': response_time,
+                            'user': request.user.username,
+                            'protocol': pds.protocol.id,
+                            'pds': pds.id,
+                            'subject': subject_id,
+                            'driver': driver
+                        }
+                        log.info('New record form processed', extra=log_data)
                         try:
                             notify_record_creation_listeners(
                                 driver, rec_id, pds, request.user, subject_id)
@@ -605,7 +593,6 @@ def pds_dataentry_create(request, pds_id, subject_id):
                                 cache.set(cache_key, json.dumps(subs))
                                 cache.persist(cache_key)
 
-
                         except RecordCreationError as rce:  # exception from the eHB
                             log.error(rce.errmsg)
                             record_already_exists = 6
@@ -629,8 +616,19 @@ def pds_dataentry_create(request, pds_id, subject_id):
                                     path = None
                                     error_msgs.append(
                                         'This Subject ID has already been assigned to another subject.')
+                                    ts = datetime.datetime.now()
                                     form = driver.create_new_record_form(
                                         request)
+                                    response_time = (datetime.datetime.now() - ts).microseconds / 1000
+                                    log_data = {
+                                        'response_time': response_time,
+                                        'user': request.user.username,
+                                        'protocol': pds.protocol.id,
+                                        'pds': pds.id,
+                                        'subject': subject_id,
+                                        'driver': driver
+                                    }
+                                    log.info('New record form created', extra=log_data)
                                     o_rh = ServiceClient.get_rh_for(
                                         record_type=ServiceClient.ORGANIZATION)
                                     org = o_rh.get(id=subject.organization_id)
@@ -666,7 +664,18 @@ def pds_dataentry_create(request, pds_id, subject_id):
                 except RecordCreationError as rce:  # exceptions from the driver (i.e. errors in the form)
                     log.error(rce.errmsg)
                     error_msgs.append(rce.cause)
+                    ts = datetime.datetime.now()
                     form = driver.create_new_record_form(request)
+                    response_time = (datetime.datetime.now() - ts).microseconds / 1000
+                    log_data = {
+                        'response_time': response_time,
+                        'user': request.user.username,
+                        'protocol': pds.protocol.id,
+                        'pds': pds.id,
+                        'subject': subject_id,
+                        'driver': driver
+                    }
+                    log.info('New record form created', extra=log_data)
                     o_rh = ServiceClient.get_rh_for(
                         record_type=ServiceClient.ORGANIZATION)
                     org = o_rh.get(id=subject.organization_id)
@@ -690,7 +699,18 @@ def pds_dataentry_create(request, pds_id, subject_id):
                     )
             else:  # request method not post
                 # have the driver generate the form and render it
+                ts = datetime.datetime.now()
                 form = driver.create_new_record_form(request)
+                response_time = (datetime.datetime.now() - ts).microseconds / 1000
+                log_data = {
+                    'response_time': response_time,
+                    'user': request.user.username,
+                    'protocol': pds.protocol.id,
+                    'pds': pds.id,
+                    'subject': subject_id,
+                    'driver': driver
+                }
+                log.info('New record form created.', extra=log_data)
                 o_rh = ServiceClient.get_rh_for(
                     record_type=ServiceClient.ORGANIZATION)
                 org = o_rh.get(id=subject.organization_id)
@@ -823,9 +843,20 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
             if cf:
                 return cf
             else:
+                ts = datetime.datetime.now()
                 form = driver.subRecordForm(external_record=external_record,
                                             form_spec=form_spec,
                                             session=request.session)
+                response_time = (datetime.datetime.now() - ts).microseconds / 1000
+                log_data = {
+                    'response_time': response_time,
+                    'user': request.user.username,
+                    'protocol': pds.protocol.id,
+                    'pds': pds.id,
+                    'subject': subject_id,
+                    'driver': driver,
+                }
+                log.info('Subject sub-record form generated.', extra=log_data)
             return form
         except RecordDoesNotExist:
             return None
@@ -874,11 +905,24 @@ def pds_dataentry_form(request, pds_id, subject_id, form_spec, record_id):
             # have the driver process this request
             key = 'subrecordform_{0}_{1}'.format(record.id, form_spec)
             # cache.delete(key)
+            ts = datetime.datetime.now()
             errors = driver.processForm(
                 request=request, external_record=record, form_spec=form_spec, session=request.session)
+            response_time = (datetime.datetime.now() - ts).microseconds / 1000
+            log_data = {
+                'response_time': response_time,
+                'user': request.user.username,
+                'protocol': pds.protocol.id,
+                'pds': pds.id,
+                'subject': subject_id,
+            }
+
             if errors:
+                log_data['errors'] = errors
+                log.error('Error processing form', extra=log_data)
                 error_msgs = [e for e in errors]
             else:
+                log.info('Record form updated', extra=log_data)
                 path = '%s/dataentry/protocoldatasource/%s/subject/%s/record/%s/start/' % (
                     ServiceClient.self_root_path,
                     pds.id,

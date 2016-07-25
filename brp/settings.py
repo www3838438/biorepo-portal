@@ -222,6 +222,9 @@ LDAP['SEARCH_FILTER'] = env.str('LDAP_SEARCH_FILTER')
 LDAP['SERVER_URI'] = env('LDAP_SERVER_URI')
 LDAP['PREBINDPW'] = env('LDAP_PREBINDPW')
 
+# Enable Performance logging of 'ehb-client' logging facility
+EHB_LOG = True
+
 # Logging Facilities
 LOGGING = {
     'version': 1,
@@ -283,12 +286,21 @@ LOGGING = {
             'propagate': False
         },
         'api.views': {
-            'handlers': ['ehb'],
+            'handlers': [],
             'propagate': False,
         },
+        'dataentry.views': {
+            'handlers': [],
+            'propagate': False
+        },
         'portal': {
-            'handlers': ['ehb'],
-            'propagate': True
+            'handlers': [],
+            'propagate': False
+        },
+        'ehb-client': {
+            'level': 'DEBUG',
+            'handlers': [],
+            'propagate': False
         }
     }
 }
@@ -306,7 +318,9 @@ if env.bool('LOGSTASH_ENABLED'):
     }
     LOGGING['loggers']['django.request']['handlers'].append('logstash')
     LOGGING['loggers']['api.views']['handlers'].append('logstash')
+    LOGGING['loggers']['dataentry.views']['handlers'].append('logstash')
     LOGGING['loggers']['portal']['handlers'].append('logstash')
+    LOGGING['loggers']['ehb-client']['handlers'].append('logstash')
 
 if FORCE_SCRIPT_NAME:
     ADMIN_MEDIA_PREFIX = os.path.join(
