@@ -12,6 +12,7 @@ RUN apk add --update \
     pcre-dev \
     musl-dev \
     postgresql-dev \
+    mailcap \
   && rm -rf /var/cache/apk/*
 
 RUN pip install "Django>=1.9.6,<1.10"
