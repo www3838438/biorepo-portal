@@ -25,9 +25,10 @@ RUN pip install "djangorestframework-jwt>=1.5.0,<1.6"
 RUN pip install "git+https://github.com/chop-dbhi/ehb-client.git@bd60fa0925e57d41cea0343e6d71d9340cfe4e3e#egg=ehb_client-master"
 RUN pip install "git+https://github.com/chop-dbhi/ehb-datasources.git@91166089fd0f94a2f01db457fbf7766e545558a1#egg=ehb_datasources-master"
 RUN pip install "python-ldap>=2.4.25,<2.5"
-RUN pip install "https://github.com/unbit/uwsgi/archive/uwsgi-2.0.zip#egg=uwsgi"
+RUN pip install "gunicorn>=19,<20"
 RUN pip install "psycopg2>=2.6.1,<2.7"
 RUN pip install "python-logstash>=0.4.6,<0.5"
+RUN pip install "dj-static>=0.0.6,<0.1.0"
 
 
 ENV APP_ENV test
