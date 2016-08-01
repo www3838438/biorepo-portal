@@ -15,3 +15,5 @@ Contents:
    Protocol Data Sources <pds/index>
    Protocol User <protocoluser>
    Protocol Data Source Credentials <pdsc>
+   Record Labels <recordlabels>
+   Record Links <recordlinks>
