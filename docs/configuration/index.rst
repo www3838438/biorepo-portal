@@ -17,3 +17,4 @@ Contents:
    Protocol Data Source Credentials <pdsc>
    Record Labels <recordlabels>
    Record Links <recordlinks>
+   External IDs <externalids>
