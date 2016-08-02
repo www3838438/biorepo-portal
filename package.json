@@ -50,8 +50,10 @@
     "babel-polyfill": "^6.6.1",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.3.13",
+    "enzyme": "^2.4.1",
     "jest-cli": "^0.9.0",
     "jsx-loader": "^0.13.2",
+    "mocha": "^3.0.0",
     "react-addons-test-utils": "^0.14.7",
     "redux-devtools": "^3.0.1",
     "webpack": "^1.12.13"
