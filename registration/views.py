@@ -2,7 +2,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import permission_required
-
+from django.contrib.auth.decorators import login_required
 from registration.backends import get_backend
 
 def register(request, backend='default', template_name='registration/registration_form.html'):
@@ -51,6 +51,7 @@ def verify(request, backend='default', template_name='registration/registration_
     })
 
 @never_cache
+@login_required()
 def moderate(request, backend='default', template_name='registration/registration_moderate.html', **kwargs):
     backend = get_backend(backend)
     profile = backend.get_profile(request, **kwargs)
@@ -71,6 +72,7 @@ def moderate(request, backend='default', template_name='registration/registratio
     })
 
 @permission_required('registration.change_registrationprofile')
+@login_required()
 def moderate_list(request, backend='default', template_name='registration/registration_moderate_list.html'):
     backend = get_backend(backend)
     profiles = backend.get_unmoderated_profiles(request)
