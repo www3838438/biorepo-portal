@@ -23,10 +23,7 @@ def get_ip_address(request):
     if ip_address:
         ip_match = IP_RE.match(ip_address)
         if ip_match is not None:
-            ip_address = ip_match.group()
-        else:
-            ip_address = None
-    return ip_address
+            return ip_match.group()
 
 
 def throttle_login(request):
@@ -35,8 +32,8 @@ def throttle_login(request):
     attempts. If the user succeeds at a login before the max attempts has
     been reached, the attempts are reset.
     """
-    email = request.POST['email']
-    password = request.POST['password']
+    email = request.POST.get('email')
+    password = request.POST.get('password')
 
     # if the form is not filled out completely, pass along
     if not (email and password):
@@ -59,10 +56,7 @@ def throttle_login(request):
         # once the max attempts has been reached, deactive the account
         # and email the admins
         user_already_inactive = False
-        try:
-            user = User.objects.get(email=email.lower())
-        except User.DoesNotExist:
-            user = None
+        user = User.objects.get(email=email.lower())
 
         if user:
             if user.is_active:
@@ -75,15 +69,15 @@ def throttle_login(request):
                 user_already_inactive = True
 
         t = get_template('accounts/max_login_attempts.txt')
-        c = Context({
+        c = {
             'user': user,
             'username': email.lower(),
             'minutes': int(request.session.get_expiry_age() / 60.0),
             'email': email,
             'ip_address': ip_address,
             'user_already_inactive': user_already_inactive,
-        })
-        mail_admins(MAX_LOGIN_ATTEMPTS_SUBJECT, t.render(c), True)
+        }
+        mail_admins(MAX_LOGIN_ATTEMPTS_SUBJECT, t.render(context=c), True)
 
         login_allowed = False
 

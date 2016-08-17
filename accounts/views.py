@@ -1,13 +1,11 @@
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from django.template import RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.contrib.auth.views import login, logout_then_login
 from django.contrib.flatpages.models import FlatPage
 from django.views.decorators.cache import never_cache
 
 from accounts.utils import throttle_login, clear_throttled_login
-from registration.forms import EmailAuthenticationForm
 from .forms import BrpAuthenticationForm
 
 
@@ -40,9 +38,9 @@ def throttled_login(request):
             clear_throttled_login(request)
         return response
 
-    return render_to_response(template_name, {
+    return render(request, template_name, {
         'login_not_allowed': not login_allowed
-    }, context_instance=RequestContext(request))
+    })
 
 
 @never_cache
@@ -58,7 +56,7 @@ def eula(request, readonly=True, redirect_to=None):
         return logout_then_login(request)
 
     flatpage = FlatPage.objects.get(url='/eula/')
-    return render_to_response('accounts/eula.html', {
+    return render(request, 'accounts/eula.html', {
         'flatpage': flatpage,
         'readonly': readonly,
-    }, context_instance=RequestContext(request))
+    })

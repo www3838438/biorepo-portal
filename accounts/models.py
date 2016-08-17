@@ -12,8 +12,8 @@ class UserProfile(models.Model):
     # reason for using the system
     reason = models.TextField(null=True)
 
-    def __unicode__(self):
-        return u"%s's Profile" % self.user.get_full_name() or self.user
+    def __str__(self):
+        return "%s's Profile" % self.user.get_full_name() or self.user
 
 from accounts.handlers import reset_eula  # noqa
 

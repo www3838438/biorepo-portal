@@ -31,23 +31,10 @@ class ChopRegistrationForm(EmailOnlyRegistrationForm):
     reason = forms.CharField(widget=forms.Textarea)
     eula = forms.BooleanField()
 
-    def clean_password1(self):
-        password = self.cleaned_data.get('password1')
-        email = self.cleaned_data.get('email').lower()
-        if password and (email and not email.endswith('@email.chop.edu')):
-            validate_password(password, length=MIN_PASSWORD_LENGTH)
-        return password
-
     def save(self, commit=True):
         user = super(forms.ModelForm, self).save(commit=False)
-
-        # again, we do a custom setup for CHOP users
-        if user.email.endswith('@email.chop.edu'):
-            user.username = user.email.lower().split('@')[0]
-            user.set_unusable_password()
-        else:
-            user.username = generate_random_username()
-            user.set_password(self.cleaned_data['password1'])
+        user.username = user.email.lower().split('@')[0]
+        user.set_unusable_password()
 
         if commit:
             user.save()
@@ -61,6 +48,7 @@ class BrpAuthenticationForm(auth_forms.AuthenticationForm):
     username = forms.CharField(required=False)
 
     def clean(self):
+        username = self.cleaned_data.get('username')
         email = self.cleaned_data.get('email')
         password = self.cleaned_data.get('password')
         # Fragile way of making sure people are using email addresses to log in.
@@ -71,9 +59,11 @@ class BrpAuthenticationForm(auth_forms.AuthenticationForm):
             # used, but the auth backend accepts an email address
             self.user_cache = authenticate(username=email, password=password)
             if self.user_cache is None:
+                self.user_cache = authenticate(username=username, password=password)
+            if self.user_cache is None:
                 raise forms.ValidationError(_('Please enter a correct email '
                                               'and password. Note that both '
                                               'fields are case-sensitive.'))
             elif not self.user_cache.is_active:
-                raise forms.ValidationError(_('This account is not active.'))
+                raise forms.ValidationError(_('This account is not active. Did you check your email to confirm registration?'))
         return self.cleaned_data
