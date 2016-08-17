@@ -14,3 +14,5 @@ node_modules
 brp/static/js/bundle.js
 reload_db.sh
 docs/_build
+.coverage
+*.bak
