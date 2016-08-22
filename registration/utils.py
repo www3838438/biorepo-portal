@@ -14,14 +14,14 @@ def generate_random_username(attempts=10):
     qs = UserModel().objects.all()
     r = random.SystemRandom()
 
-    for i in xrange(attempts):
+    for i in range(attempts):
         username = str(r.randint(USERNAME_LEN_MIN, USERNAME_LEN_MAX))
 
         # ensure this alias is not already taken
         if not qs.filter(username=username).exists():
             return username
 
-    raise StandardError('max attempts have been reached (n={0})'.format(attempts))
+    raise Exception('max attempts have been reached (n={0})'.format(attempts))
 
 def validate_password(password, length):
     "Validates the given password."

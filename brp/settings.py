@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'api',
     'dataentry',
 ]
+if DEBUG:
+    INSTALLED_APPS.append('django_extensions')
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -65,6 +67,7 @@ MIDDLEWARE_CLASSES = [
     'session_security.middleware.SessionSecurityMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'accounts.middleware.CheckEulaMiddleware',
 ]
 
 ROOT_URLCONF = 'brp.urls'
@@ -104,7 +107,6 @@ CACHES = {
 
 AUTHENTICATION_BACKENDS = (
     'accounts.backends.LdapBackend',
-    'accounts.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -154,6 +156,7 @@ LOGIN_REDIRECT_URL = '/'
 
 STATIC_ROOT = str(root.path('_site/static/'))
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Honest Broker Settings
@@ -208,6 +211,7 @@ LDAP['SEARCHDN'] = env.str('LDAP_SEARCHDN')
 LDAP['SEARCH_FILTER'] = env.str('LDAP_SEARCH_FILTER')
 LDAP['SERVER_URI'] = env('LDAP_SERVER_URI')
 LDAP['PREBINDPW'] = env('LDAP_PREBINDPW')
+LDAP['MAX_AGE'] = env.int('LDAP_MAX_AGE')
 
 # Enable Performance logging of 'ehb-client' logging facility
 EHB_LOG = env.bool('EHB_LOG', True)

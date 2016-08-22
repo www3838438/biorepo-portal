@@ -996,6 +996,6 @@ def extract_data_from_post_request(request):
         data = {}
         post_data = request._post
         if post_data:
-            for k, v in post_data.items():
+            for k, v in list(post_data.items()):
                 data[k] = v
             return data

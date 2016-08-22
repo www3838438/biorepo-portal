@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 from datetime import datetime
 import random
 import string
@@ -45,7 +45,7 @@ class Base(CreatedModified):
         super(Base, self).save(*args, **kwargs)
 
     class Meta:
-        app_label = u'api'
+        app_label = 'api'
         abstract = True
 
 
@@ -119,5 +119,5 @@ class BaseWithImmutableKey(Base):
         super(BaseWithImmutableKey, self).save(*args, **kwargs)
 
     class Meta:
-        app_label = u'api'
+        app_label = 'api'
         abstract = True

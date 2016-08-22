@@ -23,7 +23,7 @@ def get_backend(alias):
     appropriate name), ``django.core.exceptions.ImproperlyConfigured``
     is raised.
     """
-    if not REGISTRATION_BACKENDS.has_key(alias):
+    if alias not in REGISTRATION_BACKENDS:
         raise ImproperlyConfigured('No registration backend named "{0}"'.format(alias))
 
     path = REGISTRATION_BACKENDS[alias]
@@ -33,7 +33,7 @@ def get_backend(alias):
 
     try:
         mod = import_module(module)
-    except ImportError, e:
+    except ImportError as e:
         raise ImproperlyConfigured('Error loading registration backend {0}: "{1}"'.format(module, e))
 
     try:

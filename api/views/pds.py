@@ -4,7 +4,7 @@ from datetime import datetime
 
 from django.core.exceptions import ObjectDoesNotExist
 
-from base import BRPApiView
+from .base import BRPApiView
 
 from api.models.protocols import ProtocolDataSource, ProtocolUserCredentials
 from api.serializers import eHBSubjectSerializer, \
@@ -116,7 +116,7 @@ class PDSAvailableLinksView(BRPApiView):
             if not res:
                 return Response([])
             for link in res:
-                if 'links' in dc.keys() and link['id'] in dc['links']:
+                if 'links' in list(dc.keys()) and link['id'] in dc['links']:
                     links.append(link)
             return Response(links)
 

@@ -43,11 +43,12 @@ class RegistrationManager(models.Manager):
         generated from a combination of the ``User``'s username and a random
         salt.
         """
-        salt = hashlib.sha1(str(random.random())).hexdigest()[:5]
+        salt = hashlib.sha1(str(random.random()).encode('utf-8')).hexdigest()[:5]
         username = user.username
 
-        if isinstance(username, unicode):
+        if isinstance(username, str):
             username = username.encode('utf-8')
 
-        activation_key = hashlib.sha1(salt+username).hexdigest()
+        k = salt.encode('utf-8') + username
+        activation_key = hashlib.sha1(k).hexdigest()
         return self.create(user=user, activation_key=activation_key)

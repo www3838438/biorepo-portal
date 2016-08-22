@@ -7,7 +7,7 @@ from copy import deepcopy
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 
-from base import BRPApiView
+from .base import BRPApiView
 from api.models.protocols import Protocol, ProtocolUserCredentials
 from api.serializers import OrganizationSerializer, ProtocolSerializer, \
     eHBSubjectSerializer, ProtocolDataSourceSerializer, DataSourceSerializer
@@ -60,7 +60,7 @@ class ProtocolDataSourceView(BRPApiView):
                 dc = {}
             # If labels are defined get label names from eHB.
             # (label_id, label_description)
-            if 'labels' in dc.keys():
+            if 'labels' in list(dc.keys()):
                 labels = cache.get('ehb_labels')
                 if not labels:
                     labels = self.erl_rh.query()
@@ -155,7 +155,7 @@ class ProtocolSubjectsView(BRPApiView):
             if manageExternalIDs:
                 try:
                     config = json.loads(ExIdSource.driver_configuration)
-                    if 'sort_on' in config.keys():
+                    if 'sort_on' in list(config.keys()):
                         # er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
                         # lbl = er_label_rh.get(id=config['sort_on'])
                         lbl = ''
@@ -368,7 +368,7 @@ class ProtocolSubjectDetailView(BRPApiView):
         cache_key = 'protocol{0}_sub_data'.format(pk)
         cache_data = self.cache.get(cache_key)
         if cache_data:
-            if 'external_ids' in subject_update.keys():
+            if 'external_ids' in list(subject_update.keys()):
                 sub['external_ids'] = subject_update['external_ids']
             else:
                 sub['external_ids'] = []

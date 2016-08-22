@@ -169,7 +169,7 @@ class ProtocolViewTests(BRPTestCase):
         response = client.post(url, subject, format='json')
         success, subject, errors = response.data
         if errors:
-            print errors
+            print(errors)
         self.assertTrue(success)
         self.assertEqual(len(errors), 0)
         url = reverse(
@@ -225,32 +225,32 @@ class ProtocolViewTests(BRPTestCase):
         response.render()
         self.assertEqual(response.status_code, 200)
         # Check structure
-        self.assertTrue('first_name' in response.data.keys())
-        self.assertTrue('last_name' in response.data.keys())
-        self.assertTrue('created' in response.data.keys())
-        self.assertTrue('modified' in response.data.keys())
-        self.assertTrue('dob' in response.data.keys())
-        self.assertTrue('external_records' in response.data.keys())
-        self.assertTrue('external_ids' in response.data.keys())
-        self.assertTrue('organization_name' in response.data.keys())
-        self.assertTrue('organization_subject_id' in response.data.keys())
-        self.assertTrue('organization' in response.data.keys())
-        self.assertTrue('group_name' in response.data.keys())
-        self.assertTrue('id' in response.data.keys())
+        self.assertTrue('first_name' in list(response.data.keys()))
+        self.assertTrue('last_name' in list(response.data.keys()))
+        self.assertTrue('created' in list(response.data.keys()))
+        self.assertTrue('modified' in list(response.data.keys()))
+        self.assertTrue('dob' in list(response.data.keys()))
+        self.assertTrue('external_records' in list(response.data.keys()))
+        self.assertTrue('external_ids' in list(response.data.keys()))
+        self.assertTrue('organization_name' in list(response.data.keys()))
+        self.assertTrue('organization_subject_id' in list(response.data.keys()))
+        self.assertTrue('organization' in list(response.data.keys()))
+        self.assertTrue('group_name' in list(response.data.keys()))
+        self.assertTrue('id' in list(response.data.keys()))
         # Check for records
         self.assertEqual(len(response.data['external_records']), 2)
         record = response.data['external_records'][0]
         # Check record structure
-        self.assertTrue('id' in record.keys())
-        self.assertTrue('label_desc' in record.keys())
-        self.assertTrue('created' in record.keys())
-        self.assertTrue('pds' in record.keys())
-        self.assertTrue('modified' in record.keys())
-        self.assertTrue('label' in record.keys())
-        self.assertTrue('record_id' in record.keys())
-        self.assertTrue('path' in record.keys())
-        self.assertTrue('external_system' in record.keys())
-        self.assertTrue('subject' in record.keys())
+        self.assertTrue('id' in list(record.keys()))
+        self.assertTrue('label_desc' in list(record.keys()))
+        self.assertTrue('created' in list(record.keys()))
+        self.assertTrue('pds' in list(record.keys()))
+        self.assertTrue('modified' in list(record.keys()))
+        self.assertTrue('label' in list(record.keys()))
+        self.assertTrue('record_id' in list(record.keys()))
+        self.assertTrue('path' in list(record.keys()))
+        self.assertTrue('external_system' in list(record.keys()))
+        self.assertTrue('subject' in list(record.keys()))
 
     def test_retrieve_subject_detail_from_protocol_badpk(self):
         '''
@@ -370,14 +370,14 @@ class PDSViewTests(BRPTestCase):
         self.assertEqual(response.status_code, 200)
         # Check Record structure
         record = response.data
-        self.assertTrue('id' in record.keys())
-        self.assertTrue('created' in record.keys())
-        self.assertTrue('modified' in record.keys())
-        self.assertTrue('label' in record.keys())
-        self.assertTrue('record_id' in record.keys())
-        self.assertTrue('path' in record.keys())
-        self.assertTrue('external_system' in record.keys())
-        self.assertTrue('subject' in record.keys())
+        self.assertTrue('id' in list(record.keys()))
+        self.assertTrue('created' in list(record.keys()))
+        self.assertTrue('modified' in list(record.keys()))
+        self.assertTrue('label' in list(record.keys()))
+        self.assertTrue('record_id' in list(record.keys()))
+        self.assertTrue('path' in list(record.keys()))
+        self.assertTrue('external_system' in list(record.keys()))
+        self.assertTrue('subject' in list(record.keys()))
 
     def test_retrieve_pds_subject_record_links(self):
         view = PDSRecordLinkDetailView.as_view()
@@ -401,11 +401,11 @@ class PDSViewTests(BRPTestCase):
         self.assertEqual(len(response.data), 1)
         # Check structure
         link = response.data[0]
-        self.assertTrue('external_record' in link.keys())
-        self.assertTrue('id' in link.keys())
-        self.assertTrue('type' in link.keys())
-        self.assertTrue('description' in link.keys())
-        self.assertTrue('primary' in link.keys())
+        self.assertTrue('external_record' in list(link.keys()))
+        self.assertTrue('id' in list(link.keys()))
+        self.assertTrue('type' in list(link.keys()))
+        self.assertTrue('description' in list(link.keys()))
+        self.assertTrue('primary' in list(link.keys()))
 
     def test_retrieve_pds_links(self):
         view = PDSAvailableLinksView.as_view()
@@ -425,9 +425,9 @@ class PDSViewTests(BRPTestCase):
         self.assertEqual(len(response.data), 1)
         # Check link structure
         link = response.data[0]
-        self.assertTrue('typ' in link.keys())
-        self.assertTrue('id' in link.keys())
-        self.assertTrue('desc' in link.keys())
+        self.assertTrue('typ' in list(link.keys()))
+        self.assertTrue('id' in list(link.keys()))
+        self.assertTrue('desc' in list(link.keys()))
 
 # TODO Test update subject (PDS, Protocol)
 # TODO Test add and delete record link

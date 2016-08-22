@@ -53,9 +53,9 @@ class Command(BaseCommand):
             protocols = Protocol.objects.filter(id=int(protocol_id)).all()
         er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
         lbls = er_label_rh.query()
-        print 'Caching {0} protocol(s)...'.format(len(protocols))
+        print('Caching {0} protocol(s)...'.format(len(protocols)))
         for protocol in protocols:
-            print 'Caching {}'.format(protocol)
+            print('Caching {}'.format(protocol))
             subjects = protocol.getSubjects()
             organizations = protocol.organizations.all()
             if subjects:
@@ -80,7 +80,7 @@ class Command(BaseCommand):
             if manageExternalIDs:
                 try:
                     config = json.loads(ExIdSource.driver_configuration)
-                    if 'sort_on' in config.keys():
+                    if 'sort_on' in list(config.keys()):
                         # er_label_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
                         # lbl = er_label_rh.get(id=config['sort_on'])
                         lbl = ''

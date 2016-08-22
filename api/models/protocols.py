@@ -439,7 +439,7 @@ class ProtocolDataSourceLink(models.Model):
             pass
 
     class Meta(object):
-        app_label = u'api'
+        app_label = 'api'
 
 
 class ProtocolUser(Base):
