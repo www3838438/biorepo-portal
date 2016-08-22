@@ -2,9 +2,10 @@ FROM alpine:3.3
 
 RUN apk add --update \
     bash \
+    postgresql-dev \
+    gcc \
     python3 \
     python3-dev \
-    py-pip \
     build-base \
     git \
     openldap-dev \
