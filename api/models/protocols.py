@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.http import Http404
 
 from ..ehb_service_client import ServiceClient
 from ..utilities import RecordUtils
@@ -16,6 +17,7 @@ from ehb_client.requests.exceptions import PageNotFound, \
     RequestedRangeNotSatisfiable
 from ehb_client.requests.external_system_request_handler import ExternalSystem
 from ehb_client.requests.group_request_handler import Group
+from ehb_client.requests.subject_request_handler import Subject
 
 import ehb_datasources.drivers.phenotype.driver as PhenotypeDriver
 import ehb_datasources.drivers.redcap.driver as RedCapDriver
@@ -300,6 +302,27 @@ class ProtocolDataSource(Base):
                 'Please enter a valid JSON object in Driver Configuration ' +
                 'Options. If there is no configuration enter "{}"')
             raise ValidationError(msg)
+
+    def getSubject(self, subjectId):
+        cache_key = '{}_subjects'.format(self.protocol.id)
+        cached = cache.get(cache_key)
+        if cached:
+            subs = json.loads(cached)
+            for subject in subs:
+                if subject['id'] == int(subjectId):
+                    return Subject(-1).identity_from_jsonObject(subject)
+        else:
+            try:
+                s_rh = ServiceClient.get_rh_for(record_type=ServiceClient.SUBJECT)
+                subject = s_rh.get(id=subjectId)
+                if not self.protocol.isSubjectOnProtocol(subject):
+                    raise Http404
+                else:
+                    return subject
+            except PageNotFound:
+                raise Http404
+
+        return None
 
     def getSubjectExternalRecords(self, subject):
         '''

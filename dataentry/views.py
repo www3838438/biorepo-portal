@@ -25,12 +25,14 @@ log = logging.getLogger(__name__)
 
 
 def forbidden(request, template_name='403.html'):
+    # TODO: Refactor into utility function or let ehb-client handle
     '''Default 403 handler'''
     t = loader.get_template(template_name)
     return HttpResponseForbidden(t.render(RequestContext(request)))
 
 
 def connectionRefused(func):
+    # TODO: Refactor this into utility function
     def callfunc(*args, **kwargs):
         try:
             return func(*args, **kwargs)
@@ -40,6 +42,7 @@ def connectionRefused(func):
 
 
 def _auth_unauth_source_lists(protocol, user, ignore_current_pds=None):
+    # TODO: Refactor as helper method on Protocol model
     authorized_sources = []
     unauthorized_sources = []
     for pds in protocol.getProtocolDataSources():
@@ -60,6 +63,7 @@ def _auth_unauth_source_lists(protocol, user, ignore_current_pds=None):
 
 
 def getExternalIdentifiers(pds, subject, labels):
+    # TODO: Refactor as helper method on PDS model
     er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
     ck = '{0}_{1}_externalrecords'.format(pds.protocol.id, subject.id)
     # See if our records are in the cache.
@@ -87,29 +91,16 @@ def getExternalIdentifiers(pds, subject, labels):
 
 
 def getProtocolDataSource(pk):
-    # TODO implement caching
+    # TODO: implement caching
+    # TODO: Consider refactoring to https://docs.djangoproject.com/en/1.9/topics/http/shortcuts/#get-object-or-404
     try:
         return ProtocolDataSource.objects.get(pk=pk)
     except ProtocolDataSource.DoesNotExist:
         raise Http404
 
 
-def getProtocolSubjects(protocol):
-    ck = '{0}_subjects'.format(protocol.id)
-    resp = cache.get(ck)
-    if resp:
-        subs = [Subject(-1).identity_from_jsonObject(sub) for sub in json.loads(resp)]
-        return subs
-    else:
-        subs = protocol.getSubjects()
-        if subs:
-            cache_payload = [json.loads(subject.json_from_identity(subject)) for subject in subs]
-            cache.set(ck, json.dumps(cache_payload))
-            cache.persist(ck)
-        return subs
-
-
 def getPDSSubject(pds, sub_id):
+    # TODO: Refactor as helper method on PDS model
     ck = '{0}_subjects'.format(pds.protocol.id)
     resp = cache.get(ck)
     if resp:
@@ -132,6 +123,7 @@ def getPDSSubject(pds, sub_id):
 
 
 def getRedcapStatus():
+    # TODO: Refactor this out?
     redcap_resp = cache.get('redcap_status')
     if redcap_resp:
         if int(redcap_resp) < 1000:
@@ -144,6 +136,7 @@ def getRedcapStatus():
 
 
 def filterLabels(pds, labels):
+    # TODO: Refactor this to PDS model
     try:
         config = json.loads(pds.driver_configuration)
         lbl_set = []
@@ -527,6 +520,7 @@ def pds_dataentry_create(request, pds_id, subject_id):
                                 pds.id,
                                 subject_id,
                                 ehb_rec_id)
+                            # TODO: Refactor this cache logic into own function
                             cache_key = 'protocol{0}_sub_data'.format(pds.protocol.id)
                             cache_data = cache.get(cache_key)
                             if cache_data:
