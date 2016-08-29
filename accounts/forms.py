@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth import forms as auth_forms, authenticate
 from django.utils.translation import ugettext_lazy as _
 from registration.forms import EmailOnlyRegistrationForm
-from registration.utils import validate_password, generate_random_username
 
 MIN_PASSWORD_LENGTH = 8
 
