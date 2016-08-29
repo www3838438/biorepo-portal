@@ -65,7 +65,7 @@ class ProtocolDataSourceView(BRPApiView):
                 if not labels:
                     labels = self.erl_rh.query()
                     cache.set('ehb_labels', labels)
-                    cache.persist('ehb_labels')
+                    cache.ttl('ehb_labels', 60)
                 nl = []
                 for l in dc['labels']:
                     for label in labels:
