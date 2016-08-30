@@ -16,6 +16,7 @@ from .constants import ProtocolUserConstants, \
 from ehb_client.requests.exceptions import PageNotFound, \
     RequestedRangeNotSatisfiable
 from ehb_client.requests.external_system_request_handler import ExternalSystem
+from ehb_client.requests.external_record_request_handler import ExternalRecord
 from ehb_client.requests.group_request_handler import Group
 from ehb_client.requests.subject_request_handler import Subject
 
@@ -342,6 +343,32 @@ class ProtocolDataSource(Base):
             return []
 
         return RecordUtils.serialize_external_records(self, pds_records, labels)
+
+    def getExternalIdentifiers(self, subject, labels):
+        er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
+        ck = '{0}_{1}_externalrecords'.format(self.protocol.id, subject.id)
+        # See if our records are in the cache.
+        resp = cache.get(ck)
+        if resp:
+            pds_records = []
+            for record in json.loads(resp):
+                if record['external_system'] == self.id:
+                    pds_records.append(ExternalRecord(-1).identity_from_jsonObject(record))
+        else:
+            try:
+                pds_records = er_rh.get(
+                    external_system_url=self.data_source.url, path=self.path, subject_id=subject.id)
+            except PageNotFound:
+                pds_records = []
+
+        for ex_rec in pds_records:
+            for label in labels:
+                if ex_rec.label_id == label['id']:
+                    if label['label'] == '':
+                        ex_rec.label_desc = 'Record'
+                    else:
+                        ex_rec.label_desc = label['label']
+        return pds_records
 
     def getDriver(self, protocol_user_credentials):
         driver = None
