@@ -69,7 +69,7 @@ class Organization(BaseWithImmutableKey):
         rh = ServiceClient.get_rh_for(record_type=ServiceClient.ORGANIZATION)
         return rh.get(name=self.name)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -148,7 +148,7 @@ class DataSource(Base):
             # The save method will create the record in the ehb-service
             pass
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def getExternalSystem(self):
@@ -192,7 +192,7 @@ class Protocol(BaseWithImmutableKey):
     users = models.ManyToManyField(User, through='ProtocolUser', blank=True)
     organizations = models.ManyToManyField(Organization, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def ehb_group_name(self):
@@ -408,7 +408,7 @@ class ProtocolDataSource(Base):
 
         return driver
 
-    def __unicode__(self):
+    def __str__(self):
         return (self.protocol.name + ', ' +
                 self.data_source.name + ', ' + self.path)
 
@@ -509,7 +509,7 @@ class ProtocolUser(Base):
         unique_together = ('protocol', 'user')
         ordering = ['user']
 
-    def __unicode__(self):
+    def __str__(self):
         return self.user.username + ', ' + self.protocol.name
 
 
@@ -535,7 +535,7 @@ class ProtocolUserCredentials(Base):
         verbose_name_plural = 'Protocol User Credentials'
         ordering = ['protocol']
 
-    def __unicode__(self):
+    def __str__(self):
         return '{0}, {1}, {2}'.format(
             self.user.__unicode__(),
             self.protocol.name,
