@@ -74,7 +74,11 @@ class LdapBackend(ModelBackend):
             server,
             user=self.settings['PREBINDDN'],
             password=self.settings['PREBINDPW'])
-        conn.bind()
+        try:
+            conn.bind()
+        except ldap.LDAPSocketOpenError:
+            log.error('Unable to connect to LDAP server')
+            return
         _filter = self.settings['SEARCH_FILTER'].format(username)
         try:
             search = conn.search(

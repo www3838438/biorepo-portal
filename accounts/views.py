@@ -20,7 +20,6 @@ def throttled_login(request):
     template_name = 'accounts/login.html'
 
     login_allowed = request.session.get('login_allowed', True)
-
     if request.method == 'POST':
         # if the session has already been flagged to not allow login attempts, then
         # simply redirect back to the login page

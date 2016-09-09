@@ -56,7 +56,11 @@ def throttle_login(request):
         # once the max attempts has been reached, deactive the account
         # and email the admins
         user_already_inactive = False
-        user = User.objects.get(email=email.lower())
+
+        try:
+            user = User.objects.get(email=email.lower())
+        except User.DoesNotExist:
+            user = User.objects.get(username=email.lower())
 
         if user:
             if user.is_active:
