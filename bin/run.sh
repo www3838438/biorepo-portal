@@ -1,7 +1,7 @@
 #!/bin/sh
 
-python /opt/app/manage.py migrate --noinput
-python /opt/app/manage.py collectstatic --noinput
+python3 /opt/app/manage.py migrate --noinput
+python3 /opt/app/manage.py collectstatic --noinput
 
 cd /opt/app/ || exit
 

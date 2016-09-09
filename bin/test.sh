@@ -2,4 +2,4 @@
 
 cd /opt/app
 
-./manage.py test api
+python3 ./manage.py test api
