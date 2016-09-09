@@ -304,6 +304,17 @@ class ProtocolDataSource(Base):
                 'Options. If there is no configuration enter "{}"')
             raise ValidationError(msg)
 
+    def isRecordInPDS(self, record, subject):
+        er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
+        # TODO cache candidate
+        pds_records = er_rh.get(
+            external_system_url=self.data_source.url, path=self.path, subject_id=subject.id)
+        if record and pds_records:
+            if record in pds_records:
+                return True
+        return False
+
+
     def getSubject(self, subjectId):
         cache_key = '{}_subjects'.format(self.protocol.id)
         cached = cache.get(cache_key)
@@ -537,7 +548,7 @@ class ProtocolUserCredentials(Base):
 
     def __str__(self):
         return '{0}, {1}, {2}'.format(
-            self.user.__unicode__(),
+            self.user.__str__(),
             self.protocol.name,
             self.data_source.data_source.name
         )
