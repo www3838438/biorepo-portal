@@ -16,6 +16,7 @@ from .constants import ProtocolUserConstants, \
 from ehb_client.requests.exceptions import PageNotFound, \
     RequestedRangeNotSatisfiable
 from ehb_client.requests.external_system_request_handler import ExternalSystem
+from ehb_client.requests.external_record_request_handler import ExternalRecord
 from ehb_client.requests.group_request_handler import Group
 from ehb_client.requests.subject_request_handler import Subject
 
@@ -68,7 +69,7 @@ class Organization(BaseWithImmutableKey):
         rh = ServiceClient.get_rh_for(record_type=ServiceClient.ORGANIZATION)
         return rh.get(name=self.name)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -147,7 +148,7 @@ class DataSource(Base):
             # The save method will create the record in the ehb-service
             pass
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def getExternalSystem(self):
@@ -191,7 +192,7 @@ class Protocol(BaseWithImmutableKey):
     users = models.ManyToManyField(User, through='ProtocolUser', blank=True)
     organizations = models.ManyToManyField(Organization, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def ehb_group_name(self):
@@ -303,6 +304,17 @@ class ProtocolDataSource(Base):
                 'Options. If there is no configuration enter "{}"')
             raise ValidationError(msg)
 
+    def isRecordInPDS(self, record, subject):
+        er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
+        # TODO cache candidate
+        pds_records = er_rh.get(
+            external_system_url=self.data_source.url, path=self.path, subject_id=subject.id)
+        if record and pds_records:
+            if record in pds_records:
+                return True
+        return False
+
+
     def getSubject(self, subjectId):
         cache_key = '{}_subjects'.format(self.protocol.id)
         cached = cache.get(cache_key)
@@ -343,6 +355,32 @@ class ProtocolDataSource(Base):
 
         return RecordUtils.serialize_external_records(self, pds_records, labels)
 
+    def getExternalIdentifiers(self, subject, labels):
+        er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
+        ck = '{0}_{1}_externalrecords'.format(self.protocol.id, subject.id)
+        # See if our records are in the cache.
+        resp = cache.get(ck)
+        if resp:
+            pds_records = []
+            for record in json.loads(resp):
+                if record['external_system'] == self.id:
+                    pds_records.append(ExternalRecord(-1).identity_from_jsonObject(record))
+        else:
+            try:
+                pds_records = er_rh.get(
+                    external_system_url=self.data_source.url, path=self.path, subject_id=subject.id)
+            except PageNotFound:
+                pds_records = []
+
+        for ex_rec in pds_records:
+            for label in labels:
+                if ex_rec.label_id == label['id']:
+                    if label['label'] == '':
+                        ex_rec.label_desc = 'Record'
+                    else:
+                        ex_rec.label_desc = label['label']
+        return pds_records
+
     def getDriver(self, protocol_user_credentials):
         driver = None
         if self.driver == ProtocolDataSourceConstants.redcap_driver:
@@ -381,7 +419,7 @@ class ProtocolDataSource(Base):
 
         return driver
 
-    def __unicode__(self):
+    def __str__(self):
         return (self.protocol.name + ', ' +
                 self.data_source.name + ', ' + self.path)
 
@@ -482,7 +520,7 @@ class ProtocolUser(Base):
         unique_together = ('protocol', 'user')
         ordering = ['user']
 
-    def __unicode__(self):
+    def __str__(self):
         return self.user.username + ', ' + self.protocol.name
 
 
@@ -508,9 +546,9 @@ class ProtocolUserCredentials(Base):
         verbose_name_plural = 'Protocol User Credentials'
         ordering = ['protocol']
 
-    def __unicode__(self):
+    def __str__(self):
         return '{0}, {1}, {2}'.format(
-            self.user.__unicode__(),
+            self.user.__str__(),
             self.protocol.name,
             self.data_source.data_source.name
         )

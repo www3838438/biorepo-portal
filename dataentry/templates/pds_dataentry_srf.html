@@ -72,7 +72,7 @@
     <li style="display:inline"><input id="subRecordFormSubmitContinue" class="btn btn-small btn-primary" value="Save and Continue" data-toggle="modal" data-backdrop="static" data-keyboard="false" href="#pleaseWaitModal"/></li>
   {% endif %}
 		<li style="display:inline"><input id="subRecordFormSubmit" class="btn btn-small btn-primary" value="Save" data-toggle="modal" data-backdrop="static" data-keyboard="false" href="#pleaseWaitModal"/></li>
-		<li style="display:inline"><input class="btn btn-small btn-danger" type="button" value="Cancel" onclick="location.href='{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/record/{{rec_id}}/start/'"/></li>
+		<li style="display:inline"><input class="btn btn-small btn-danger" type="button" value="Cancel" onclick="location.href='{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/record/{{record.id}}/start/'"/></li>
 	</ul>
 <!--</form>-->
 
@@ -117,16 +117,16 @@ $('#subRecordFormSubmit').on('click', function(e){
    e.preventDefault();
    //This function is constructed by ehb_datasource driver
    var next_form_url = ""
-   var start_url = "{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/record/{{rec_id}}/start/"
+   var start_url = "{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/record/{{record.id}}/start/"
    ajaxFormSubmit(next_form_url,start_url);
 });
 
 $('#subRecordFormSubmitContinue').on('click', function(e){
    e.preventDefault();
    var next_form_url = "{{next_form_url}}"
-   var start_url = "{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/record/{{rec_id}}/start/"
+   var start_url = "{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/record/{{record.id}}/start/"
    //This function is constructed by ehb_datasource driver
-   ajaxFormSubmit(next_form_url, start_url);
+   ajaxFormSubmit(next_form_url, start_url, csrftoken);
 });
 
 $(".radio_reset").on('click',function(){
