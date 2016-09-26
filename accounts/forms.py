@@ -1,9 +1,13 @@
 from django import forms
 from django.contrib.auth import forms as auth_forms, authenticate
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth import get_user_model
+
 from registration.forms import EmailOnlyRegistrationForm
 
 MIN_PASSWORD_LENGTH = 8
+
+UserModel = get_user_model()
 
 pw_help_text = ('CHOP employees do not need to supply a password. For all '
                 'other users, passwords must be %d characters in length '
@@ -49,14 +53,22 @@ class BrpAuthenticationForm(auth_forms.AuthenticationForm):
     def clean(self):
         username = self.cleaned_data.get('username')
         email = self.cleaned_data.get('email')
+        if not username and email:
+            username = email.split('@')[0]
         password = self.cleaned_data.get('password')
         # Fragile way of making sure people are using email addresses to log in.
         if email and password:
             # this is not a mistake.. Django assumes username will always be
             # used, but the auth backend accepts an email address
-            self.user_cache = authenticate(username=email, password=password)
+            try:
+                self.user_cache = authenticate(username=email, password=password)
+            except UserModel.DoesNotExist:
+                pass
             if self.user_cache is None:
-                self.user_cache = authenticate(username=username, password=password)
+                try:
+                    self.user_cache = authenticate(username=username, password=password)
+                except UserModel.DoesNotExist:
+                    pass
             if self.user_cache is None:
                 raise forms.ValidationError(_('Please enter a correct email '
                                               'and password. Note that both '

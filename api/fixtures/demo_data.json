@@ -3,8 +3,8 @@
     "model": "auth.user",
     "fields": {
         "username": "admin",
-        "first_name": "",
-        "last_name": "",
+        "first_name": "Test",
+        "last_name": "User",
         "is_active": true,
         "is_superuser": true,
         "is_staff": true,
@@ -14,6 +14,16 @@
         "password": "pbkdf2_sha256$10000$fe8KOhXyKFJt$nB8tFGivcvxNQJOdzk1igm4iA4dA00k4KB6bYYDBRfA=",
         "email": "admin@email.chop.edu",
         "date_joined": "2014-01-27T16:22:15.193Z"
+    }
+},
+{
+    "pk": 1,
+    "model": "accounts.userprofile",
+    "fields": {
+        "user": 1,
+        "institution": "CHOP",
+        "eula": true,
+        "reason": "testing"
     }
 },
 {
