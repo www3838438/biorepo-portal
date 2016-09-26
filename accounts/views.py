@@ -50,6 +50,8 @@ def throttled_login(request):
         # was successful, thus we can clear the throttled login counter
         if isinstance(response, HttpResponseRedirect):
             clear_throttled_login(request)
+        else:
+            print('ldap login failed')
         return response
 
     return render(request, template_name, {

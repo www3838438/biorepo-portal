@@ -4,7 +4,7 @@ import logging
 from django.template.loader import get_template
 from django.core.cache import cache
 from django.core.mail import mail_admins
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 MAX_LOGIN_ATTEMPTS = 10
 MAX_LOGIN_ATTEMPTS_KEY = '%s_%s_login_attempts'
@@ -14,6 +14,7 @@ IP_RE = re.compile('\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}')
 
 log = logging.getLogger('portal')
 
+UserModel = get_user_model()
 
 def get_ip_address(request):
     ip_address = request.META.get(
@@ -57,9 +58,9 @@ def throttle_login(request):
         user_already_inactive = False
 
         try:
-            user = User.objects.get(email=email.lower())
+            user = UserModel.objects.get(email=email.lower())
         except User.DoesNotExist:
-            user = User.objects.get(username=email.lower())
+            user = UserModel.objects.get(username=email.lower())
 
         if user:
             if user.is_active:
