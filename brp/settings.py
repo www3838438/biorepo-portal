@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import sys
 import environ
 root = environ.Path(__file__) - 2  # three folder back (/a/b/c/ - 3 = /)
 env = environ.Env(DEBUG=(bool, False),)  # set default values and casting
@@ -58,6 +59,7 @@ if DEBUG:
     INSTALLED_APPS.append('django_extensions')
 
 MIDDLEWARE_CLASSES = [
+    'brp.middleware.LogstashMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -240,6 +242,11 @@ LOGGING = {
             'backupCount': 5,
             'formatter': 'standard',
         },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout
+        },
         'request_handler': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
@@ -253,14 +260,6 @@ LOGGING = {
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler',
             'include_html': True,
-        },
-        'ehb': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': str(root.path('logs/ehb.log')),
-            'maxBytes': 1024 * 1024 * 5,  # 5 MB
-            'backupCount': 5,
-            'formatter': 'standard',
         }
     },
     'loggers': {
@@ -274,21 +273,9 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True
         },
-        'ehb_client.requests.external_record_request_handler': {
-            'handlers': ['ehb'],
-            'propagate': False
-        },
-        'api.views': {
-            'handlers': [],
+        'brp.middleware': {
+            'handlers': ['console'],
             'propagate': False,
-        },
-        'dataentry.views': {
-            'handlers': [],
-            'propagate': False
-        },
-        'portal': {
-            'handlers': [],
-            'propagate': False
         },
         'ehb-client': {
             'level': 'DEBUG',
@@ -310,10 +297,8 @@ if env.bool('LOGSTASH_ENABLED'):
         'tags': None,  # list of tags. Default: None.
     }
     LOGGING['loggers']['django.request']['handlers'].append('logstash')
-    LOGGING['loggers']['api.views']['handlers'].append('logstash')
-    LOGGING['loggers']['dataentry.views']['handlers'].append('logstash')
-    LOGGING['loggers']['portal']['handlers'].append('logstash')
     LOGGING['loggers']['ehb-client']['handlers'].append('logstash')
+    LOGGING['loggers']['brp.middleware']['handlers'].append('logstash')
 
 if FORCE_SCRIPT_NAME:
     ADMIN_MEDIA_PREFIX = os.path.join(

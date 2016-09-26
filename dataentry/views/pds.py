@@ -31,10 +31,12 @@ class StartView(DataEntryView):
             self, driver, record_id, form_url, attempt_count,
             max_attempts):
         try:
-            return driver.subRecordSelectionForm(
+            form = driver.subRecordSelectionForm(
                 form_url=form_url,
                 record_id=record_id
             )
+            self.request.META['action'] = 'Sub record selection form generated.'
+            return form
         except RecordDoesNotExist:
             return None
 
@@ -62,6 +64,7 @@ class FormView(DataEntryView):
             form = driver.subRecordForm(external_record=external_record,
                                         form_spec=form_spec,
                                         session=self.request.session)
+            self.request.META['action'] = 'Sub record form generated.'
             return form
         except RecordDoesNotExist:
             return None
@@ -98,12 +101,12 @@ class FormView(DataEntryView):
             request=request, external_record=context['record'], form_spec=kwargs['form_spec'], session=request.session)
         log_data = {}
         if errors:
-            log.error('Error processing form', extra=log_data)
+            self.request.META['action'] = 'Errors processing form.'
             error_msgs = [e for e in errors]
             context['errors'] = error_msgs
             return JsonResponse({'status': 'error', 'errors': error_msgs})
         else:
-            log.info('Record form updated', extra=log_data)
+            self.request.META['action'] = 'Form processed.'
             return JsonResponse({'status': 'ok'})
 
 
