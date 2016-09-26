@@ -4,8 +4,11 @@ from django.shortcuts import render
 from django.contrib.auth.views import login, logout_then_login
 from django.contrib.flatpages.models import FlatPage
 from django.views.decorators.cache import never_cache
+from django.core.cache import cache
 
 from accounts.utils import throttle_login, clear_throttled_login
+from redis.exceptions import ConnectionError
+
 from .forms import BrpAuthenticationForm
 
 
@@ -25,6 +28,18 @@ def throttled_login(request):
         # simply redirect back to the login page
         if not login_allowed:
             return HttpResponseRedirect(settings.LOGIN_URL)
+        # Check if cache is available
+        try:
+            cache.get('')
+        except ConnectionError:
+            form = {
+                'non_field_errors': ['Redis not connected. Unable to create session.']
+            }
+            return render(request, template_name, {
+                'form': form
+            })
+        except:
+            raise
 
         login_allowed = throttle_login(request)
 
