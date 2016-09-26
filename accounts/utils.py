@@ -1,7 +1,6 @@
 import re
 import logging
 
-from django.template import Context
 from django.template.loader import get_template
 from django.core.cache import cache
 from django.core.mail import mail_admins
