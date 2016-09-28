@@ -16,6 +16,7 @@ log = logging.getLogger('portal')
 
 UserModel = get_user_model()
 
+
 def get_ip_address(request):
     ip_address = request.META.get(
         'HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', None))
@@ -59,7 +60,7 @@ def throttle_login(request):
 
         try:
             user = UserModel.objects.get(email=email.lower())
-        except User.DoesNotExist:
+        except UserModel.DoesNotExist:
             user = UserModel.objects.get(username=email.lower())
 
         if user:
