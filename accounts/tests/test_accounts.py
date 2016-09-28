@@ -241,6 +241,7 @@ class AccountsModuleTests(TestCase):
             self.assertEqual(response.status_code, 200)
 
     def test_max_attempts(self):
+        from django.core.cache import cache
         s = self.client.session
         s['login_allowed'] = True
         s.save()
@@ -254,8 +255,8 @@ class AccountsModuleTests(TestCase):
             user = User.objects.get(email='jane@email.chop.edu')
             self.assertTrue(user.is_active)
             # Make 11 bogus login attempts (10 is max)
-            for i in range(0, 10):
-                self.client.post('/login/', form_data)
+            cache.set('jane@email.chop.edu_127.0.0.1_login_attempts', 10)
+            self.client.post('/login/', form_data)
             user = User.objects.get(email='jane@email.chop.edu')
             self.assertFalse(user.is_active)
 
