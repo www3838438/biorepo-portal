@@ -16,7 +16,7 @@ dependencies:
 
 test:
     override:
-        - pytest -v --cov-report=html --cov=.
+        - pytest -v --cov-report=html --cov=. --ignore=venv/
 
 deployment:
     hub:
