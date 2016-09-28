@@ -16,7 +16,7 @@ dependencies:
 
 test:
     override:
-        - pytest -v --cov-report=html --cov=. --ignore=venv/
+        - pytest -v --junitxml=$CIRCLE_TEST_REPORTS/junit/test-results.xml --cov=. --ignore=venv/
 
 deployment:
     hub:
