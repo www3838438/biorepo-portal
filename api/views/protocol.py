@@ -213,7 +213,7 @@ class ProtocolSubjectDetailView(BRPApiView):
         except ObjectDoesNotExist:
             return Response({'error': 'Protocol requested not found'}, status=404)
 
-        subject = json.loads(request.body)
+        subject = json.loads(request.body.decode('utf-8'))
         new_subject = Subject(
             first_name=subject['first_name'],
             last_name=subject['last_name'],
@@ -347,7 +347,7 @@ class ProtocolSubjectDetailView(BRPApiView):
             )
 
     def put(self, request, pk, subject, *args, **kwargs):
-        subject_update = json.loads(request.body)
+        subject_update = json.loads(request.body.decode('utf-8'))
         # See if subject exists
         try:
             ehb_sub = self.s_rh.get(id=subject)
