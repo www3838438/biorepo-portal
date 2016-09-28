@@ -2,12 +2,13 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from ..models.protocols import Organization, DataSource, Protocol, \
     ProtocolUser
-
+from unittest.mock import MagicMock
 
 class OrganizationTest(TestCase):
 
     def setUp(self):
         # This also calls out to the eHB to create an org.
+        Organization.createEhbInstance = MagicMock(return_value=True)
         Organization.objects.create(name='TestOrg', subject_id_label='MRN')
 
     def test_immutable_key(self):
@@ -15,7 +16,7 @@ class OrganizationTest(TestCase):
         Make sure Organization has an immutable key assigned
         '''
         org = Organization.objects.get(name='TestOrg', subject_id_label='MRN')
-        self.assertEqual(org.immutable_key.key, 'C381K1T9G5SCOS5Z')
+        self.assertEqual(org.immutable_key.key, '28ZT3Z8WZ2')
 
     def test_org_repr(self):
         org = Organization.objects.get(name='TestOrg', subject_id_label='MRN')
@@ -33,7 +34,12 @@ class OrganizationTest(TestCase):
         '''
         Gets the record for this organization as maintained in the ehb service
         '''
+        from ehb_client.requests.organization_request_handler import Organization as eHBOrg
         org = Organization.objects.get(name='TestOrg', subject_id_label='MRN')
+        org.getEhbServiceInstance = MagicMock(
+            return_value=eHBOrg(
+                name='TestOrg',
+                subject_id_label='MRN'))
         ehb_instance = org.getEhbServiceInstance()
         self.assertEqual(ehb_instance.name, 'TestOrg')
 
@@ -46,6 +52,7 @@ class DataSourceTest(TestCase):
 
     def setUp(self):
         # This also calls out to the eHB to create a DataSource.
+        DataSource.createEhbInstance = MagicMock(return_value=True)
         DataSource.objects.create(
             name='TestDataSource',
             url='http://example.com',
@@ -75,19 +82,14 @@ class ProtocolTest(TestCase):
             last_name='Doe',
             email='test_user@example.com'
         )
-        # p = ProtocolUser.objects.create(
-        #     role=1,
-        # )
-        # p.datasources = [ds]
-        # p.users = [user]
-        # p.save()
+        Protocol.createEhbProtocolGroup = MagicMock()
         self.protocol = Protocol.objects.create(
             name='TestProtocol'
         )
 
     def test_protocol_group_name(self):
         p = Protocol.objects.get(name='TestProtocol')
-        self.assertEqual(p.ehb_group_name(), 'BRP:C381K1T9G5SCOS5Z')
+        self.assertEqual(p.ehb_group_name(), 'BRP:28ZT3Z8WZ2')
 
     def tearDown(self):
         p = Protocol.objects.get(name='TestProtocol')

@@ -41,7 +41,7 @@ class Organization(BaseWithImmutableKey):
     class Meta(BaseWithImmutableKey.Meta):
         ordering = ['name']
 
-    def save(self, *args, **kwargs):
+    def createEhbInstance(self):
         '''
         On save we need to make sure this organization exists in the
         ehb-service, otherwise create it
@@ -49,14 +49,21 @@ class Organization(BaseWithImmutableKey):
         rh = ServiceClient.get_rh_for(record_type=ServiceClient.ORGANIZATION)
         try:
             org = rh.get(name=self.name)
-            super(Organization, self).save(*args, **kwargs)
+            return True
         except PageNotFound:
             org = Organization(
                 name=self.name,
                 subject_id_label=self.subject_id_label)
             r = rh.create(org)[0]
-            if(r.get('success')):
-                    super(Organization, self).save(*args, **kwargs)
+            if r.get('success'):
+                return True
+            else:
+                return False
+
+    def save(self, *args, **kwargs):
+
+            if self.createEhbInstance():
+                super(Organization, self).save(*args, **kwargs)
             else:
                 raise Exception(
                     'Unable to create Organization record in ehb-service')
@@ -93,17 +100,13 @@ class DataSource(Base):
         editable=False, default=-1,
         verbose_name='EHB Service External System ID')
 
-    def save(self, *args, **kwargs):
-        '''
-        On save we need to make sure this source exists in the ehb service,
-        otherwise create it
-        '''
+    def createEhbInstance(self):
         rh = ServiceClient.get_rh_for(
             record_type=ServiceClient.EXTERNAL_SYSTEM)
         try:
             es = rh.get(url=self.url)
             self.ehb_service_es_id = es.id
-            super(DataSource, self).save(*args, **kwargs)
+            return True
         except PageNotFound:
             es = ExternalSystem(
                 name=self.name,
@@ -112,11 +115,21 @@ class DataSource(Base):
             )
             r = rh.create(es)[0]
             if(r.get('success')):
-                    self.ehb_service_es_id = es.id
-                    super(DataSource, self).save(*args, **kwargs)
+                self.ehb_service_es_id = es.id
+                return True
             else:
-                raise Exception(
-                    'Unable to create ExternalSystem record in ehb-service')
+                return False
+
+    def save(self, *args, **kwargs):
+        '''
+        On save we need to make sure this source exists in the ehb service,
+        otherwise create it
+        '''
+        if self.createEhbInstance():
+            super(DataSource, self).save(*args, **kwargs)
+        else:
+            raise Exception(
+                'Unable to create ExternalSystem record in ehb-service')
 
     def clean(self):
         rh = ServiceClient.get_rh_for(
@@ -201,11 +214,7 @@ class Protocol(BaseWithImmutableKey):
     def _client_key(self):
         return self._settings_prop('CLIENT_KEY', 'key', 'xyz123abc987')
 
-    def save(self, *args, **kwargs):
-        super(Protocol, self).save(*args, **kwargs)
-        # Need to create a group for this protocol if it doesn't exist
-        # (i.e. before there is a pk) that will be used to identify subjects
-        # on the protocol
+    def createEhbProtocolGroup(self):
         gh = ServiceClient.get_rh_for(record_type=ServiceClient.GROUP)
         try:
             gh.get(name=self.ehb_group_name())
@@ -220,6 +229,13 @@ class Protocol(BaseWithImmutableKey):
             if not (r.get("success")):
                 raise Exception(
                     'Unable to create Protocol Subject Group in ehb-service')
+
+    def save(self, *args, **kwargs):
+        super(Protocol, self).save(*args, **kwargs)
+        # Need to create a group for this protocol if it doesn't exist
+        # (i.e. before there is a pk) that will be used to identify subjects
+        # on the protocol
+        self.createEhbProtocolGroup()
 
     def _gh(self):
         return ServiceClient.get_rh_for(record_type=ServiceClient.GROUP)
