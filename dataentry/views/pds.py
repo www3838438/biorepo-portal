@@ -131,13 +131,13 @@ class CreateView(DataEntryView):
         if record_id:
             if record_id.startswith(rec_id_prefix):
                 rec_id = driver.create(
-                    record_id_prefix=None, record_id=record_id, record_id_validator=self.rec_id_validator)
+                    record_id_prefix=None, record_id=record_id, record_id_validator=rec_id_validator)
             else:
                 rec_id = driver.create(
                     record_id_prefix=rec_id_prefix, record_id=record_id)
         else:
             rec_id = driver.create(
-                record_id_prefix=rec_id_prefix, record_id_validator=self.rec_id_validator)
+                record_id_prefix=rec_id_prefix, record_id_validator=rec_id_validator)
 
         er = SubjectUtils.create_new_ehb_external_record(
             pds, request.user, subject, rec_id, label)
