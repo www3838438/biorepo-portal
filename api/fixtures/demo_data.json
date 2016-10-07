@@ -51,6 +51,14 @@
 		"created": "2015-09-29T12:01:41.671Z"
 	}
 }, {
+	"pk": 3,
+	"model": "api.immutablekey",
+	"fields": {
+		"modified": "2015-09-29T12:01:41.672Z",
+		"key": "Z000000001111111",
+		"created": "2015-09-29T12:01:41.671Z"
+	}
+}, {
 	"pk": 1,
 	"model": "api.organization",
 	"fields": {
@@ -104,6 +112,16 @@
 		"created": "2015-09-29T12:01:41.672Z"
 	}
 }, {
+	"pk": 2,
+	"model": "api.protocol",
+	"fields": {
+		"organizations": [1],
+		"immutable_key": 3,
+		"modified": "2015-09-29T12:01:41.672Z",
+		"name": "Demonstration Protocol II",
+		"created": "2015-09-29T12:01:41.672Z"
+	}
+}, {
 	"pk": 1,
 	"model": "api.protocoldatasource",
 	"fields": {
@@ -146,12 +164,64 @@
 		"driver_configuration": "{\r\n    \"labels\": [2],\r\n    \"sort_on\": 2\r\n}"
 	}
 }, {
+	"pk": 4,
+	"model": "api.protocoldatasource",
+	"fields": {
+		"data_source": 1,
+		"protocol": 2,
+		"created": "2015-09-29T12:04:57.702Z",
+		"max_records_per_subject": -1,
+		"driver": 0,
+		"modified": "2016-01-12T12:42:03.487Z",
+		"display_label": "Health Data",
+		"path": "Demo",
+		"driver_configuration": "{\r\n    \"unique_event_names\": [\r\n        \"visit_arm_1\",\r\n        \"breakfast_at_visit_arm_1\",\r\n        \"lunch_at_visit_arm_1\",\r\n        \"dinner_at_visit_arm_1\"\r\n    ],\r\n    \"event_labels\": [\r\n        \"Visit Baseline\",\r\n        \"Breakfast\",\r\n        \"Lunch\",\r\n        \"Dinner\"\r\n    ],\r\n    \"form_data\": {\r\n        \"baseline_visit_data\": [\r\n            1,\r\n            0,\r\n            0,\r\n            0\r\n        ],\r\n        \"meal_description_form\": [\r\n            0,\r\n            1,\r\n            1,\r\n            1\r\n        ]\r\n    },\r\n    \"record_id_field_name\": \"study_id\",\r\n    \"links\": [1]\r\n}"
+	}
+}, {
+	"pk": 5,
+	"model": "api.protocoldatasource",
+	"fields": {
+		"data_source": 2,
+		"protocol": 2,
+		"created": "2016-01-10T11:52:38.165Z",
+		"max_records_per_subject": -1,
+		"driver": 1,
+		"modified": "2016-01-10T11:52:38.165Z",
+		"display_label": "Sample Check In",
+		"path": "demo_lab",
+		"driver_configuration": "{}"
+	}
+}, {
+	"pk": 6,
+	"model": "api.protocoldatasource",
+	"fields": {
+		"data_source": 3,
+		"protocol": 2,
+		"created": "2016-01-10T15:36:02.362Z",
+		"max_records_per_subject": 1,
+		"driver": 3,
+		"modified": "2016-01-13T11:10:26.142Z",
+		"display_label": "External IDs",
+		"path": "demo_exrecs",
+		"driver_configuration": "{\r\n    \"labels\": [2],\r\n    \"sort_on\": 2\r\n}"
+	}
+}, {
 	"pk": 1,
 	"model": "api.protocoluser",
 	"fields": {
 		"role": 0,
 		"user": 1,
 		"protocol": 1,
+		"modified": "2015-09-29T12:06:19.003Z",
+		"created": "2015-09-29T12:06:19.003Z"
+	}
+}, {
+	"pk": 2,
+	"model": "api.protocoluser",
+	"fields": {
+		"role": 0,
+		"user": 1,
+		"protocol": 2,
 		"modified": "2015-09-29T12:06:19.003Z",
 		"created": "2015-09-29T12:06:19.003Z"
 	}
@@ -179,6 +249,32 @@
 		"modified": "2016-01-10T15:36:26.764Z",
 		"user": 1,
 		"protocol_user": 1,
+		"data_source_password": "none"
+	}
+}, {
+	"pk": 3,
+	"model": "api.protocolusercredentials",
+	"fields": {
+		"data_source": 1,
+		"protocol": 2,
+		"created": "2015-09-29T12:08:11.730Z",
+		"data_source_username": "",
+		"modified": "2015-09-29T12:08:11.730Z",
+		"user": 1,
+		"protocol_user": 2,
+		"data_source_password": "71F3F25FC3BCF2232E27298E7AFBC636"
+	}
+}, {
+	"pk": 4,
+	"model": "api.protocolusercredentials",
+	"fields": {
+		"data_source": 3,
+		"protocol": 2,
+		"created": "2016-01-10T15:36:26.764Z",
+		"data_source_username": "none",
+		"modified": "2016-01-10T15:36:26.764Z",
+		"user": 1,
+		"protocol_user": 2,
 		"data_source_password": "none"
 	}
 }]
