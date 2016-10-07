@@ -55,8 +55,6 @@ INSTALLED_APPS = [
     'api',
     'dataentry',
 ]
-if DEBUG:
-    INSTALLED_APPS.append('django_extensions')
 
 MIDDLEWARE_CLASSES = [
     'brp.middleware.LogstashMiddleware',
