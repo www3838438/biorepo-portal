@@ -52,14 +52,19 @@ class LogstashMiddleware(object):
             user_name = user.username if user else None
             response_time = (datetime.datetime.now() - request.start_ts).microseconds / 1000
             if pds:
-                log.info('{action}'.format(action=action), extra={
-                    'action': action,
-                    'user': user_name,
-                    'pds': pds.id,
-                    'datasource': pds.data_source.name,
-                    'protocol': pds.protocol.name,
-                    'response_time': response_time,
-                })
+                log.info(
+                    '{action} by {user} on PDS {pds_id} in {response_time}ms'.format(
+                        action=action,
+                        user=user_name,
+                        pds_id=pds.id,
+                        response_time=response_time),
+                    extra={
+                        'action': action,
+                        'user': user_name,
+                        'pds': pds.id,
+                        'datasource': pds.data_source.name,
+                        'protocol': pds.protocol.name,
+                        'response_time': response_time})
             else:
                 log.info('{action}'.format(action=action), extra={
                     'action': action,

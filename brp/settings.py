@@ -276,11 +276,11 @@ LOGGING = {
         },
         'brp.middleware': {
             'handlers': ['console'],
-            'propagate': False,
+            'propagate': True,
         },
         'accounts.backends': {
             'handlers': ['console'],
-            'propagate': False,
+            'propagate': True,
         },
         'ehb-client': {
             'level': 'DEBUG',
