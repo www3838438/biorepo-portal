@@ -5,6 +5,7 @@ from django.template.loader import get_template
 from django.core.cache import cache
 from django.core.mail import mail_admins
 from django.contrib.auth import get_user_model
+from django.views.decorators.debug import sensitive_variables
 
 MAX_LOGIN_ATTEMPTS = 10
 MAX_LOGIN_ATTEMPTS_KEY = '%s_%s_login_attempts'
@@ -27,6 +28,7 @@ def get_ip_address(request):
             return ip_match.group()
 
 
+@sensitive_variables('password')
 def throttle_login(request):
     """
     Throttles a client by keeping track of the number of failed login
@@ -61,7 +63,10 @@ def throttle_login(request):
         try:
             user = UserModel.objects.get(email=email.lower())
         except UserModel.DoesNotExist:
-            user = UserModel.objects.get(username=email.lower())
+            try:
+                user = UserModel.objects.get(username=email.lower())
+            except UserModel.DoesNotExist:
+                return False
 
         if user:
             if user.is_active:
