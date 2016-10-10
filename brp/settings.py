@@ -278,6 +278,10 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': False,
         },
+        'accounts.backends': {
+            'handlers': ['console'],
+            'propagate': False,
+        },
         'ehb-client': {
             'level': 'DEBUG',
             'handlers': [],

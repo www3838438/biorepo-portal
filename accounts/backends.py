@@ -12,7 +12,7 @@ from registration.backends.default import Backend
 from accounts.models import UserProfile
 from accounts.forms import ChopRegistrationForm
 
-log = logging.getLogger('portal')
+log = logging.getLogger(__name__)
 
 
 class DefaultBackend(Backend):
