@@ -63,7 +63,8 @@ class LogstashMiddleware(object):
                         'user': user_name,
                         'pds': pds.id,
                         'datasource': pds.data_source.name,
-                        'protocol': pds.protocol.name,
+                        'protocol_name': pds.protocol.name,
+                        'protocol': pds.protocol.id,
                         'response_time': response_time})
             else:
                 log.info('{action}'.format(action=action), extra={
