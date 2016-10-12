@@ -65,7 +65,7 @@ class PDSRecordLinkDetailView(BRPApiView):
             return Response({'error': 'ProtocolDatasource requested not found'}, status=404)
 
         if pds.protocol.isUserAuthorized(request.user):
-            data = json.loads(request.body)
+            data = json.loads(request.body.decode('utf-8'))
             primary_rec = data['primaryRecord']
             secondary_rec = data['secondaryRecord']
             link_type = data['linkType']
@@ -88,7 +88,7 @@ class PDSRecordLinkDetailView(BRPApiView):
             return Response({'error': 'ProtocolDatasource requested not found'}, status=404)
 
         if pds.protocol.isUserAuthorized(request.user):
-            data = json.loads(request.body)
+            data = json.loads(request.body.decode('utf-8'))
             primary_rec = data['primaryRecord']
             link_id = data['linkId']
             # Serialize
@@ -152,7 +152,7 @@ class PDSSubjectRecordDetailView(BRPApiView):
             return Response({'error': 'ProtocolDatasource requested not found'}, status=404)
 
         if pds.protocol.isUserAuthorized(request.user):
-            ex_rec = json.loads(request.body)
+            ex_rec = json.loads(request.body.decode('utf-8'))
             rec = self.er_rh.get(id=ex_rec['id'])
             rec.label_id = ex_rec['label_id']
             rec.modified = datetime.now()
