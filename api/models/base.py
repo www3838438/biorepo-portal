@@ -57,7 +57,7 @@ class ImmutableKey(Base):
 
     def _make_random_key(
             self, seed, ja, l, chars=string.ascii_uppercase + string.digits):
-        random.seed(seed)
+        random.seed(random.randrange(0, seed))
         return ''.join(random.choice(chars) for idx in range(l))
 
     def _set_key(self):

@@ -10,13 +10,23 @@ class OrganizationTest(TestCase):
         # This also calls out to the eHB to create an org.
         Organization.createEhbInstance = MagicMock(return_value=True)
         Organization.objects.create(name='TestOrg', subject_id_label='MRN')
+        Organization.objects.create(name='TestOrg2', subject_id_label='MRN')
 
     def test_immutable_key(self):
         '''
         Make sure Organization has an immutable key assigned
         '''
         org = Organization.objects.get(name='TestOrg', subject_id_label='MRN')
-        self.assertEqual(org.immutable_key.key, '28ZT3Z8WZ2')
+        # TODO: This should be random. Test with mock?
+        # self.assertEqual(org.immutable_key.key, '28ZT3Z8WZ2')
+
+    def test_random_of_immutable_key(self):
+        '''
+        Assert that the immutable key for each org is different
+        '''
+        org = Organization.objects.get(name='TestOrg', subject_id_label='MRN')
+        org2 = Organization.objects.get(name='TestOrg2', subject_id_label='MRN')
+        self.assertTrue(org.immutable_key.key != org2.immutable_key.key)
 
     def test_org_repr(self):
         org = Organization.objects.get(name='TestOrg', subject_id_label='MRN')
@@ -89,7 +99,8 @@ class ProtocolTest(TestCase):
 
     def test_protocol_group_name(self):
         p = Protocol.objects.get(name='TestProtocol')
-        self.assertEqual(p.ehb_group_name(), 'BRP:28ZT3Z8WZ2')
+        # TODO: This should be random. test with mock?
+        # self.assertEqual(p.ehb_group_name(), 'BRP:NLZEPVE41A')
 
     def tearDown(self):
         p = Protocol.objects.get(name='TestProtocol')
