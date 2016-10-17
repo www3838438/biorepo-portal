@@ -126,7 +126,7 @@ $('#subRecordFormSubmitContinue').on('click', function(e){
    var next_form_url = "{{next_form_url}}"
    var start_url = "{{root_path}}/dataentry/protocoldatasource/{{pds.id}}/subject/{{subject.id}}/record/{{record.id}}/start/"
    //This function is constructed by ehb_datasource driver
-   ajaxFormSubmit(next_form_url, start_url, csrftoken);
+   ajaxFormSubmit(next_form_url, start_url);
 });
 
 $(".radio_reset").on('click',function(){
