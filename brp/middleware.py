@@ -1,3 +1,7 @@
+from django.http import HttpResponse
+from django.core.cache import cache
+from django.template import RequestContext, loader
+from redis.exceptions import ConnectionError
 from api.models.protocols import ProtocolDataSource
 from rest_framework.authtoken.models import Token
 import datetime
@@ -5,6 +9,18 @@ import datetime
 import logging
 
 log = logging.getLogger(__name__)
+
+
+class MaintenanceMiddleware(object):
+
+    def process_request(self, request):
+        try:
+            m_mode = cache.get('maintenance_mode', False)
+        except ConnectionError:
+            m_mode = False
+        if m_mode:
+            t = loader.get_template('maintenance.html')
+            return HttpResponse(t.render(RequestContext(request)))
 
 
 class LogstashMiddleware(object):
@@ -45,6 +61,8 @@ class LogstashMiddleware(object):
 
     def process_response(self, request, response):
         # Get action from request META. Actions are set in their respective views
+        if response.status_code > 400:
+            log.error('Unspecified server error')
         action = request.META.get('action', None)
         if action:
             pds = request.META.get('pds')
@@ -72,5 +90,4 @@ class LogstashMiddleware(object):
                     'user': user,
                     'response_time': response_time
                 })
-
         return response

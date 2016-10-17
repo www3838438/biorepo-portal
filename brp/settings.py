@@ -57,12 +57,13 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE_CLASSES = [
-    'brp.middleware.LogstashMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'brp.middleware.LogstashMiddleware',
+    'brp.middleware.MaintenanceMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'session_security.middleware.SessionSecurityMiddleware',
     'dataentry.middleware.CheckPdsCredentialsMiddleware',

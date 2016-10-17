@@ -1,3 +1,8 @@
+v1.0.2
+---
+* Add the ability to put the portal into "Maintenance Mode" by running the
+`toggle_maintenance` Django management command.
+
 v1.0.1
 ---
 * Adds a django management command to reactivate locked out users. Ref Issue #67.
