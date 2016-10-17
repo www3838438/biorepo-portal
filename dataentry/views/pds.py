@@ -244,7 +244,7 @@ class CreateView(DataEntryView):
                 )
                 # If we have successfully created the record. Make sure it is in the eHB.
                 try:
-                    self.record_id = self.create_new_ehb_external_record(
+                    self.record_id = SubjectUtils.create_new_ehb_external_record(
                         self.pds, request.user, self.subject, rec_id, label_id).id
                     if self.check_cache():
                         self.update_cache()
