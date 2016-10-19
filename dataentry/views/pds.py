@@ -99,7 +99,6 @@ class FormView(DataEntryView):
         # have the driver process this request
         errors = self.driver.processForm(
             request=request, external_record=context['record'], form_spec=kwargs['form_spec'], session=request.session)
-        log_data = {}
         if errors:
             self.request.META['action'] = 'Errors processing form.'
             self.request.META['error'] = True
@@ -125,7 +124,8 @@ class CreateView(DataEntryView):
         if grp:
             rec_id_prefix = grp.ehb_key
         else:
-            log.error("No subject record group found")
+            request.META['action'] = 'No subject record group found'
+            request.META['error'] = True
             raise Exception('No subject record group found')
         rec_id = None
 
@@ -192,7 +192,8 @@ class CreateView(DataEntryView):
         except PageNotFound:
             allow_more_records = self.pds.max_records_per_subject != 0
         if not allow_more_records:
-            log.error('Maximum number of records created for subject {0}'.format(self.subject.id))
+            request.META['action'] = 'Maximum number of records created for subject {0}'.format(self.subject.id)
+            request.META['error'] = True
             return HttpResponse('Error: The maximum number of records has been created.')
         if request.method == 'GET' and not self.driver.new_record_form_required():
             # Just create the record and redirect (REDCap)
@@ -210,7 +211,8 @@ class CreateView(DataEntryView):
                     self.record_id)
                 return HttpResponseRedirect(self.start_path)
             except RecordCreationError as rce:  # exception from the eHB
-                log.error(rce.errmsg)
+                request.META['action'] = rce.errmsg
+                request.META['error'] = True
                 context['errors'].append((
                     'The record could not be created. Please contact a system'
                     ' administrator. There could be a connection problem.'))
@@ -234,7 +236,8 @@ class CreateView(DataEntryView):
             if grp:
                 rec_id_prefix = grp.ehb_key
             else:
-                log.error('Subject record group not found for {0}'.format(context['subject'].id))
+                request.META['action'] = 'Subject record group not found for {0}'.format(context['subject'].id)
+                request.META['error'] = True
                 raise Exception('No subject record group found')
             # Try to process the new record form
             try:
@@ -251,7 +254,8 @@ class CreateView(DataEntryView):
                         self.update_cache()
                     return HttpResponseRedirect(self.start_path)
                 except RecordCreationError as rce:  # exception from the eHB
-                    log.error(rce.errmsg)
+                    request.META['action'] = rce.errmsg
+                    request.META['error'] = True
                     context['errors'].append((
                         'The record could not be created on the '
                         'electronic Honest Broker. Please contact a '
@@ -276,7 +280,8 @@ class CreateView(DataEntryView):
                     return HttpResponseRedirect(self.start_path)
 
                 except RecordCreationError as rce:  # exception from the eHB
-                    log.error(rce.errmsg)
+                    request.META['action'] = rce.errmsg
+                    request.META['error'] = True
                     record_already_exists = 6
                     cause = rce.raw_cause
                     if cause and len(cause) == 1 and record_already_exists == cause[0]:
@@ -303,7 +308,8 @@ class CreateView(DataEntryView):
                                 context_instance=RequestContext(request)
                             )
                     else:
-                        log.error('Record could not be created')
+                        request.META['action'] = 'Record could not be created'
+                        request.META['error'] = True
                         context['errors'].append((
                             'The record could not be created on the '
                             'electronic Honest Broker. Please contact '
@@ -315,7 +321,8 @@ class CreateView(DataEntryView):
 
         except RecordCreationError as rce:
             # Handle errors in the form.
-            log.error(rce.errmsg)
+            request.META['action'] = rce.errmsg
+            request.META['error'] = True
             context['errors'].append(rce.cause)
             return render_to_response(
                 'pds_dataentry_rec_create.html',
