@@ -93,6 +93,7 @@ class LdapBackend(ModelBackend):
             return
 
     def get_ad_timestamp(self, ldap_response):
+        ''' returns datetime password was last set '''
         timestamp = int(ldap_response[0]['attributes']['pwdLastSet'][0])
         epoch_start = datetime(year=1601, month=1, day=1)
         seconds_since_epoch = timestamp / 10**7
@@ -136,6 +137,10 @@ class LdapBackend(ModelBackend):
             pwdAge = (datetime.now() - pwdLastSet).days
             if pwdAge > self.settings['MAX_AGE']:
                 log.error('User {0}: Password has expired'.format(username))
+                user.profile.password_expired = True
+                user.is_active = False
+                return user
+
         if conn.bind():
             conn.unbind()
             return user

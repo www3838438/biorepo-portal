@@ -1,8 +1,7 @@
 from unittest.mock import MagicMock, patch, call
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.contrib.auth.models import User
-from django.core.management import call_command
 from django.test import TestCase, override_settings
 from django.test import Client
 
@@ -52,6 +51,8 @@ class AccountsModuleTests(TestCase):
         existing_user.set_password(self.existing_user['password'])
         existing_user.save()
         UserProfile(user=existing_user).save()
+        test_user = User.objects.get(email=self.test_user['email'])
+        UserProfile(user=test_user).save()
 
     def tearDown(self):
         User.objects.get(email=self.test_user['email']).delete()
@@ -139,6 +140,26 @@ class AccountsModuleTests(TestCase):
             self.assertTrue(ldap.unbind.called)
             # Check is User
             self.assertTrue(isinstance(user, User))
+
+    @override_settings(AUTHENTICATION_BACKENDS=['accounts.backends.LdapBackend'])
+    def test_ldap_login_expired(self):
+        backend = LdapBackend()
+        with patch('ldap3.Connection') as MockLDAP:
+            backend.get_ad_timestamp = MagicMock(return_value=datetime.now() - timedelta(days=181))
+            ldap = MockLDAP.return_value
+            ldap.search.return_value = [{'dn': 'test'}]
+            ldap.response = [{'dn': 'test'}]
+            user = backend.authenticate('admin@email.chop.edu', 'Chop1234')
+            # Check search calls
+            search_call_list = ldap.search.call_args_list
+            self.assertTrue(call('searchdn', '(sAMAccountName=admin)') in search_call_list)
+            # Check binds
+            self.assertTrue(ldap.bind.called)
+            self.assertTrue(ldap.unbind.called)
+            # Check is User
+            self.assertTrue(isinstance(user, User))
+            # Check User is expired
+            self.assertTrue(user.profile.password_expired)
 
     @override_settings(AUTHENTICATION_BACKENDS=['accounts.backends.LdapBackend'])
     def test_ldap_login_username(self):

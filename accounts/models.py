@@ -11,6 +11,7 @@ class UserProfile(models.Model):
     eula = models.BooleanField(default=False)
     # reason for using the system
     reason = models.TextField(null=True)
+    password_expired = models.BooleanField(default=False)
 
     def __str__(self):
         return "%s's Profile" % self.user.get_full_name() or self.user
