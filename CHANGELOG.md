@@ -1,9 +1,10 @@
 v1.0.2
 ---
 * Add the ability to put the portal into "Maintenance Mode" by running the
-`toggle_maintenance` Django management command.
-* ehb-datasources upgraded to v1.0.3 -- adds additional Nautilus mappings
-* Added notification of password expiry to LDAP backend
+`toggle_maintenance` Django management command. Ref #72
+* ehb-datasources upgraded to v1.0.3 -- adds additional Nautilus mappings ehb-datasources/13
+* Added notification of password expiry to LDAP backend. Ref #56
+* Additional logging on dataentry views
 
 v1.0.1
 ---
