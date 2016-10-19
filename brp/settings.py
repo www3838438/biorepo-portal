@@ -283,6 +283,10 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': True,
         },
+        'dataentry.views': {
+            'handlers': ['console'],
+            'propagate': True,
+        },
         'accounts.backends': {
             'handlers': ['console'],
             'propagate': True,
@@ -310,6 +314,7 @@ if env.bool('LOGSTASH_ENABLED'):
     LOGGING['loggers']['ehb-client']['handlers'].append('logstash')
     LOGGING['loggers']['brp.middleware']['handlers'].append('logstash')
     LOGGING['loggers']['api.views']['handlers'].append('logstash')
+    LOGGING['loggers']['dataentry.views']['handlers'].append('logstash')
 
 if FORCE_SCRIPT_NAME:
     ADMIN_MEDIA_PREFIX = os.path.join(
