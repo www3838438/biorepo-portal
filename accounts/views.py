@@ -51,8 +51,7 @@ def throttled_login(request):
         if isinstance(response, HttpResponseRedirect):
             request.META['action'] = 'Login successful.'
             clear_throttled_login(request)
-        else:
-            request.META['action'] = 'User not authenticated.'
+
         return response
 
     return render(request, template_name, {
