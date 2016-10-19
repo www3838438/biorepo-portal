@@ -60,6 +60,11 @@ class LogstashMiddleware(object):
         request.META['pds'] = self.get_pds(request, view_args)
 
     def process_response(self, request, response):
+        error = request.META.get('error', None)
+        if error:
+            logger = log.error
+        else:
+            logger = log.info
         # Get action from request META. Actions are set in their respective views
         if response.status_code > 400:
             log.error('Unspecified server error')
@@ -70,7 +75,7 @@ class LogstashMiddleware(object):
             user_name = user.username if user else None
             response_time = (datetime.datetime.now() - request.start_ts).microseconds / 1000
             if pds:
-                log.info(
+                logger(
                     '{action} by {user} on PDS {pds_id} in {response_time}ms'.format(
                         action=action,
                         user=user_name,
@@ -85,7 +90,7 @@ class LogstashMiddleware(object):
                         'protocol': pds.protocol.id,
                         'response_time': response_time})
             else:
-                log.info('{action}'.format(action=action), extra={
+                logger('{action}'.format(action=action), extra={
                     'action': action,
                     'user': user,
                     'response_time': response_time
