@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "mocha --compilers :./react_ui/tests/babel-setup.js --recursive ./react_ui/tests/*.js",
     "watch": "NODE_ENV=development webpack --config webpack.config.dev.js --progress --colors --watch ",
     "build": "NODE_ENV=production webpack --config webpack.config.prod.js --progress --colors --optimize-minimize"
   },
@@ -44,16 +44,18 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
+    "assert": "^1.4.1",
     "babel-core": "^6.3.26",
     "babel-jest": "^9.0.1",
     "babel-loader": "^6.2.0",
     "babel-polyfill": "^6.6.1",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.3.13",
-    "enzyme": "^2.4.1",
+    "chai": "^3.5.0",
+    "enzyme": "^2.5.1",
     "jest-cli": "^0.9.0",
     "jsx-loader": "^0.13.2",
-    "mocha": "^3.0.0",
+    "mocha": "^3.1.2",
     "react-addons-test-utils": "^0.14.7",
     "redux-devtools": "^3.0.1",
     "webpack": "^1.12.13"
