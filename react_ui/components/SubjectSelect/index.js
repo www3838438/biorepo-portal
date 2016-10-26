@@ -8,7 +8,7 @@ import LoadingGif from '../LoadingGif';
 import * as ProtocolActions from '../../actions/protocol';
 import * as SubjectActions from '../../actions/subject';
 
-class SubjectSelect extends React.Component {
+export class SubjectSelect extends React.Component {
 
   constructor(props) {
     super(props);
