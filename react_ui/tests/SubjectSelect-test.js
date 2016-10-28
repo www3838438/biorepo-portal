@@ -27,4 +27,17 @@ describe('<SubjectSelect/>', () => {
     const wrapper = shallow(<SubjectSelect params={{ id: 1 }} {...SubSelectProps} />);
     expect(wrapper.contains('<h3>'));
   });
+  it('should display the Project name', () => {
+
+  });
+  it('should render a count of subjects', () => {
+
+  });
+  it('should render a list of subjects', () => {
+
+  });
+  it('should render a search box', () => {
+
+  });
+
 });
