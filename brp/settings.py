@@ -159,7 +159,7 @@ LOGIN_REDIRECT_URL = '/'
 if DEBUG:
     STATIC_ROOT = str(root.path('_site/static/'))
 else:
-    STATIC_ROOT = '/opt/staticfiles/static/'
+    STATIC_ROOT = '/opt/staticfiles/'
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 ADMIN_MEDIA_PREFIX = '/static/admin/'
