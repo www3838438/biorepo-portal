@@ -14,6 +14,7 @@ let initialNewSubject = {
   last_name: null,
   organization_subject_id: null,
   organization_subject_id_validation: null,
+  organization_id_label: 'Organization ID',
 };
 
 const initialState = {
@@ -59,6 +60,7 @@ function subject(state = initialState, action) {
     case REQUEST_SUBJECT_SUCCESS:
       action.subject.organization_subject_id_validation = action.subject.organization_subject_id;
       action.subject.organization = action.subject.organization;
+      action.subject.organization_id_label = action.subject.organization_id_label;
       return Object.assign({}, state, {
         items: action.subjects,
         isFetching: false,

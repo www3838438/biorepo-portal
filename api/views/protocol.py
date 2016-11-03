@@ -167,6 +167,7 @@ class ProtocolSubjectsView(BRPApiView):
                 sub['external_records'] = []
                 sub['external_ids'] = []
                 sub['organization'] = sub['organization_id']
+                sub['organization_id_label'] = sub['organization_id_label']
                 sub.pop('organization_id')
                 for pds in protocoldatasources:
                     sub['external_records'].extend(pds.getSubjectExternalRecords(sub))

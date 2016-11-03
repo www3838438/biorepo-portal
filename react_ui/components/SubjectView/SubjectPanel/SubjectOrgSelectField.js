@@ -21,6 +21,11 @@ class SubjectOrgSelectField extends React.Component {
     } else {
       const newSub = this.props.newSubject;
       newSub.organization = value;
+      this.props.orgs.forEach((org) => {
+        if (value == org.id) {
+          newSub.organization_id_label = org.subject_id_label
+        }
+      })
       dispatch(SubjectActions.setNewSubject(newSub));
     }
   }

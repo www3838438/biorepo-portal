@@ -24,7 +24,7 @@ const SubjectCardView = (props) => {
         <div className="content">
           <h6 className="category">{subject.organization_name}</h6>
           <h4 className="title">{subject.first_name} {subject.last_name}</h4>
-          <p className="description">Org ID: {subject.organization_subject_id}</p>
+          <p className="description">{subject.organization_id_label}: {subject.organization_subject_id}</p>
           <p className="description">Date of birth: {subject.dob}</p>
           <ExternalIDs externalIds={subject.external_ids} />
         </div>

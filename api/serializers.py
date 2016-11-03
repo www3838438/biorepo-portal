@@ -99,6 +99,7 @@ class eHBSubjectSerializer(serializers.Serializer):
     # organization_id is PK for org in ehb-service
     organization_id = serializers.IntegerField()
     organization_subject_id = serializers.CharField(max_length=120)
+    organization_id_label = serializers.CharField(max_length=120)
     dob = serializers.DateField()
     modified = serializers.DateTimeField()
     created = serializers.DateTimeField()

@@ -79,7 +79,8 @@ class SubjectSelect extends React.Component {
         }, this);
       }
     }
-    let columns = ['Organization', 'MRN', 'First Name', 'Last Name', 'Birth Date'];
+    let orgIdLabel = 'Identifier';
+    let columns = ['Organization', orgIdLabel, 'First Name', 'Last Name', 'Birth Date'];
     if (manageExternalIDs) {
       columns.push('External IDs');
     }
@@ -91,15 +92,16 @@ class SubjectSelect extends React.Component {
         sub.external_ids.forEach((exId) => {
           externalIds += `${exId.label_desc} : ${exId.record_id}\n`;
         }, this);
-        return {
+        let row = {
           Organization: sub.organization_name,
-          MRN: sub.organization_subject_id,
           'First Name': sub.first_name,
           'Last Name': sub.last_name,
           'Birth Date': sub.dob,
           'External IDs': externalIds,
           subject: sub,
         };
+        row[orgIdLabel] = sub.organization_subject_id;
+        return row
       });
     }
 

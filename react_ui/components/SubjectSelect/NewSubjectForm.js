@@ -184,14 +184,14 @@ export class NewSubjectForm extends React.Component {
                   <SubjectTextField
                     new
                     error={this.props.newFormErrors.form.org_id}
-                    label={'Organization ID'}
+                    label={`${this.props.subject.newSubject.organization_id_label}`}
                     value={null}
                     skey={'organization_subject_id'}
                   />
                   <SubjectTextField
                     new
                     error={this.props.newFormErrors.form.org_valid}
-                    label={'Organization ID'}
+                    label={`Verify ${this.props.subject.newSubject.organization_id_label}`}
                     value={null}
                     skey={'organization_subject_id_validation'}
                   />

@@ -1,3 +1,8 @@
+v1.0.3
+---
+* Representation of an Organization's Subject ID label is now rendered properly across all subject screens.
+
+
 v1.0.2
 ---
 * Add the ability to put the portal into "Maintenance Mode" by running the
