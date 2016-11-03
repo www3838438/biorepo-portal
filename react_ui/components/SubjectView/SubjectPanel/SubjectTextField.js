@@ -15,11 +15,11 @@ class SubjectTextField extends React.Component {
     if (!this.props.new) {
       // Changing the input fields should update the state of the active subject
       const sub = this.props.subject;
-      sub[this.props.skey] = e.target.value;
+      sub[this.props.skey] = e.target.value.trim();
       this.props.dispatch(SubjectActions.setActiveSubject(sub));
     } else {
       const sub = this.props.newSubject;
-      sub[this.props.skey] = e.target.value;
+      sub[this.props.skey] = e.target.value.trim();
     }
   }
 

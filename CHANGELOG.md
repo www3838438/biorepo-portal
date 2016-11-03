@@ -1,7 +1,7 @@
 v1.0.3
 ---
-* Representation of an Organization's Subject ID label is now rendered properly across all subject screens.
-
+* Representation of an Organization's Subject ID label is now rendered properly across all subject screens. #74
+* Trim whitespace from Subject edit fields. #75
 
 v1.0.2
 ---
