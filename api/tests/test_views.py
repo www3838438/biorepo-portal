@@ -11,6 +11,7 @@ from rest_framework.authtoken.models import Token
 from ehb_client.requests.subject_request_handler import Subject
 from ehb_client.requests.organization_request_handler import Organization
 from ehb_client.requests.external_record_request_handler import ExternalRecord
+from ehb_client.requests.group_request_handler import Group
 from ehb_client.requests.exceptions import PageNotFound
 from ..models.protocols import Protocol, ProtocolDataSource
 from ..views.protocol import ProtocolViewSet, ProtocolDataSourceView, \
@@ -48,6 +49,13 @@ TestExternalRecord = ExternalRecord(
     created=datetime.datetime(2014, 1, 1),
     id=1,
     label_id=1
+)
+TestGroup = Group(
+    id=1,
+    name='TestGroup',
+    is_locking=False,
+    client_key='testck',
+    description='A test group'
 )
 
 
@@ -260,7 +268,11 @@ class ProtocolViewTests(BRPTestCase):
             })
         response = client.delete(url)
 
-    def test_update_subject_on_protocol(self):
+    @patch('api.views.base.BRPApiView.s_rh.get')
+    @patch('api.views.base.BRPApiView.o_rh.get')
+    @patch('api.views.base.BRPApiView.g_rh.get')
+    @patch('api.views.base.BRPApiView.g_rh.update')
+    def test_update_subject_on_protocol(self, mock_grh_update, mock_grh_get, mock_orh, mock_srh):
         '''
         Ensure that we can create a subject on a Protocol
         '''
@@ -283,8 +295,13 @@ class ProtocolViewTests(BRPTestCase):
         token = Token.objects.get(user__username='admin')
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+        mock_orh.return_value = TestOrganization
+        mock_srh.return_value = TestSubject
+        mock_grh_get.return_value = TestGroup
+        mock_grh_update.return_value = [{'success': True}]
         response = client.put(url, subject, format='json')
         self.assertTrue(response.status_code, 200)
+        print(response.data)
         self.assertEqual(response.data['first_name'], 'Johnny')
 
     def test_retrieve_subject_detail_from_protocol(self):
