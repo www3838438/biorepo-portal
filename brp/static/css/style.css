@@ -202,3 +202,10 @@ td.row-action:hover {
     text-decoration: none;
     background-color: #E9F5FD;
 }
+
+.version-footer {
+    position: fixed;;
+    bottom: 0;
+    right: 0;
+    padding: 10px;
+}

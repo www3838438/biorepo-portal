@@ -1,30 +1,13 @@
 import socket
-import json
 import logging
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404,\
     HttpResponseForbidden
 from django.template import RequestContext, loader
-from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
-from django.core.cache import cache
-from django.template import loader
-# from portal.forms.subject_forms import NewSubjectForm, EditSubjectForm
-# from portal.ehb_service_client import ServiceClient
-from api.models.protocols import Protocol, ProtocolDataSource,\
-    Organization, ProtocolUserCredentials, ProtocolDataSourceLink
-# from portal.utilities import SubjectUtils, DriverUtils
 from django.db import IntegrityError
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-#
-# from ehb_client.requests.exceptions import ErrorConstants, PageNotFound
-# from ehb_client.requests.base import RequestBase
-# from ehb_client.requests.external_record_request_handler import ExternalRecord
-# from ehb_client.requests.subject_request_handler import Subject
-# from ehb_datasources.drivers.exceptions import RecordDoesNotExist,\
-#     RecordCreationError, IgnoreEhbExceptions
 
 log = logging.getLogger(__name__)
 
@@ -58,4 +41,15 @@ def index(request):
         'user': usr,
         'token': token,
     }
+    return HttpResponse(template.render(context, request))
+
+def changelog(request):
+    f = open('CHANGELOG.md', 'rb')
+    c_log = f.read()
+    f.close()
+    context = {
+        'changelog': c_log,
+        'version': 'v1.0.3'
+    }
+    template = loader.get_template('changelog.html')
     return HttpResponse(template.render(context, request))

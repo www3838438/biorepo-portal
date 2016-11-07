@@ -4,6 +4,7 @@ v1.0.3
 * Trim whitespace from Subject edit fields. #75
 * Fixed an issue where updating a Subject would not update the corresponding Group for that
 subject in the eHB which could cause subsequent issues creating new records for that subject. #76
+* Add changelog view. #73
 
 v1.0.2
 ---
