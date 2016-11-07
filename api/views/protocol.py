@@ -355,6 +355,9 @@ class ProtocolSubjectDetailView(BRPApiView):
         try:
             ehb_sub = self.s_rh.get(id=subject)
             org = self.o_rh.get(id=subject_update['organization'])
+            protocol = Protocol.objects.get(pk=pk)
+            old_group_name = SubjectUtils.protocol_subject_record_group_name(protocol, ehb_sub)
+            group = self.g_rh.get(name=old_group_name)
         except:
             return Response({'error': 'subject not found'}, status=404)
         ehb_sub.old_subject = deepcopy(ehb_sub)
@@ -363,11 +366,18 @@ class ProtocolSubjectDetailView(BRPApiView):
         ehb_sub.organization_subject_id = subject_update['organization_subject_id']
         ehb_sub.organization_id = org.id
         ehb_sub.dob = datetime.strptime(subject_update['dob'], '%Y-%m-%d')
+        new_group_name = SubjectUtils.protocol_subject_record_group_name(protocol, ehb_sub)
+        group.name = new_group_name
+        group.client_key = protocol._settings_prop(
+            'CLIENT_KEY', 'key', '')
+        group.current_client_key(group.client_key)
         update = self.s_rh.update(ehb_sub)[0]
         if update['errors']:
             return Response(json.dumps({'error': 'Unable to update subject'}), status=400)
-        # If the update is succesful, update all groups associated with this subject
-
+        # If the update is succesful, update the subject record group associated with this subject
+        res = self.g_rh.update(group)[0]
+        if not res['success']:
+            return Response(json.dumps({'error': 'Unable to update group'}), status=400)
         # If the update is succesful, update the cache.
         sub = json.loads(Subject.json_from_identity(update['subject']))
         sub['organization_name'] = org.name
