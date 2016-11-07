@@ -93,7 +93,8 @@ class SubjectUtils(object):
             r = gh.create(grp)
             return r[0].get('success')
         except:
-            logger.error("Failure creating a subject record group for {0}".format(n))
+            raise
+            logger.error("Failure creating a subject record group for {0}".format(subject.id))
             return False
 
     @staticmethod

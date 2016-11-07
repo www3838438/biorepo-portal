@@ -362,7 +362,8 @@ class ProtocolDataSource(Base):
         if not labels:
             labels = erl_rh.query()
             cache.set('ehb_labels', labels)
-            cache.persist('ehb_labels')
+            if hasattr(cache, 'persist'):
+                cache.persist('ehb_labels')
         try:
             pds_records = er_rh.get(
                 external_system_url=self.data_source.url, path=self.path, subject_id=subject['id'])

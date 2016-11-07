@@ -65,7 +65,8 @@ class ProtocolDataSourceView(BRPApiView):
                 if not labels:
                     labels = self.erl_rh.query()
                     cache.set('ehb_labels', labels)
-                    cache.ttl('ehb_labels', 60)
+                    if hasattr(cache, 'ttl'):
+                        cache.ttl('ehb_labels', 60)
                 nl = []
                 for l in dc['labels']:
                     for label in labels:
@@ -303,7 +304,8 @@ class ProtocolSubjectDetailView(BRPApiView):
             subjects = json.loads(cache_data)
             subjects.append(subject)
             self.cache.set(cache_key, json.dumps(subjects))
-            self.cache.persist(cache_key)
+            if hasattr(self.cache, 'persist'):
+                self.cache.persist(cache_key)
         return Response(
             [success, subject, errors],
             headers={'Access-Control-Allow-Origin': '*'},
@@ -364,6 +366,9 @@ class ProtocolSubjectDetailView(BRPApiView):
         update = self.s_rh.update(ehb_sub)[0]
         if update['errors']:
             return Response(json.dumps({'error': 'Unable to update subject'}), status=400)
+        # If the update is succesful, update all groups associated with this subject
+
+        # If the update is succesful, update the cache.
         sub = json.loads(Subject.json_from_identity(update['subject']))
         sub['organization_name'] = org.name
         cache_key = 'protocol{0}_sub_data'.format(pk)
@@ -380,7 +385,8 @@ class ProtocolSubjectDetailView(BRPApiView):
                 if subjects[i]['id'] == sub['id']:
                     subjects[i] = sub
             self.cache.set(cache_key, json.dumps(subjects))
-            self.cache.persist(cache_key)
+            if hasattr(self.cache, 'persist'):
+                self.cache.persist(cache_key)
         return Response(
             sub,
             headers={'Access-Control-Allow-Origin': '*'}
