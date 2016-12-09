@@ -168,6 +168,7 @@ class CreateView(DataEntryView):
         cache_key = 'protocol{0}_sub_data'.format(self.pds.protocol.id)
         cache.set(cache_key, json.dumps(subs))
         cache.persist(cache_key)
+        self.check_cache()
 
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
@@ -268,15 +269,16 @@ class CreateView(DataEntryView):
                 try:
                     # this will create the ehb external_record entry
                     # and add that record to the subject's record group
-                    self.record = SubjectUtils.create_new_ehb_external_record(
-                        self.pds, request.user, self.subject, rec_id, label_id)
+                    self.record_id = SubjectUtils.create_new_ehb_external_record(
+                        self.pds, request.user, self.subject, rec_id, label_id).id
+
                     if self.check_cache():
                         self.update_cache()
                     self.start_path = '{0}/dataentry/protocoldatasource/{1}/subject/{2}/record/{3}/start/'.format(
                         self.service_client.self_root_path,
                         self.pds.id,
                         self.subject.id,
-                        self.record.id)
+                        self.record_id)
                     return HttpResponseRedirect(self.start_path)
 
                 except RecordCreationError as rce:  # exception from the eHB
