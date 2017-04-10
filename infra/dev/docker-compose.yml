@@ -38,4 +38,5 @@ services:
         - postgres
         - redis
         - ehb-service:ehb
+        - logstash
     restart: always
