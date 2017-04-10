@@ -17,7 +17,7 @@ services:
   logstash:
     image: logstash:5.3
     volumes:
-      - ./logstash.conf:/config-dir/logstash.conf
+      - ../../logstash.conf:/config-dir/logstash.conf
     restart: always
     command: logstash -f /config-dir/logstash.conf
 
@@ -25,6 +25,8 @@ services:
     image: 779047852880.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:latest
     container_name: ehb
     restart: always
+    ports:
+      - "32783:8000"
 
   app:
     image: 779047852880.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:dev
