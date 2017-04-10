@@ -3,6 +3,8 @@ services:
   postgres:
       image: postgres:9.4
       container_name: postgres
+      environment:
+        - POSTGRES_DB: "brp_dev"
       volumes:
           - /opt/apps/postgres/data:/var/lib/postgresql/data
       restart: always
