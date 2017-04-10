@@ -39,10 +39,13 @@ services:
       options:
         gelf-address: "udp://logstash:5000"
         tag: "brp-dev"
+    depends_on:
+      - logstash
+    command: ["/opt/app/bin/wait-for-it.sh", "logstash:5000", "--", "/opt/app/bin/run.sh"]
 
     external_links:
         - postgres
         - redis
         - ehb-service:ehb
-        - logstash
+
     restart: always
