@@ -16,6 +16,8 @@ services:
 
   logstash:
     image: logstash:5.3
+    ports:
+      - "5000:5000/udp"
     volumes:
       - ../../logstash.conf:/config-dir/logstash.conf
     restart: always
@@ -37,11 +39,9 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://logstash:5000"
+        gelf-address: "udp://127.0.0.1:5000"
         tag: "brp-dev"
-    links:
-      - logstash
-    command: ["/opt/app/bin/wait-for-it.sh", "logstash:5000", "--", "/opt/app/bin/run.sh"]
+    command: ["/opt/app/bin/wait-for-it.sh", "127.0.0.1:5000", "--", "/opt/app/bin/run.sh"]
 
     external_links:
         - postgres
