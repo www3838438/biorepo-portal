@@ -1,34 +1,39 @@
 version: '2'
 services:
   postgres:
-      image: postgres:9.4
-      container_name: postgres
-      environment:
-        - POSTGRES_DB=brp_dev
-      volumes:
-          - /opt/apps/postgres/data:/var/lib/postgresql/data
-      restart: always
+    image: postgres:9.4
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=brp_dev
+    volumes:
+        - /opt/apps/postgres/data:/var/lib/postgresql/data
+    restart: always
 
   redis:
-      container_name: redis
-      image: redis:3.0.5
-      restart: always
+    container_name: redis
+    image: redis:3.0.5
+    restart: always
 
   logstash:
-      image: logstash:5.3
-      volumes:
-        - ./logstash.conf:/config-dir/logstash.conf
-      restart: always
-      command: logstash -f /config-dir/logstash.conf
+    image: logstash:5.3
+    volumes:
+      - ./logstash.conf:/config-dir/logstash.conf
+    restart: always
+    command: logstash -f /config-dir/logstash.conf
+
+  ehb-service:
+    image: 779047852880.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:latest
+    container_name: ehb
+    restart: always
 
   app:
-      image: 779047852880.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:dev
-      container_name: brp
-      env_file: ../../settings.env
-      ports:
-        - "32782:8000"
-      external_links:
-          - postgres
-          - redis
-          - ehb-service:ehb
-      restart: always
+    image: 779047852880.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:dev
+    container_name: brp
+    env_file: ../../settings.env
+    ports:
+      - "32782:8000"
+    external_links:
+        - postgres
+        - redis
+        - ehb-service:ehb
+    restart: always
