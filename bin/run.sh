@@ -2,6 +2,7 @@
 
 python3 /opt/app/manage.py migrate --noinput
 python3 /opt/app/manage.py collectstatic --noinput
+python3 /opt/app/manage.py loaddata api/fixtures/demo_data.json
 
 cd /opt/app/ || exit
 
