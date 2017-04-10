@@ -39,7 +39,7 @@ services:
       options:
         gelf-address: "udp://logstash:5000"
         tag: "brp-dev"
-    depends_on:
+    links:
       - logstash
     command: ["/opt/app/bin/wait-for-it.sh", "logstash:5000", "--", "/opt/app/bin/run.sh"]
 
