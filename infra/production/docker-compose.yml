@@ -22,9 +22,7 @@ services:
   app:
       image: 779047852880.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:latest
       container_name: brp
-      env_file: ./settings.env
-      ports:
-        - "32782:8000"
+      env_file: ../../settings.env
       external_links:
           - postgres
           - redis
