@@ -24,14 +24,14 @@ services:
     command: logstash -f /config-dir/logstash.conf
 
   ehb-service:
-    image: 779047852880.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:latest
+    image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:latest
     container_name: ehb
     restart: always
     ports:
       - "32783:8000"
 
   app:
-    image: 779047852880.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:dev
+    image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:dev
     container_name: brp
     env_file: ../../settings.env
     ports:
