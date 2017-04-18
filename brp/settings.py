@@ -131,7 +131,8 @@ ADMINS = (
     ('Tyler Rivera', 'riverat2@email.chop.edu'),
     ('Alex Felmeister', 'felmeistera@email.chop.edu'),
     ('Alex Gonzalez', 'gonzalezak@email.chop.edu'),
-    ('Edward Kruase', 'krausee@email.chop.edu')
+    ('Edward Kruase', 'krausee@email.chop.edu'),
+    ('Suzanne Gerace', 'geraces@email.chop.edu')
 )
 MANAGERS = ADMINS
 
