@@ -25,7 +25,7 @@ services:
       driver: gelf
       options:
         gelf-address: "udp://127.0.0.1:5000"
-        tag: "brp-dev"
+        tag: "brp-prod"
     command: ["/opt/app/bin/wait-for-it.sh", "127.0.0.1:5000", "--", "/opt/app/bin/run.sh"]
 
     external_links:
