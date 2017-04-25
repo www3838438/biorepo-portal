@@ -66,7 +66,7 @@ class LogstashMiddleware(object):
         else:
             logger = log.info
         # Get action from request META. Actions are set in their respective views
-        if response.status_code > 400:
+        if response.status_code > 400 and response.status_code != 404:
             log.error('Unspecified server error')
         action = request.META.get('action', None)
         if action:

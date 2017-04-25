@@ -240,24 +240,8 @@ LOGGING = {
     'handlers': {
         'default': {
             'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': str(root.path('logs/debug.log')),
-            'maxBytes': 1024 * 1024 * 5,  # 5 MB
-            'backupCount': 5,
-            'formatter': 'standard',
-        },
-        'console': {
-            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'stream': sys.stdout
-        },
-        'request_handler': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': str(root.path('logs/requests.log')),
-            'maxBytes': 1024 * 1024 * 5,  # 5 MB
-            'backupCount': 5,
-            'formatter': 'standard',
         },
         'mail_admins': {
             'level': 'ERROR',
@@ -273,45 +257,29 @@ LOGGING = {
             'propagate': True
         },
         'django.request': {
-            'handlers': ['request_handler'],
+            'handlers': ['default'],
             'level': 'DEBUG',
             'propagate': True
         },
         'brp.middleware': {
-            'handlers': ['console'],
+            'handlers': ['default'],
             'propagate': True,
         },
         'api.views': {
-            'handlers': ['console'],
+            'handlers': ['default'],
             'propagate': True,
         },
         'accounts.backends': {
-            'handlers': ['console'],
+            'handlers': ['default'],
             'propagate': True,
         },
         'ehb-client': {
             'level': 'DEBUG',
-            'handlers': [],
-            'propagate': False
+            'handlers': ['default'],
+            'propagate': True,
         }
     }
 }
-
-if env.bool('LOGSTASH_ENABLED'):
-    LOGGING['handlers']['logstash'] = {
-        'level': 'DEBUG',
-        'class': 'logstash.TCPLogstashHandler',
-        'host': env('LOGSTASH_HOST'),
-        'port': env.int('LOGSTASH_PORT'),  # Default value: 5959
-        'version': 1,  # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
-        'message_type': 'logstash',  # 'type' field in logstash message. Default value: 'logstash'.
-        'fqdn': False,  # Fully qualified domain name. Default value: false.
-        'tags': None,  # list of tags. Default: None.
-    }
-    LOGGING['loggers']['django.request']['handlers'].append('logstash')
-    LOGGING['loggers']['ehb-client']['handlers'].append('logstash')
-    LOGGING['loggers']['brp.middleware']['handlers'].append('logstash')
-    LOGGING['loggers']['api.views']['handlers'].append('logstash')
 
 if FORCE_SCRIPT_NAME:
     ADMIN_MEDIA_PREFIX = os.path.join(
