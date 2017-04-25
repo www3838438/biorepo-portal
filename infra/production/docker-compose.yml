@@ -10,6 +10,8 @@ services:
     restart: always
     command: logstash -f /config-dir/logstash.conf
 
+    network_mode: bridge
+
     restart: always
 
   brp:
@@ -25,5 +27,7 @@ services:
     external_links:
         - postgres
         - redis
+
+    network_mode: bridge
 
     restart: always
