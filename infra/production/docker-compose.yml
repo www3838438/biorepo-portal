@@ -17,10 +17,7 @@ services:
 
   app:
     image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:dev
-    container_name: brp
     env_file: ../../settings.env
-    ports:
-      - "32782:8000"
     logging:
       driver: gelf
       options:
