@@ -1,11 +1,6 @@
 version: '2'
 services:
 
-  brp_redis:
-    container_name: redis
-    image: redis:3.0.5
-    restart: always
-
   brp_logstash:
     image: logstash:5.3
     ports:
