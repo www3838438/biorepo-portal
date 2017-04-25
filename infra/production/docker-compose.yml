@@ -15,7 +15,7 @@ services:
     restart: always
 
   brp:
-    image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:dev
+    image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:latest
     env_file: ../../settings.env
     logging:
       driver: gelf
