@@ -1,12 +1,12 @@
 version: '2'
 services:
 
-  redis:
+  brp_redis:
     container_name: redis
     image: redis:3.0.5
     restart: always
 
-  logstash:
+  brp_logstash:
     image: logstash:5.3
     ports:
       - "5000:5000/udp"
@@ -15,7 +15,9 @@ services:
     restart: always
     command: logstash -f /config-dir/logstash.conf
 
-  app:
+    restart: always
+
+  brp:
     image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:dev
     env_file: ../../settings.env
     logging:
@@ -28,6 +30,5 @@ services:
     external_links:
         - postgres
         - redis
-        - ehb-service:ehb
 
     restart: always
