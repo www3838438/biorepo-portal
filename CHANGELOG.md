@@ -1,3 +1,7 @@
+v1.0.4
+---
+* Update ehb-datasources to 1.0.4 -- introduces improved driver exception handling
+
 v1.0.3
 ---
 * Representation of an Organization's Subject ID label is now rendered properly across all subject screens. #74
