@@ -27,11 +27,15 @@ services:
     image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:latest
     container_name: ehb
     restart: always
+    environment:
+      - REDIS_HOST=redis
     ports:
       - "32783:8000"
+    depends_on:
+      - redis
 
   app:
-    image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:<feature_branch_name> 
+    image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:<feature_branch_name>
     container_name: brp
     env_file: ../../settings.env
     ports:
