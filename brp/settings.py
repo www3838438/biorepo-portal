@@ -13,10 +13,12 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 import sys
 import environ
+
+from pythonjsonlogger import jsonlogger
+
 root = environ.Path(__file__) - 2  # three folder back (/a/b/c/ - 3 = /)
 env = environ.Env(DEBUG=(bool, False),)  # set default values and casting
 environ.Env.read_env('{0}.env'.format(env('APP_ENV')))  # reading .env file
-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -62,7 +64,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'brp.middleware.LogstashMiddleware',
+    'brp.middleware.LoggingMiddleware',
     'brp.middleware.MaintenanceMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'session_security.middleware.SessionSecurityMiddleware',
@@ -230,6 +232,11 @@ LOGGING = {
     'formatters': {
         'standard': {
             'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+        },
+        'json': {
+            '()': jsonlogger.JsonFormatter,
+            'fmt': '%(levelname)s %(asctime)s %(module)s %(process)d%(message)s %(pathname)s $(lineno)d $(funcName)s',
+
         }
     },
     'filters': {
@@ -241,7 +248,8 @@ LOGGING = {
         'default': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'stream': sys.stdout
+            'stream': sys.stdout,
+            'formatter': 'json',
         },
         'mail_admins': {
             'level': 'ERROR',
@@ -254,29 +262,29 @@ LOGGING = {
         '': {
             'handlers': ['default'],
             'level': 'DEBUG',
-            'propagate': True
+            'propagate': False
         },
         'django.request': {
             'handlers': ['default'],
             'level': 'DEBUG',
-            'propagate': True
+            'propagate': False
         },
         'brp.middleware': {
             'handlers': ['default'],
-            'propagate': True,
+            'propagate': False,
         },
         'api.views': {
             'handlers': ['default'],
-            'propagate': True,
+            'propagate': False,
         },
         'accounts.backends': {
             'handlers': ['default'],
-            'propagate': True,
+            'propagate': False,
         },
         'ehb-client': {
             'level': 'DEBUG',
             'handlers': ['default'],
-            'propagate': True,
+            'propagate': False,
         }
     }
 }

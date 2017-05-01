@@ -23,7 +23,7 @@ class MaintenanceMiddleware(object):
             return HttpResponse(t.render(RequestContext(request)))
 
 
-class LogstashMiddleware(object):
+class LoggingMiddleware(object):
 
     def get_user(self, request):
         ''' Attempt to get the user if authenticated through session otherwise

@@ -10,4 +10,4 @@ dj-static>=0.0.6,<0.1.0
 -e git+https://github.com/chop-dbhi/ehb-datasources.git@v1.0.4#egg=ehb_datasources
 ldap3>=1.4.0,<1.5
 psycopg2>=2.6.1,<2.7
-python-logstash>=0.4.6,<0.5
+python-json-logger==0.1.7
