@@ -43,6 +43,7 @@ class ProtocolDataSourceAdmin(admin.ModelAdmin):
     list_filter = ['protocol', 'data_source', 'path', 'created', 'modified']
     list_display = ['protocol', 'data_source', 'path']
     search_fields = ['protocol__name', 'data_source__name', 'path']
+    
 admin.site.register(ProtocolDataSource, ProtocolDataSourceAdmin)
 
 
