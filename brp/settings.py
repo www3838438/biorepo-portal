@@ -193,7 +193,7 @@ SESSION_SECURITY_WARN_AFTER = 900
 SESSION_SECURITY_EXPIRE_AFTER = 1200
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-DEFAULT_FROM_EMAIL = 'cbmisupport@email.chop.edu'
+DEFAULT_FROM_EMAIL = 'eigsupport@email.chop.edu'
 
 # Django Rest Framework
 REST_FRAMEWORK = {
