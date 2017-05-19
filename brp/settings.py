@@ -13,10 +13,12 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 import sys
 import environ
+
+from pythonjsonlogger import jsonlogger
+
 root = environ.Path(__file__) - 2  # three folder back (/a/b/c/ - 3 = /)
 env = environ.Env(DEBUG=(bool, False),)  # set default values and casting
 environ.Env.read_env('{0}.env'.format(env('APP_ENV')))  # reading .env file
-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -62,7 +64,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'brp.middleware.LogstashMiddleware',
+    'brp.middleware.LoggingMiddleware',
     'brp.middleware.MaintenanceMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'session_security.middleware.SessionSecurityMiddleware',
@@ -131,6 +133,8 @@ ADMINS = (
     ('Tyler Rivera', 'riverat2@email.chop.edu'),
     ('Alex Felmeister', 'felmeistera@email.chop.edu'),
     ('Alex Gonzalez', 'gonzalezak@email.chop.edu'),
+    ('Edward Krause', 'krausee@email.chop.edu'),
+    ('Suzanne Gerace', 'geraces@email.chop.edu')
 )
 MANAGERS = ADMINS
 
@@ -228,6 +232,11 @@ LOGGING = {
     'formatters': {
         'standard': {
             'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+        },
+        'json': {
+            '()': jsonlogger.JsonFormatter,
+            'fmt': '%(levelname)s %(asctime)s %(module)s %(process)d%(message)s %(pathname)s $(lineno)d $(funcName)s',
+
         }
     },
     'filters': {
@@ -238,24 +247,9 @@ LOGGING = {
     'handlers': {
         'default': {
             'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': str(root.path('logs/debug.log')),
-            'maxBytes': 1024 * 1024 * 5,  # 5 MB
-            'backupCount': 5,
-            'formatter': 'standard',
-        },
-        'console': {
-            'level': 'INFO',
             'class': 'logging.StreamHandler',
-            'stream': sys.stdout
-        },
-        'request_handler': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': str(root.path('logs/requests.log')),
-            'maxBytes': 1024 * 1024 * 5,  # 5 MB
-            'backupCount': 5,
-            'formatter': 'standard',
+            'stream': sys.stdout,
+            'formatter': 'json',
         },
         'mail_admins': {
             'level': 'ERROR',
@@ -268,48 +262,32 @@ LOGGING = {
         '': {
             'handlers': ['default'],
             'level': 'DEBUG',
-            'propagate': True
+            'propagate': False
         },
         'django.request': {
-            'handlers': ['request_handler'],
+            'handlers': ['default'],
             'level': 'DEBUG',
-            'propagate': True
+            'propagate': False
         },
         'brp.middleware': {
-            'handlers': ['console'],
-            'propagate': True,
+            'handlers': ['default'],
+            'propagate': False,
         },
         'api.views': {
-            'handlers': ['console'],
-            'propagate': True,
+            'handlers': ['default'],
+            'propagate': False,
         },
         'accounts.backends': {
-            'handlers': ['console'],
-            'propagate': True,
+            'handlers': ['default'],
+            'propagate': False,
         },
         'ehb-client': {
             'level': 'DEBUG',
-            'handlers': [],
-            'propagate': False
+            'handlers': ['default'],
+            'propagate': False,
         }
     }
 }
-
-if env.bool('LOGSTASH_ENABLED'):
-    LOGGING['handlers']['logstash'] = {
-        'level': 'DEBUG',
-        'class': 'logstash.TCPLogstashHandler',
-        'host': env('LOGSTASH_HOST'),
-        'port': env.int('LOGSTASH_PORT'),  # Default value: 5959
-        'version': 1,  # Version of logstash event schema. Default value: 0 (for backward compatibility of the library)
-        'message_type': 'logstash',  # 'type' field in logstash message. Default value: 'logstash'.
-        'fqdn': False,  # Fully qualified domain name. Default value: false.
-        'tags': None,  # list of tags. Default: None.
-    }
-    LOGGING['loggers']['django.request']['handlers'].append('logstash')
-    LOGGING['loggers']['ehb-client']['handlers'].append('logstash')
-    LOGGING['loggers']['brp.middleware']['handlers'].append('logstash')
-    LOGGING['loggers']['api.views']['handlers'].append('logstash')
 
 if FORCE_SCRIPT_NAME:
     ADMIN_MEDIA_PREFIX = os.path.join(

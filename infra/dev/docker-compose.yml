@@ -1,0 +1,55 @@
+version: '2'
+services:
+  postgres:
+    image: postgres:9.4
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=brp_dev
+    volumes:
+        - /opt/apps/postgres/data:/var/lib/postgresql/data
+    restart: always
+
+  redis:
+    container_name: redis
+    image: redis:3.0.5
+    restart: always
+
+  logstash:
+    image: logstash:5.3
+    ports:
+      - "5000:5000/udp"
+    volumes:
+      - ../../logstash.conf:/config-dir/logstash.conf
+    restart: always
+    command: logstash -f /config-dir/logstash.conf
+
+  ehb-service:
+    image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:latest
+    container_name: ehb
+    restart: always
+    environment:
+      - REDIS_HOST=redis
+    ports:
+      - "32783:8000"
+    depends_on:
+      - redis
+
+  app:
+    image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:dev
+    container_name: brp
+    env_file: ../../settings.env
+    ports:
+      - "32782:8000"
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:5000"
+        tag: "brp-dev"
+    command: ["/opt/app/bin/wait-for-it.sh", "127.0.0.1:5000", "--", "/opt/app/bin/run.sh"]
+
+    external_links:
+        - postgres
+        - redis
+        - ehb-service:ehb
+
+    restart: always

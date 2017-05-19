@@ -1,0 +1,32 @@
+version: '2'
+services:
+
+  brp_logstash:
+    image: logstash:5.3
+    ports:
+      - "5000:5000/udp"
+    volumes:
+      - ../../logstash.conf:/config-dir/logstash.conf
+    restart: always
+    command: logstash -f /config-dir/logstash.conf
+
+    network_mode: bridge
+
+    restart: always
+
+  brp:
+    image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:latest
+    env_file: ../../settings.env
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:5000"
+        tag: "brp-prod"
+    command: ["/opt/app/bin/wait-for-it.sh", "127.0.0.1:5000", "--", "/opt/app/bin/run.sh"]
+
+    external_links:
+        - redis
+
+    network_mode: bridge
+
+    restart: always
