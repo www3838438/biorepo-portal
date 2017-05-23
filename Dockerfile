@@ -14,6 +14,7 @@ RUN apk add --update \
     musl-dev \
     postgresql-dev \
     mailcap \
+    vim \
   && rm -rf /var/cache/apk/* && \
   python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
