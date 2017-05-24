@@ -13,7 +13,7 @@ class UserProfile(models.Model):
     reason = models.TextField(null=True)
     password_expired = models.BooleanField(default=False)
 
-    institution_email = models.CharField(max_length=100, null=True)
+    institutional_email = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return "%s's Profile" % self.user.get_full_name() or self.user
