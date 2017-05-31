@@ -48,7 +48,7 @@ services:
     command: ["/opt/app/bin/wait-for-it.sh", "127.0.0.1:5000", "--", "/opt/app/bin/run.sh"]
 
     external_links:
-        - postgres
+        - brp_dev_pg
         - redis
         - ehb-service:ehb
 
