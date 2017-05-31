@@ -24,7 +24,7 @@ services:
     command: logstash -f /config-dir/logstash.conf
 
   ehb-service:
-    image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:latest
+    image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:dev
     container_name: ehb
     restart: always
     environment:
