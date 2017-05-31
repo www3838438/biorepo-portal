@@ -2,7 +2,7 @@ version: '2'
 services:
   postgres:
     image: postgres:9.4
-    container_name: postgres
+    container_name: brp_dev_pg
     environment:
       - POSTGRES_DB=brp_dev
     volumes:
