@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
+<!--[if IE]>
+<p class="navbar-text">Application optimized for Firefox and Chrome</p>
+<![endif]-->
+
 {% block head_content %}
 <title>Biorepository Portal Login</title>
 {% endblock %}
@@ -14,8 +18,8 @@
 
 {% block main_content %}
     <div class="row">
-        <div class="col-md-12 col-md-offset-3">
-            <h1 style="color:#747474"> The Biorepository Portal Project </h1>
+        <div class="col-md-12">
+            <h1 style="color:#747474"><center> The Biorepository Portal Project </center></h1>
         </div>
     </div>
     {% if form.non_field_errors %}
@@ -51,9 +55,11 @@
 		    </form>
 	       {% endif %}
 	</div>
-    <div class="col-md-12 col-md-offset-4">
+    <div class="col-md-12">
         <div>
+          <center>
             <a href="http://dbhi.chop.edu"><img src="{% static "img/CHDBHi.png" %}"></a>
+          </center>
         </div>
     </div>
 
