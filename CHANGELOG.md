@@ -1,3 +1,9 @@
+v1.0.5
+---
+* Updated support e-mail to eigsupport@email.chop.edu an added footer with new e-mail. #87
+* Added institutional_email field to UserProfile model #86
+* Fixed admin search function for ProtocolUserCredentialsAdmin, ProtocolDataSourceAdmin and ProtocolUserAdmin. #85 
+
 v1.0.4
 ---
 * Update ehb-datasources to 1.0.4 -- introduces improved driver exception handling
