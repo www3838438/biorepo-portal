@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
-
+{% block script %}
+detectIE();
+{% endblock %}
 
 {% block head_content %}
-<!--[if IE]>
-<p class="navbar-text">Application optimized for Firefox and Chrome</p>
-<![endif]-->
-<title>Biorepository Portal Login</title>
+
+  <title>Biorepository Portal Login</title>
 {% endblock %}
 
 {% block topbar_block %}
+
 <p class="navbar-text">Biorepository Login</p>
 {% endblock %}
 {% block top_links %}
@@ -18,8 +19,22 @@
 {% endblock %}
 
 {% block main_content %}
+
+<div class="row">
+    <div class="info messages col-md-8 col-md-offset-2">
+        <div class="alert alert-danger">
+          <center>
+                  <p class="message warning" id="detectIEresult"></p>
+          <center>
+      </div>
+    </div>
+    </div>
+
+
     <div class="row">
+      <h2 style="color:#747474" class="text-center" id="detectIEresult"></h2>
         <div class="col-md-12">
+            <h3 style="color:#747474" class="text-center" id="detectIEresult"></h3>
             <h1 style="color:#747474"><center> The Biorepository Portal Project </center></h1>
         </div>
     </div>

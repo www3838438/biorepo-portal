@@ -28,9 +28,9 @@ function extendFilters() {
             	if(val1.startsWith(ts)){
             	 	rv = true;
             	 	return false;
-            	}	
+            	}
             });
-            return rv; 
+            return rv;
         }
     });
 }
@@ -44,3 +44,11 @@ function disableEnter(e){
 String.prototype.startsWith = function(str){
 	return (this.indexOf(str) === 0);
 }
+function detectIE(){
+  if (navigator.appName == 'Microsoft Internet Explorer')
+    {
+      //document.getElementById("IEwarning").classList.add("alert alert-danger")
+      result = "You are using Microsoft Internet Explorer <br> this application is optimized for Firefox and Chrome <br>"
+      return document.getElementById("detectIEresult").innerHTML = result;
+    }
+  }
