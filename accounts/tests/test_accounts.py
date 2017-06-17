@@ -318,6 +318,28 @@ class AccountsModuleTests(TestCase):
             response = self.client.post('/login/', form_data)
             self.assertTrue('Please enter a correct email and password.' in str(response.content))
 
+    def test_clear_throttled_login(self):
+        from django.core.cache import cache
+        s = self.client.session
+        s['login_allowed'] = True
+        s.save()
+        with self.settings(CACHES={
+            'default': {
+                'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+                'LOCATION': 'test-cache2',
+            }
+        }):
+            form_data = {'email': 'jane@email.chop.edu', 'username': 'jane', 'password': 'Chopchop1234'}
+            user = User.objects.get(email='jane@email.chop.edu')
+            self.assertTrue(user.is_active)
+            # Make 6 bogus login attempts (10 is max)
+            cache.set('jane@email.chop.edu_127.0.0.1_login_attempts', 6)
+            self.client.post('/login/', form_data)
+            user = User.objects.get(email='jane@email.chop.edu')
+            self.assertTrue(user.is_active)
+            # when login successful user should be deleted from cache.
+            self.assertFalse(cache.get('jane@email.chop.edu_127.0.0.1_login_attempts'))
+
     def test_eula(self):
         response = self.client.get('/eula/')
         self.assertTrue('End User License Agreement', str(response.content))
