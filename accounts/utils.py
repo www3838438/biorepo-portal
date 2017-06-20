@@ -116,7 +116,9 @@ def clear_throttled_login(request):
     # if the same IP address attempts at multiple usernames within the same
     # session, the IP will be blacklisted.
     key = MAX_LOGIN_ATTEMPTS_KEY % (email.lower(), ip_address)
-    cache.delete(key)
-    log.debug('[authentication] login successful for {0}'.format(request.user.email.lower()))
+    success = cache.delete(key)
+    if not success:
+        log.error("delete login Key failed.")
+    log.debug('[authentication] login successful for {0}'.format(email.lower()))
     if 'login_allowed' in request.session:
         del request.session['login_allowed']
