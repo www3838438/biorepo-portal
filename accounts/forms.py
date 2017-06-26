@@ -76,5 +76,7 @@ class BrpAuthenticationForm(auth_forms.AuthenticationForm):
             elif self.user_cache.profile.password_expired:
                 raise forms.ValidationError(_('Your password has expired. Please follow the instructions at https://forgotpassword.chop.edu to reset it.'))
             elif not self.user_cache.is_active:
-                raise forms.ValidationError(_('This account is not active. Did you check your email to confirm registration?'))
+                raise forms.ValidationError(_('This account is not active. Did you check your email to confirm registration? '
+                                            'Please e-mail eigsupport@email.chop.edu '
+                                            'with any issues'))
         return self.cleaned_data
