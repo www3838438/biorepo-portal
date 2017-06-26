@@ -36,9 +36,7 @@
 	<div class="row">
 
 		{% if login_not_allowed %}
-		    <p class="message warning">You have reached the maximum number of login attempts. Please e-mail
-          <a href="mailto:eigsupport@email.chop.edu"> eigsupport@email.chop.edu </a>
-          with any issues.</p>
+		    <p class="message warning">You have reached the maximum number of login attempts. </p>
 		{% else %}
 
 		    <form class="login" method="post" action="{% url 'login' %}">
