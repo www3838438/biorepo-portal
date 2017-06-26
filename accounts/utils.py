@@ -118,7 +118,7 @@ def clear_throttled_login(request):
     key = MAX_LOGIN_ATTEMPTS_KEY % (email.lower(), ip_address)
     success = cache.delete(key)
     if not success:
-        log.error("delete login Key failed.")
+        log.error("delete login Key failed for {0}'.format(email.lower()).")
     log.debug('[authentication] login successful for {0}'.format(email.lower()))
     if 'login_allowed' in request.session:
         del request.session['login_allowed']
