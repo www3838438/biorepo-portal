@@ -17,6 +17,8 @@ from ehb_client.requests.subject_request_handler import Subject
 from rest_framework.response import Response
 from rest_framework import viewsets
 
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 
@@ -125,7 +127,8 @@ class ProtocolSubjectsView(BRPApiView):
         except ObjectDoesNotExist:
             return Response({'error': 'Protocol requested not found'}, status=404)
         # Check cache
-        cache_data = cache.get('protocol{0}_sub_data'.format(p.id))
+        cache_data = settings.CRYPT_KEY.decrypt(cache.get('protocol{0}_sub_data'.format(p.id)))
+
         if cache_data:
             return Response(
                 json.loads(cache_data),

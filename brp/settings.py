@@ -115,6 +115,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
+CRYPT_KEY = (Fernet(env('CACHING_KEY')))
+
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
 
@@ -299,5 +301,3 @@ if FORCE_SCRIPT_NAME:
     LOGOUT_URL = os.path.join(FORCE_SCRIPT_NAME, LOGOUT_URL[1:])
     LOGIN_REDIRECT_URL = os.path.join(
         FORCE_SCRIPT_NAME, LOGIN_REDIRECT_URL[1:])
-
-crypt_key = (Fernet('CACHING_KEY'))
