@@ -15,6 +15,7 @@ import sys
 import environ
 
 from pythonjsonlogger import jsonlogger
+from cryptography.fernet import Fernet
 
 root = environ.Path(__file__) - 2  # three folder back (/a/b/c/ - 3 = /)
 env = environ.Env(DEBUG=(bool, False),)  # set default values and casting
@@ -298,3 +299,5 @@ if FORCE_SCRIPT_NAME:
     LOGOUT_URL = os.path.join(FORCE_SCRIPT_NAME, LOGOUT_URL[1:])
     LOGIN_REDIRECT_URL = os.path.join(
         FORCE_SCRIPT_NAME, LOGIN_REDIRECT_URL[1:])
+
+crypt_key = (Fernet('CACHING_KEY'))
