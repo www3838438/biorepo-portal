@@ -110,11 +110,10 @@ class Command(BaseCommand):
 
             cache_key = 'protocol{0}_sub_data'.format(protocol.id)
             subs_json = json.dumps(subs)
+            # turn string into bytes to be encrypted. this needs to be done for encryption to work.
             subs_bytes = subs_json.encode('utf-8')
-            print(subs_bytes)
-            #encrypt_subs = settings.CRYPT_KEY.encrypt(json.dumps(subs))
+            # encrypt before we put into cache.
             encrypt_subs = settings.CRYPT_KEY.encrypt(subs_bytes)
-            # cache.set(cache_key, json.dumps(subs))
             cache.set(cache_key, encrypt_subs)
             cache.persist(cache_key)
 
