@@ -63,16 +63,20 @@ class ProtocolDataSourceView(BRPApiView):
             # If labels are defined get label names from eHB.
             # (label_id, label_description)
             if 'labels' in list(dc.keys()):
-                labels = settings.CRYPT_KEY.decrypt(cache.get('ehb_labels'))
-                if not labels:
+                try:
+                    labels = settings.CRYPT_KEY.decrypt(cache.get('ehb_labels'))
+                    labels_json = json.loads(labels)
+                except:
                     labels = self.erl_rh.query()
-                    labels_encrypt = settings.CRYPT_KEY.encrypt(labels)
+                    labels_string = json.dumps(labels)
+                    labels_bytes = labels_string.encode('utf-8')
+                    labels_encrypt = settings.CRYPT_KEY.encrypt(labels_bytes)
                     cache.set('ehb_labels', labels_encrypt)
                     if hasattr(cache, 'ttl'):
                         cache.ttl('ehb_labels', 60)
                 nl = []
                 for l in dc['labels']:
-                    for label in labels:
+                    for label in labels_json:
                         if l == label['id']:
                             if label['label'] == '':
                                 nl.append((label['id'], 'Record'))
