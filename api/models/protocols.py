@@ -532,7 +532,6 @@ class ProtocolUser(Base):
         (ProtocolUserConstants.research_coordinator, 'Research Coordinator'),
     )
     role = models.IntegerField(choices=roles)
-    # institutional_email = models.CharField(max_length=100, )
 
     class Meta(Base.Meta):
         unique_together = ('protocol', 'user')
