@@ -12,6 +12,8 @@ from ehb_client.requests.exceptions import PageNotFound
 from ehb_datasources.drivers.exceptions import RecordDoesNotExist,\
     RecordCreationError, IgnoreEhbExceptions
 
+from django.conf import settings
+
 from .base import DataEntryView
 
 log = logging.getLogger(__name__)
@@ -146,7 +148,7 @@ class CreateView(DataEntryView):
 
     def check_cache(self):
         cache_key = 'protocol{0}_sub_data'.format(self.pds.protocol.id)
-        self.cached_data = cache.get(cache_key)
+        self.cached_data = settings.CRYPT_KEY.decrypt(cache.get(cache_key))
         if self.cached_data:
             return True
 
@@ -166,7 +168,10 @@ class CreateView(DataEntryView):
                     sub['external_ids'].append(exRec)
                 sub['external_records'].append(exRec)
         cache_key = 'protocol{0}_sub_data'.format(self.pds.protocol.id)
-        cache.set(cache_key, json.dumps(subs))
+        subs_string = json.dumps(subs)
+        subs_bytes = subs_string.encode('utf-8')
+        subs_encrypt = settings.CRYPT_KEY.encrypt(subs_bytes)
+        cache.set(cache_key, subs_encrypt)
         cache.persist(cache_key)
         self.check_cache()
 

@@ -183,6 +183,7 @@ class DataSource(Base):
         Returns the ehb-service representation of the subjects that have
         external_records for this data_source
         '''
+        print("we are in getSubjects line 186")
         es = self.getExternalSystem()
         if es:
             rh = ServiceClient.get_rh_for(
@@ -238,21 +239,31 @@ class Protocol(BaseWithImmutableKey):
         self.createEhbProtocolGroup()
 
     def _gh(self):
+        print("hello from _gh fn")
+        print (ServiceClient.get_rh_for(record_type=ServiceClient.GROUP))
         return ServiceClient.get_rh_for(record_type=ServiceClient.GROUP)
 
     def _subject_group(self):
         try:
+            print("are we in _subject_group?")
             grp = self._gh().get(name=self.ehb_group_name())
+            print(grp)
             grp.client_key = self._client_key()
+            print ("client key: " + grp.client_key)
             return grp
         except Exception:
             return None
 
     def addSubject(self, subject):
         try:
+            print("well we try to add subject")
             r = self._gh().add_subjects(self._subject_group(), [subject])
+            print (r)
+            print (r[0])
+            print("hello: ")
             return r[0].get('success')
         except Exception:
+            print ("why did I fail????")
             return False
 
     def getSubjects(self):
@@ -260,8 +271,10 @@ class Protocol(BaseWithImmutableKey):
         Returns the Subjects on this protocol
         '''
         try:
+            print("are we trying to getSubjects?")
             return self._gh().get_subjects(self._subject_group())
         except Exception:
+            print("why are we failing at getSubjects?")
             return None
 
     def isSubjectOnProtocol(self, subject):
@@ -330,10 +343,9 @@ class ProtocolDataSource(Base):
                 return True
         return False
 
-
     def getSubject(self, subjectId):
         cache_key = '{}_subjects'.format(self.protocol.id)
-        cached = cache.get(cache_key)
+        cached = settings.CRYPT_KEY.decrypt(cache.get(cache_key))
         if cached:
             subs = json.loads(cached)
             for subject in subs:
@@ -358,10 +370,11 @@ class ProtocolDataSource(Base):
         '''
         er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
         erl_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
-        labels = cache.get('ehb_labels')
+        labels = settings.CRYPT_KEY.decrypt(cache.get('ehb_labels'))
         if not labels:
             labels = erl_rh.query()
-            cache.set('ehb_labels', labels)
+            labels_encrypt = settings.CRYPT_KEY.encrypt(labels)
+            cache.set('ehb_labels', labels_encrypt)
             if hasattr(cache, 'persist'):
                 cache.persist('ehb_labels')
         try:
@@ -376,7 +389,7 @@ class ProtocolDataSource(Base):
         er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
         ck = '{0}_{1}_externalrecords'.format(self.protocol.id, subject.id)
         # See if our records are in the cache.
-        resp = cache.get(ck)
+        resp = settings.CRYPT_KEY.decrypt(cache.get(ck))
         if resp:
             pds_records = []
             for record in json.loads(resp):
@@ -532,6 +545,7 @@ class ProtocolUser(Base):
         (ProtocolUserConstants.research_coordinator, 'Research Coordinator'),
     )
     role = models.IntegerField(choices=roles)
+    # institutional_email = models.CharField(max_length=100, )
 
     class Meta(Base.Meta):
         unique_together = ('protocol', 'user')
