@@ -117,7 +117,7 @@ def clear_throttled_login(request):
     # session, the IP will be blacklisted.
     key = MAX_LOGIN_ATTEMPTS_KEY % (email.lower(), ip_address)
     success = cache.delete(key)
-    if success:
+    if not success:
         log.error('delete cache login Key failed for {0} - {1}'.format(ip_address, email.lower()))
     log.debug('[authentication] login successful for {0}'.format(email.lower()))
     if 'login_allowed' in request.session:
