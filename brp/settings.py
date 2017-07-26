@@ -15,6 +15,7 @@ import sys
 import environ
 
 from pythonjsonlogger import jsonlogger
+from cryptography.fernet import Fernet
 
 root = environ.Path(__file__) - 2  # three folder back (/a/b/c/ - 3 = /)
 env = environ.Env(DEBUG=(bool, False),)  # set default values and casting
@@ -113,6 +114,8 @@ AUTHENTICATION_BACKENDS = (
     'accounts.backends.LdapBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+CRYPT_KEY = (Fernet(env('CACHING_KEY')))
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators

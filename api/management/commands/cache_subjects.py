@@ -11,6 +11,9 @@ from ehb_client.requests.exceptions import PageNotFound
 from django.core.management.base import BaseCommand
 from django.core.cache import cache
 
+from django.conf import settings
+
+from cryptography.fernet import Fernet
 
 from rest_framework.response import Response
 
@@ -104,8 +107,14 @@ class Command(BaseCommand):
                 for ehb_org in ehb_orgs:
                     if sub['organization'] == ehb_org.id:
                         sub['organization_name'] = ehb_org.name
+
             cache_key = 'protocol{0}_sub_data'.format(protocol.id)
-            cache.set(cache_key, json.dumps(subs))
+            subs_json = json.dumps(subs)
+            # turn string into bytes to be encrypted. this needs to be done for encryption to work.
+            subs_bytes = subs_json.encode('utf-8')
+            # encrypt before we put into cache.
+            encrypt_subs = settings.CRYPT_KEY.encrypt(subs_bytes)
+            cache.set(cache_key, encrypt_subs)
             cache.persist(cache_key)
 
     def handle(self, *args, **options):

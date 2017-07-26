@@ -330,16 +330,11 @@ class ProtocolDataSource(Base):
                 return True
         return False
 
-
     def getSubject(self, subjectId):
         cache_key = '{}_subjects'.format(self.protocol.id)
-        cached = cache.get(cache_key)
-        if cached:
-            subs = json.loads(cached)
-            for subject in subs:
-                if subject['id'] == int(subjectId):
-                    return Subject(-1).identity_from_jsonObject(subject)
-        else:
+        try:
+            cached = settings.CRYPT_KEY.decrypt(cache.get(cache_key))
+        except:
             try:
                 s_rh = ServiceClient.get_rh_for(record_type=ServiceClient.SUBJECT)
                 subject = s_rh.get(id=subjectId)
@@ -349,7 +344,22 @@ class ProtocolDataSource(Base):
                     return subject
             except PageNotFound:
                 raise Http404
-
+        try:
+            if cached:
+                subs = json.loads(cached)
+                for subject in subs:
+                    if subject['id'] == int(subjectId):
+                        return Subject(-1).identity_from_jsonObject(subject)
+        except:
+            try:
+                s_rh = ServiceClient.get_rh_for(record_type=ServiceClient.SUBJECT)
+                subject = s_rh.get(id=subjectId)
+                if not self.protocol.isSubjectOnProtocol(subject):
+                    raise Http404
+                else:
+                    return subject
+            except PageNotFound:
+                raise Http404
         return None
 
     def getSubjectExternalRecords(self, subject):
@@ -358,10 +368,15 @@ class ProtocolDataSource(Base):
         '''
         er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
         erl_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD_LABEL)
-        labels = cache.get('ehb_labels')
-        if not labels:
+        try:
+            labels = settings.CRYPT_KEY.decrypt(cache.get('ehb_labels'))
+            labels = json.loads(labels)
+        except:
             labels = erl_rh.query()
-            cache.set('ehb_labels', labels)
+            labels_string = json.dumps(labels)
+            labels_bytes = labels_string.encode('utf-8')
+            labels_encrypt = settings.CRYPT_KEY.encrypt(labels_bytes)
+            cache.set('ehb_labels', labels_encrypt)
             if hasattr(cache, 'persist'):
                 cache.persist('ehb_labels')
         try:
@@ -376,8 +391,9 @@ class ProtocolDataSource(Base):
         er_rh = ServiceClient.get_rh_for(record_type=ServiceClient.EXTERNAL_RECORD)
         ck = '{0}_{1}_externalrecords'.format(self.protocol.id, subject.id)
         # See if our records are in the cache.
-        resp = cache.get(ck)
-        if resp:
+        try:
+            resp = settings.CRYPT_KEY.decrypt(cache.get(ck))
+        except:
             pds_records = []
             for record in json.loads(resp):
                 if record['external_system'] == self.id:

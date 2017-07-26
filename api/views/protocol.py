@@ -17,6 +17,8 @@ from ehb_client.requests.subject_request_handler import Subject
 from rest_framework.response import Response
 from rest_framework import viewsets
 
+from django.conf import settings
+
 logger = logging.getLogger(__name__)
 
 
@@ -61,15 +63,20 @@ class ProtocolDataSourceView(BRPApiView):
             # If labels are defined get label names from eHB.
             # (label_id, label_description)
             if 'labels' in list(dc.keys()):
-                labels = cache.get('ehb_labels')
-                if not labels:
+                try:
+                    labels = settings.CRYPT_KEY.decrypt(cache.get('ehb_labels'))
+                    labels_json = json.loads(labels)
+                except:
                     labels = self.erl_rh.query()
-                    cache.set('ehb_labels', labels)
+                    labels_string = json.dumps(labels)
+                    labels_bytes = labels_string.encode('utf-8')
+                    labels_encrypt = settings.CRYPT_KEY.encrypt(labels_bytes)
+                    cache.set('ehb_labels', labels_encrypt)
                     if hasattr(cache, 'ttl'):
                         cache.ttl('ehb_labels', 60)
                 nl = []
                 for l in dc['labels']:
-                    for label in labels:
+                    for label in labels_json:
                         if l == label['id']:
                             if label['label'] == '':
                                 nl.append((label['id'], 'Record'))
@@ -125,7 +132,8 @@ class ProtocolSubjectsView(BRPApiView):
         except ObjectDoesNotExist:
             return Response({'error': 'Protocol requested not found'}, status=404)
         # Check cache
-        cache_data = cache.get('protocol{0}_sub_data'.format(p.id))
+        cache_data = settings.CRYPT_KEY.decrypt(cache.get('protocol{0}_sub_data'.format(p.id)))
+
         if cache_data:
             return Response(
                 json.loads(cache_data),
@@ -296,14 +304,18 @@ class ProtocolSubjectDetailView(BRPApiView):
             )
         # Add subject to cache
         cache_key = 'protocol{0}_sub_data'.format(protocol.id)
-        cache_data = self.cache.get(cache_key)
+        cache_data = settings.CRYPT_KEY.decrypt(self.cache.get(cache_key))
         if cache_data:
             subject['external_ids'] = []
             subject['external_records'] = []
             subject['organization_name'] = org.name
             subjects = json.loads(cache_data)
             subjects.append(subject)
-            self.cache.set(cache_key, json.dumps(subjects))
+            # prep subject data to be encrypted before it is put into cache.
+            subjects_string = json.dumps(subjects)
+            subjects_bytes = subjects_string.encode('utf-8')
+            subjects_encrypt = settings.CRYPT_KEY.encrypt(subjects_bytes)
+            self.cache.set(cache_key, subjects_encrypt)
             if hasattr(self.cache, 'persist'):
                 self.cache.persist(cache_key)
         return Response(
@@ -382,7 +394,7 @@ class ProtocolSubjectDetailView(BRPApiView):
         sub = json.loads(Subject.json_from_identity(update['subject']))
         sub['organization_name'] = org.name
         cache_key = 'protocol{0}_sub_data'.format(pk)
-        cache_data = self.cache.get(cache_key)
+        cache_data = settings.CRYPT_KEY.decrypt(self.cache.get(cache_key))
         if cache_data:
             if 'external_ids' in list(subject_update.keys()):
                 sub['external_ids'] = subject_update['external_ids']
@@ -394,7 +406,10 @@ class ProtocolSubjectDetailView(BRPApiView):
             for i in range(0, len(subjects)):
                 if subjects[i]['id'] == sub['id']:
                     subjects[i] = sub
-            self.cache.set(cache_key, json.dumps(subjects))
+            subjects_string = json.dumps(subjects)
+            subjects_bytes = subjects_string.encode('utf-8')
+            subjects_encrypt = settings.CRYPT_KEY.encrypt(subjects_bytes)
+            self.cache.set(cache_key, subjects_encrypt)
             if hasattr(self.cache, 'persist'):
                 self.cache.persist(cache_key)
         return Response(
