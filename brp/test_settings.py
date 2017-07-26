@@ -3,6 +3,7 @@ Django test settings for brp project.
 """
 import os
 import environ
+from cryptography.fernet import Fernet
 root = environ.Path(__file__) - 2  # three folder back (/a/b/c/ - 3 = /)
 env = environ.Env(DEBUG=(bool, False),)  # set default values and casting
 
@@ -88,6 +89,8 @@ WSGI_APPLICATION = 'brp.wsgi.application'
 DATABASES = {
     'default': env.db('SQLITE_URL', default='sqlite:///test.db'),
 }
+
+CRYPT_KEY = (Fernet(env('CACHING_KEY')))
 
 AUTHENTICATION_BACKENDS = (
     'accounts.backends.LdapBackend',
