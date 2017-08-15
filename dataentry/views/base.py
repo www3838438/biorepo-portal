@@ -33,10 +33,15 @@ class DataEntryView(TemplateView):
                 return
         return
 
-    def get_label(self, record):
+    def get_label(self, context):
+
+        if context['record']:
+            label_id = context['record'].label_id
+        else:
+            label_id = context['label_id']
         try:
             label = self.service_client.get_rh_for(
-                record_type=ServiceClient.EXTERNAL_RECORD_LABEL).get(id=record.label_id)
+                record_type=ServiceClient.EXTERNAL_RECORD_LABEL).get(id=label_id)
             return label
         except:
             return
@@ -70,5 +75,7 @@ class DataEntryView(TemplateView):
             'record': self.record,
             'errors': []
         }
-        context['label'] = self.get_label(context['record'])
+        if not context['record']:
+            context['label_id'] = self.request.GET.get('label_id', 1)
+        context['label'] = self.get_label(context)
         return context
