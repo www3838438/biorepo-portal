@@ -155,7 +155,8 @@ class CreateView(DataEntryView):
         for sub in subs:
             if sub['id'] == int(self.subject.id):
                 er = self.get_external_record(record_id=self.record_id)
-                label = self.get_label(er)
+                context = {"record": er}
+                label = self.get_label(context)
                 exRec = json.loads(er.json_from_identity(er))
                 exRec['pds'] = self.pds.id
                 exRec['label_id'] = label['id']
