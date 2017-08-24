@@ -27,6 +27,7 @@ class ProtocolUserCredentialsAdmin(admin.ModelAdmin):
     list_filter = ['protocol', 'user', 'data_source', 'created', 'modified']
     search_fields = ['user__username']
     list_display = ['protocol', 'data_source', 'user']
+    raw_id_fields = ("data_source", "user")
 
 admin.site.register(ProtocolUserCredentials, ProtocolUserCredentialsAdmin)
 
@@ -43,7 +44,7 @@ class ProtocolDataSourceAdmin(admin.ModelAdmin):
     list_filter = ['protocol', 'data_source', 'path', 'created', 'modified']
     list_display = ['protocol', 'data_source', 'path']
     search_fields = ['protocol__name', 'data_source__name', 'path']
-    
+
 admin.site.register(ProtocolDataSource, ProtocolDataSourceAdmin)
 
 
