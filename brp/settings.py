@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'brp',
     'api',
     'dataentry',
-    # 'administration',
+    'brp_admin',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -104,7 +104,7 @@ TEMPLATES = [
         },
     },
 ]
-ADMIN_TOOLS_MENU = 'brp.menu.CustomMenu'
+ADMIN_TOOLS_MENU = 'brp_admin.menu.CustomMenu'
 
 # TEMPLATE_LOADERS = (
 #     'admin_tools.template_loaders.Loader',

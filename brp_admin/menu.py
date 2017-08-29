@@ -32,8 +32,10 @@ class CustomMenu(Menu):
             items.MenuItem(
                 _('Protocol Management'),
                 children=[
-                    items.MenuItem('add user to protocol', '/foo/'),
+                    items.MenuItem('Add User to Protocol', '/brp_admin/new_protocol_usr/'),
+                    items.MenuItem('Add User Credentials to Protocol Group', '/bar/'),
                     items.MenuItem('Add Data Source to protocol', '/bar/'),
+
                 ]
             ),
             items.MenuItem(

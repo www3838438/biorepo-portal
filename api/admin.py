@@ -27,7 +27,6 @@ class ProtocolUserCredentialsAdmin(admin.ModelAdmin):
     list_filter = ['protocol', 'user', 'data_source', 'created', 'modified']
     search_fields = ['user__username']
     list_display = ['protocol', 'data_source', 'user']
-    raw_id_fields = ("data_source", "user")
 
 admin.site.register(ProtocolUserCredentials, ProtocolUserCredentialsAdmin)
 
