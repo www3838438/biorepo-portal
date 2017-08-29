@@ -1,6 +1,6 @@
 """
 
-To activate your custom menu add the following to your settings.py::
+To activate custom menu add the following to your settings.py::
     ADMIN_TOOLS_MENU = 'biorepo-portal.menu.CustomMenu'
 """
 
@@ -33,26 +33,27 @@ class CustomMenu(Menu):
                 _('Protocol Management'),
                 children=[
                     items.MenuItem('Add User to Protocol', '/brp_admin/new_protocol_usr/'),
-                    items.MenuItem('Add User Credentials to Protocol Group', '/bar/'),
-                    items.MenuItem('Add Data Source to protocol', '/bar/'),
+                    items.MenuItem('Add User Credentials to Protocol Group', '/brp_admin/fn_in_progress/'),
+                    items.MenuItem('Add Data Source to protocol', '/brp_admin/fn_in_progress/'),
 
                 ]
             ),
             items.MenuItem(
                 _('BRP Management'),
                 children=[
-                    items.MenuItem('re-activate user', '/foo/'),
-                    items.MenuItem('cache subjects', '/bar/'),
-                    items.MenuItem('toggle maintenance', '/bar/'),
+                    items.MenuItem('re-activate user', 'http://biorepository-portal.readthedocs.io/en/latest/configuration/protocoluser.html'),
+                    items.MenuItem('cache subjects', '/brp_admin/fn_in_progress/'),
+                    items.MenuItem('toggle maintenance', '/brp_admin/fn_in_progress/'),
                 ]
             ),
             items.MenuItem(
                 _('BRP/EHB Useful links'),
                 children=[
-                    items.MenuItem('BRP EHB Gist', '/foo/'),
-                    items.MenuItem('BRP read the docs', '/bar/'),
-                    items.MenuItem('BRP user guide', '/bar/'),
-                    items.MenuItem('BRP CHOP wiki', '/bar/'),
+                    items.MenuItem('BRP EHB Gist', '/brp_admin/fn_in_progress/'),
+                    items.MenuItem('BRP read the docs', 'http://biorepository-portal.readthedocs.io/en/latest/'),
+                    items.MenuItem('BRP user guide', '/brp_admin/fn_in_progress/'),
+                    items.MenuItem('BRP CHOP wiki', 'https://wiki.chop.edu/pages/viewpage.action?pageId=131957293'),
+                    items.MenuItem('EHB CHOP wiki', 'https://wiki.chop.edu/display/CBMIDI/eHonest+Broker'),
                 ]
             ),
         ]

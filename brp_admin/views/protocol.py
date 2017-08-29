@@ -14,3 +14,7 @@ class New_protocol_usr(TemplateView):
 
     def users(self):
         return User.objects.all()
+
+class Fn_in_progress(TemplateView):
+
+    template_name = 'in_progress.html'
