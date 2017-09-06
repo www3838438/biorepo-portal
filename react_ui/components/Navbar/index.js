@@ -37,6 +37,8 @@ class Navbar extends React.Component {
               <Link style={brandStyle} className="navbar-text" to={'/'}>
                 Biorepository Portal
               </Link>
+              <Link className="brand" to={"http://www.chop.edu/childhood-cancer-awareness-month/facts-about-childhood-cancer-infographic"}>
+                <img style="height:20px" src="./static/img/childhood_cancer_awareness.png" /></Link>
             </div>
           </div>
           <div className="collapse navbar-collapse navbar-ex1-collapse">
