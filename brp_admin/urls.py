@@ -7,7 +7,8 @@ from .views.protocol import New_protocol_usr, Fn_in_progress
 urlpatterns = [
     url(
         r'^new_protocol_usr/$',
-        login_required(New_protocol_usr.as_view())),
+        login_required(New_protocol_usr.as_view()),
+        name='new_protocol_usr'),
     url(
         r'^fn_in_progress/$',
         login_required(Fn_in_progress.as_view())),

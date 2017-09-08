@@ -24,15 +24,16 @@
       <!-- </form> -->
   </div>
 
-  <div class="container" style="border:1px solid #cecece;">
-    <h2> Add Protocol User Credentials <span class="badge badge-secondary"></span></h2>
+  <!-- <div class="container" style="border:1px solid #cecece;">
+    <h2> Add Protocol User Credentials for {{ context.user }} on protocol {{ context.protocol }} <span class="badge badge-secondary"></span></h2>
     <form>
-      {% for field in form2 %}
+      {% for field in context.form2 %}
         <div class="fieldWrapper">
             {{ field.errors }}
             {{ field.label_tag }}: {{ field }}
         </div>
     {% endfor %}
+    <button type="submit" class="save btn btn-default">Save</button>
     </form>
-  </div>
+  </div> -->
 {% endblock %}
