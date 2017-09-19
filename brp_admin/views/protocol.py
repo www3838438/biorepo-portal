@@ -32,94 +32,65 @@ class New_protocol_usr(TemplateView):
     #     return Response(serializer_class.data, status=None, template_name=None, headers=None, content_type=None)
 
     def dispatch(self, request):
-        # post = get_object_or_404(ProtocolUserForm, pk=pk)
-        # form = ProtocolUserForm()
-        # print("we are getting to get request correct?")
-        # return render(request, 'new_protocol_usr.html', {'form': form})
 
-
-        # protocols = json.loads(Protocol.objects.all())
-        # queryset = Protocol.objects.all()
-        # serializer_class = ProtocolSerializer("json", queryset, many=True)
-        # protocols = json.loads(serializer_class.initial_data)
-
-        # protocols = []
-        # for p in Protocol.objects.all():
-        #     if request.user in p.users.all():
-        #         protocols.append(ProtocolSerializer(p, context={'request': request}).data)
-
-        ########## working ############
-        # protocols = {}
-        # protocols = Protocol.objects.all()
-        #
-        # print(protocols)
-        # return render(request, 'new_protocol_usr.html', {'protocols': protocols})
-        ################################
         if request.method == 'POST':
             post = request.POST
-            protocolUserForm = ProtocolUserForm(data=request.POST)
-            if protocolUserForm.is_valid():
-                protocolUserForm.save()
-            # get context data
-            context = {}
-            user = User.objects.get(pk=post['user'])
-            protocol = Protocol.objects.get(pk=post['protocol'])
-            context['user'] = user
-            context['protocol'] = protocol
-            # end get context data
 
-            # json_context = json.dumps(context)
+            print("printing request:")
+            print(post)
+            protocol_user = 'protocol_user' in post
+            print(protocol_user)
+            if 'protocol_user' in post:
+                print("request.POST.get fn worked")
+                protocolUserForm = ProtocolUserForm(data=request.POST)
+                print("protocolUserForm valid?:")
+                print(protocolUserForm.is_valid())
+                if protocolUserForm.is_valid():
+                    protocolUserForm.save()
+                    print("is userform valid?")
+                # get context data
+                    context = {}
+                    user = User.objects.get(pk=post['user'])
+                    protocol = Protocol.objects.get(pk=post['protocol'])
+                    context['user'] = user
+                    context['protocol'] = protocol
+                    credentials = ProtocolDataSource.objects.filter(protocol=protocol)
+                    protocol_user = ProtocolUser.objects.get(protocol=protocol, user=post['user'])
+                    # get all form needed for credentials
+                    credential_forms = []
+                    for item in credentials:
+                        try:
+                            user_credentials = ProtocolUserCredentials.objects.get(protocol=protocol, protocol_user=protocol_user, data_source=item)
+                            try:
+                                protocolCredentialsForm = ProtocolUserCredentialsForm(initial={'protocol': post['protocol'], 'protocol_user': protocol_user, 'data_source': item, 'data_source_username': user_credentials.data_source_username, 'data_source_password': user_credentials.data_source_password})
+                            except:
+                                pass
+                        except:
+                            protocolCredentialsForm = ProtocolUserCredentialsForm(initial={'protocol': post['protocol'], 'protocol_user': protocol_user, 'data_source': item})
+                        credential_forms.append(protocolCredentialsForm)
 
-
-            # protocolCredentialsForm = ProtocolUserCredentialsForm(data=request.POST)
-            # protocol = ProtocolUser(Protocol=protocolUserForm.cleaned_data['protocol'])
-            # user = ProtocolUser(from_user=request.user)
-
-            # protocolCredentialsForm = ProtocolUserCredentialsForm(data=request.POST, instance=protocol)
-            # post.protocol = request.POST.protocol
-
-            # todo: get list of datasources for given protocol.
-            credentials = ProtocolDataSource.objects.filter(protocol=protocol)
-            print("credentials:")
-            print(credentials)
-            print("****** end of cred *******")
-            credential_forms = []
-
-            for item in credentials:
-                protocolCredentialsForm = ProtocolUserCredentialsForm(initial={'protocol': post['protocol'], 'protocol_user': post['user'], 'data_source': item})
-                credential_forms.append(protocolCredentialsForm)
-                print(item.data_source)
-
-            context['credential_forms'] = credential_forms
-            print ("printing context")
-            print (context)
-            print ("***** end of context *******")
-            return render(request, 'protocol_user_credentials.html', {'context': context})
-
-            # if protocolCredentialsForm.is_valid():
-            #     protocolCredentialsForm.save()
-
-
-
-
-        '''
+                    context['credential_forms'] = credential_forms
+                    print("context:")
+                    print(context)
+                    return render(request, 'protocol_user_credentials.html', {'context': context})
+                    # return render(request, 'protocol_user_credentials.html', context)
+                else:
+                    context = {}
+                    context['errors'] = protocolUserForm.errors
+                    context['form1'] = protocolUserForm
+                    print("are we getting to else? here are errors:")
+                    print(context)
+                    return render(request, 'new_protocol_usr.html', context)
+                    '''
         * protocol = models.ForeignKey(Protocol, verbose_name='Protocol')
         * protocol_user = models.ForeignKey(
             ProtocolUser, verbose_name='Protocol User')
             '''
+            if 'submit_creds' in post:
+                    print("we arrived at password in post")
+
         protocolUserForm = ProtocolUserForm()
-        # protocolCredentialsForm = ProtocolUserCredentialsForm()
         return render(request, 'new_protocol_usr.html', {'form1': protocolUserForm})
-
-    def post(self, request):
-        pass
-
-
-    # def protocols(self):
-    #     return Protocol.objects.all()
-
-    # def users(self):
-    #     return User.objects.all()
 
 
 class Fn_in_progress(TemplateView):

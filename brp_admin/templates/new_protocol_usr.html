@@ -11,29 +11,18 @@
 
   <div class="container" style="border:1px solid #cecece;">
     <h2> Add Protocol User <span class="badge badge-secondary"></span></h2>
-
+      {{ form1.non_field_errors }}
       <form method="POST" class="post-form">{% csrf_token %}
         {% for field in form1 %}
           <div class="fieldWrapper">
               {{ field.errors }}
               {{ field.label_tag }}: {{ field }}
+
           </div>
-      {% endfor %}
-      <button type="submit" class="save btn btn-default">Save</button>
-    </form>
-      <!-- </form> -->
+          {% endfor %}
+          <button type="submit" name="protocol_user" class="save btn btn-default">Save</button>
+          <button type="submit" name="get_credentials" class="save btn btn-default">Get Credentials</button>
+      </form>
   </div>
 
-  <!-- <div class="container" style="border:1px solid #cecece;">
-    <h2> Add Protocol User Credentials for {{ context.user }} on protocol {{ context.protocol }} <span class="badge badge-secondary"></span></h2>
-    <form>
-      {% for field in context.form2 %}
-        <div class="fieldWrapper">
-            {{ field.errors }}
-            {{ field.label_tag }}: {{ field }}
-        </div>
-    {% endfor %}
-    <button type="submit" class="save btn btn-default">Save</button>
-    </form>
-  </div> -->
 {% endblock %}
