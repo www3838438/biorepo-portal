@@ -41,9 +41,16 @@ class CustomMenu(Menu):
             items.MenuItem(
                 _('BRP Management'),
                 children=[
-                    items.MenuItem('re-activate user', 'http://biorepository-portal.readthedocs.io/en/latest/configuration/protocoluser.html'),
                     items.MenuItem('cache subjects', '/brp_admin/fn_in_progress/'),
                     items.MenuItem('toggle maintenance', '/brp_admin/fn_in_progress/'),
+                ]
+            ),
+            items.MenuItem(
+                _('User Management'),
+                children=[
+                    items.MenuItem('re-activate user', 'http://biorepository-portal.readthedocs.io/en/latest/configuration/protocoluser.html'),
+                    items.MenuItem('update user nautilus credentials', '/brp_admin/fn_in_progress/'),
+                    items.MenuItem('update user REDCap credentials', '/brp_admin/fn_in_progress/'),
                 ]
             ),
             items.MenuItem(
