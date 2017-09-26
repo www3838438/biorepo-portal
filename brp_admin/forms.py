@@ -25,4 +25,5 @@ class ProtocolUserCredentialsForm(ModelForm):
     '''
     class Meta:
         model = ProtocolUserCredentials
-        fields = ('data_source', 'data_source_username', 'data_source_password')
+        # fields = ('data_source', 'data_source_username', 'data_source_password')
+        fields = ('__all__')

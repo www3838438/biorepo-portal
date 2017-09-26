@@ -8,8 +8,10 @@
       <h1 class="text-center" >Add User To Protocol</h1>
     </div>
   </div>
-
   <div class="container" style="border:1px solid #cecece;">
+    {% if message %}
+      <h2> {{ message }} </h2>
+    {% endif %}
     <h2> Add Protocol User <span class="badge badge-secondary"></span></h2>
       {{ form1.non_field_errors }}
       <form method="POST" class="post-form">{% csrf_token %}
