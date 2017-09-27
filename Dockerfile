@@ -35,6 +35,8 @@ RUN pip3 install "gunicorn>=19,<20"
 RUN pip3 install "psycopg2>=2.6.1,<2.7"
 RUN pip3 install "dj-static>=0.0.6,<0.1.0"
 RUN pip3 install "python-json-logger==0.1.7"
+RUN pip3 install "django-admin-tools"
+RUN pip3 install "django-crispy-forms"
 
 
 ENV APP_ENV test

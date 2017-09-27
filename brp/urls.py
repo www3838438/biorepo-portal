@@ -32,6 +32,8 @@ urlpatterns = [
     url(r'^eula/$', eula, name='eula'),
     url(r'^login/$', throttled_login, name='login'),
     url(r'^logout/$', logout_then_login, name='logout'),
-    url(r'^changelog/$', changelog, name='changelog')
+    url(r'^changelog/$', changelog, name='changelog'),
+    url(r'^admin_tools/', include('admin_tools.urls')),
+    url(r'^brp_admin/', include('brp_admin.urls'), name='brp_admin'),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
