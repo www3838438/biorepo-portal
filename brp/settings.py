@@ -39,6 +39,10 @@ DEBUG = env.bool('DEBUG')
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_tools',
+    'admin_tools.theming',
+    'admin_tools.menu',
+    'admin_tools.dashboard',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -56,6 +60,7 @@ INSTALLED_APPS = [
     'brp',
     'api',
     'dataentry',
+    'brp_admin',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -80,7 +85,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
-        'APP_DIRS': True,
+        # 'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -90,10 +95,20 @@ TEMPLATES = [
             ],
             'libraries': {
                 'formutils': 'brp.formutils'
-            }
+            },
+            'loaders': [
+                'admin_tools.template_loaders.Loader',
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ],
         },
     },
 ]
+ADMIN_TOOLS_MENU = 'brp_admin.menu.CustomMenu'
+
+# TEMPLATE_LOADERS = (
+#     'admin_tools.template_loaders.Loader',
+# )
 
 WSGI_APPLICATION = 'brp.wsgi.application'
 
