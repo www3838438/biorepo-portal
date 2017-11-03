@@ -42,11 +42,11 @@ export class NewSubjectForm extends React.Component {
   validateDate(date) {
     const { dispatch } = this.props;
     if (!moment(date, ['YYYY-MM-DD']).isValid()) {
-      dispatch(SubjectActions.setUpdateFormError('Must be a valid date (YYYY-MM-DD).'));
+      dispatch(SubjectActions.setUpdateFormErrors('Must be a valid date (YYYY-MM-DD).'));
       return false;
     }
     if (!/^\d{4}-\d{1,2}-\d{1,2}$/.test(date)) {
-      dispatch(SubjectActions.setUpdateFormError('Must be a valid date (YYYY-MM-DD).'));
+      dispatch(SubjectActions.setUpdateFormErrors('Must be a valid date (YYYY-MM-DD).'));
       return false;
     }
     if (date === '') {
