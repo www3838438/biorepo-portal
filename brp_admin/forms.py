@@ -1,12 +1,17 @@
 from django.forms import ModelForm
 
-from api.models.protocols import ProtocolUserCredentials, ProtocolUser
+from api.models.protocols import ProtocolUserCredentials, ProtocolUser, ProtocolDataSource
 
 
 class ProtocolUserForm(ModelForm):
     class Meta:
         model = ProtocolUser
         fields = ('protocol', 'user', 'role')
+
+class ProtocolDataSourceForm(ModelForm):
+    class Meta:
+        model = ProtocolDataSource
+        fields = ('path', 'data_source', )
 
 
 class ProtocolUserCredentialsForm(ModelForm):
