@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+
+{% block topbar_block %}
+<p class="navbar-text">Account Verification</p>
+{% endblock %}
+
+{% block main_content %}
+<div class="container">
+            <div class="col-md-12" style="margin-bottom:40px">
+                        <center>
+                        {% if verified %}
+                           This account has already been verified or does not exist. No further action
+                           is necessary.
+                        {% else %}
+                           Your account has been verified. Account moderators have been notified
+                           and will begin reviewing your account request.
+                        {% endif %}
+                        </center>
+            </div>
+</div>
+
+{% endblock %}

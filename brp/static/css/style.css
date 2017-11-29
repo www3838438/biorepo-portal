@@ -1,0 +1,204 @@
+
+
+body{
+    padding-top: 40px;
+    padding-bottom: 70px;
+}
+
+.navbar-fixed-bottom {
+    background-color: white;
+    height: 80px;
+}
+.container>p{
+    color: #777;
+}
+.main-content {
+    margin-top:10px;
+    padding-top:40px;
+    padding-bottom: 50px;
+}
+
+table {
+    font-size: .8em;
+}
+.splash-container {
+  /*background-image: url("lab.jpg");*/
+  /*background-color: #eeeeee;*/
+  background-size: contain;
+  z-index: 1;
+  overflow: hidden;
+  /* The following styles are required for the "scroll-over" effect */
+  width: 100%;
+  height: 100%;
+  top: 100px;
+  left: 0;
+  position: absolute !important;
+}
+.login {
+    position: relative;
+    top: 25%;
+    left: 50%;
+    width: 30em;
+    height: auto;
+    margin-left: -15em;
+    padding: 1.5em;
+    color: #7A9E9F;
+    background-color: #eeeeee;
+}
+a {
+    color: #7a7a7a;
+}
+.status-pane {
+    color: #7a7a7a;
+}
+.info {
+    padding-top: 50px;
+}
+.reg-info {
+    padding-top: 10px;
+}
+.subject-table {
+    width: 100%; table-layout: fixed;
+}
+.subject-text{
+    padding-top:20px !important;
+}
+.subject-table th{
+  background-color:#f6f6f6;
+  border:0px;
+  border-bottom:1px solid #DDD;
+  color:#222;
+  padding:5px;
+}
+.subject-table td{
+  padding:5px;
+  border-top-color:#DDD;
+  color:#222;
+}
+.subject-table tr:hover {
+    cursor: pointer;
+    background-color: aliceblue !important;
+}
+.subject-table .footer-container{
+  padding:0px;
+  background-color:#FFF;
+  border:0px;
+  color:#222;
+}
+.subject-table .griddle-previous, .griddle .griddle-page, .griddle .griddle-next{
+  float:left;
+  width:33%;
+  min-height:1px;
+  margin-top:5px;
+}
+.subject-table .griddle-page{
+  text-align:center;
+}
+
+.subject-table .griddle-next{
+  text-align:right;
+}
+.project-row-link {
+    padding-top: 5px;
+    padding-left: 15px;
+    font-size: 1.5em;
+    text-decoration: none;
+}
+.project-row-link:hover {
+    font-size: 1.5em;
+    color: black;
+    text-decoration: none;
+}
+
+.project-row:hover {
+    text-decoration: none;
+    color: inherit;
+    background-color: #f1f1f1;
+    border-radius: 7px;
+}
+.paginate_button {
+    margin: 10px;
+}
+.main-content {
+
+}
+.external-ids {
+    font-size: 0.8em;
+    font-style: italic;
+}
+
+.dropdown-menu {
+    background-color: #FFFFFF;
+}
+.externalIds {
+    padding-top: 15px;
+    font-size:.9em;
+}
+.PDSRecords {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.add-record {
+    font-size: .7em !important;
+}
+.ExternalRecord:hover {
+    cursor: pointer;
+    background-color: #F0F8FF !important;
+}
+
+.record-time{
+    font-size: .65em !important;
+}
+.record-label{
+    font-size: 1em !important;
+}
+.subject-action-panel-card {
+    margin-top: 20px;
+}
+.record-action-btn {
+    margin: 0px 0px 10px 40px;
+    width: 114px;
+}
+
+.new-subject-button {
+    width: 100%;
+    text-align: center;
+}
+td.row-action {
+    border-top: 1px solid #CCC5B9;
+    background-color: floralwhite;
+}
+td.row-action:hover {
+    color: coral !important;
+}
+.link-close {
+    padding-right:15px;
+}
+.link-close:hover {
+    color: #baa76b;
+    cursor: pointer;
+}
+
+
+.card {
+    padding: 20px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.12);
+}
+#old-nav{
+    background-color: #E9F5FD;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.12), 0 2px 4px rgba(0,0,0,0.12);
+    padding-right: 20px;
+}
+.navbar-text {
+    color: #7a7a7a;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+.nav>li>a:hover {
+    text-decoration: none;
+    background-color: #E9F5FD;
+}
+.nav>li>a:focus {
+    text-decoration: none;
+    background-color: #E9F5FD;
+}

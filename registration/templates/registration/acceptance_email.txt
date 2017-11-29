@@ -1,0 +1,10 @@
+Hello {{ profile.user.get_full_name }}:
+
+{% if status == 'Approve' %}Congratulations! You account request has been accepted. You can login to the Bio-repository Portal here: https://{{ site.domain }}{% url 'login' %}.{% else %}Your account has been carefully reviewed, but has not been accepted.{% endif %}
+
+{% if comment %}The moderator left you a comment:
+
+{{ comment }}
+{% endif %}
+
+-The Bio-repository Portal Team

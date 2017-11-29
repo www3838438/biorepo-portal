@@ -1,0 +1,18 @@
+Hello {{ profile.user.get_full_name }}:
+
+Thank you for registering with the Bio-repository Portal project.
+
+{% if moderated %}Please verify your account by clicking on the following link:
+
+https://{{ site.domain }}{% url 'verify-registration' activation_key=profile.activation_key %}.
+
+Once your account is verified, account moderators will review your account.
+
+You will receive an email regarding your acceptance status shortly.{% else %}
+Please activate your account by clicking on the following link:
+
+https://{{ site.domain }}{% url 'verify-registration' activation_key=profile.activation_key %}.
+
+Once you activate your account, you will be able to login: https://{{ site.domain }}{% url login %}{% endif %}
+
+-The Bio-repository Portal Team

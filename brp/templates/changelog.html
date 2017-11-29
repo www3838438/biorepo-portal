@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% load markdown_deux_tags %}
+
+{% block head_content %}
+<title>Biorepository Portal</title>
+{% endblock %}
+
+{% block topbar_block %}
+<p class="navbar-text">Biorepository Portal</p>
+{% endblock %}
+
+
+{% block main_content %}
+
+    {{ changelog|markdown }}
+
+{% endblock %}

@@ -1,0 +1,27 @@
+ehb:
+    image: dbhi/ehb-service
+    ports:
+        - "8000"
+
+redis:
+    image: redis:latest
+
+brp:
+    build: .
+    env_file: ./docker.env
+    links:
+        - ehb
+        - redis
+    volumes:
+        - /opt/staticfiles/
+
+nginx:
+    image: nginx:1.10-alpine
+    ports:
+        - "8090:80"
+    volumes:
+        - "./nginx.conf:/etc/nginx/conf.d/default.conf"
+    volumes_from:
+        - brp
+    links:
+        - brp

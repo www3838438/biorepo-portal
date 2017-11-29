@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load markdown_deux_tags %}
+{% block head_content %}
+<title>End User License Agreement</title>
+{% endblock %}
+
+{% block topbar_block %}
+<h2 class="brand">EULA</h2>
+{% endblock %}
+
+{% block main_content %}
+
+    <div class="container">
+        <div class="title">{{ flatpage.title }}</div>
+
+        {% if not readonly %}
+            <div class="info" style="text-align: center">
+                <strong class="message warning">The terms have changed. You must re-agree to use the application.</strong>
+            </div>
+        {% endif %}
+
+        <div class="content">
+            <section style="height: 600px; overflow: auto">
+                {{ flatpage.content|markdown }}
+            </section>
+
+            {% if not readonly %}
+            <form class="well" method="post">
+                {% csrf_token %}
+                <div style="position: relative; margin-top: 10px;">
+                    <input type="submit" name="decision" value="I Do Not Agree">
+                    <input style="position:absolute;right:0" type="submit" name="decision" value="I Agree">
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,27 @@
+machine:
+    services:
+      - docker
+
+    pre:
+      - wget https://s3.amazonaws.com/circle-downloads/circle-pyenv-python-3.5.1_1.0_amd64.deb
+      - sudo dpkg -i circle-pyenv-python-3.5.1_1.0_amd64.deb
+
+    python:
+        version: 3.5.1
+
+dependencies:
+    override:
+        - pip install -r requirements.txt
+        - pip install -r requirements-dev.txt
+
+test:
+    override:
+        - pytest -v --junitxml=$CIRCLE_TEST_REPORTS/junit/test-results.xml --cov=. --ignore=venv/
+
+deployment:
+    hub:
+        branch: master
+        commands:
+            - docker build -t dbhi/biorepo-portal .
+            - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+            - docker push dbhi/biorepo-portal

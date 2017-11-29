@@ -1,0 +1,11 @@
+*.log
+*.pyc
+*/*.pyc
+*/*/*.pyc
+*/*/*/*.pyc
+_site
+services/
+.git
+brp/conf/.env
+*.env
+node_modules
