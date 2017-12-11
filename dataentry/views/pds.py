@@ -107,6 +107,7 @@ class FormView(DataEntryView):
             return JsonResponse({'status': 'error', 'errors': error_msgs})
         else:
             self.request.META['action'] = 'Form processed.'
+            self.request.META['subject_id'] = context['subject'].id  #The ehb PK for this subject
             return JsonResponse({'status': 'ok'})
 
 
