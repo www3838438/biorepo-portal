@@ -71,6 +71,7 @@ class LoggingMiddleware(object):
         action = request.META.get('action', None)
         if action:
             pds = request.META.get('pds')
+            subject_id = request.META.get('subject_id')
             user = self.get_user(request)
             user_name = user.username if user else None
             response_time = (datetime.datetime.now() - request.start_ts).microseconds / 1000
@@ -88,6 +89,7 @@ class LoggingMiddleware(object):
                         'datasource': pds.data_source.name,
                         'protocol_name': pds.protocol.name,
                         'protocol': pds.protocol.id,
+                        'subject_id': subject_id,
                         'response_time': response_time})
             else:
                 logger('{action}'.format(action=action), extra={
