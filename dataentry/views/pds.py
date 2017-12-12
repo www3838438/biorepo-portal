@@ -100,14 +100,17 @@ class FormView(DataEntryView):
         errors = self.driver.processForm(
             request=request, external_record=context['record'], form_spec=kwargs['form_spec'], session=request.session)
         if errors:
-            self.request.META['action'] = 'Errors processing form.'
+            #self.request.META['action'] = 'Errors processing form.'
+            #new to see if we can see the error message
+            self.request.META['action'] = errors
             self.request.META['error'] = True
             error_msgs = [e for e in errors]
             context['errors'] = error_msgs
-            return JsonResponse({'status': 'error', 'errors': error_msgs})
+            return JsonResponse({'status': 'error', 'errors': str(errors)})
         else:
             self.request.META['action'] = 'Form processed.'
             return JsonResponse({'status': 'ok'})
+
 
 
 class CreateView(DataEntryView):
