@@ -94,6 +94,10 @@ class FormView(DataEntryView):
             1)
         return context
 
+    #this method is called when users submits forms
+    #if there exists any errors, we display elements from
+    #pds_dataentry_srf.html and this is called with 
+    #formBuilderJson.py from ehb_datasources
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         # have the driver process this request
@@ -109,7 +113,6 @@ class FormView(DataEntryView):
             errors = errors.replace("Exception('", "")
             errors = errors.replace ("',)","")
             return JsonResponse({'status': 'error', 'errors': errors })
-            #return JsonResponse({'status': 'error', 'errors': errors[1] })
         else:
             self.request.META['action'] = 'Form processed.'
             return JsonResponse({'status': 'ok'})
