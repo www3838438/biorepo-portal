@@ -106,8 +106,10 @@ class FormView(DataEntryView):
             self.request.META['error'] = True
             error_msgs = [e for e in errors]
             context['errors'] = error_msgs
-            errors = errors.split("'")
-            return JsonResponse({'status': 'error', 'errors': errors[1] })
+            errors = errors.replace("Exception('", "")
+            errors = errors.replace ("',)","")
+            return JsonResponse({'status': 'error', 'errors': errors })
+            #return JsonResponse({'status': 'error', 'errors': errors[1] })
         else:
             self.request.META['action'] = 'Form processed.'
             return JsonResponse({'status': 'ok'})
