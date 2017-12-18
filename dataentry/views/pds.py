@@ -104,6 +104,10 @@ class FormView(DataEntryView):
             self.request.META['error'] = True
             error_msgs = [e for e in errors]
             context['errors'] = error_msgs
+            #this is to clean the redcap error message
+            errors = errors.replace("Exception('", "")
+            errors = errors.replace ("',)","")
+            
             return JsonResponse({'status': 'error', 'errors': error_msgs})
         else:
             self.request.META['action'] = 'Form processed.'
