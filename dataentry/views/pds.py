@@ -107,8 +107,7 @@ class FormView(DataEntryView):
             #this is to clean the redcap error message
             errors = errors.replace("Exception('", "")
             errors = errors.replace ("',)","")
-            
-            return JsonResponse({'status': 'error', 'errors': error_msgs})
+            return JsonResponse({'status': 'error', 'errors': errors})
         else:
             self.request.META['action'] = 'Form processed.'
             self.request.META['subject_id'] = context['subject'].id  #The ehb PK for this subject
