@@ -104,7 +104,8 @@ class FormView(DataEntryView):
         errors = self.driver.processForm(
             request=request, external_record=context['record'], form_spec=kwargs['form_spec'], session=request.session)
         if errors:
-            self.request.META['action'] = errors
+            self.request.META['action'] = 'Errors processing form.'
+            self.request.META['user_error_msg'] = errors
             self.request.META['error'] = True
             error_msgs = [e for e in errors]
             context['errors'] = error_msgs
