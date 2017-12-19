@@ -105,6 +105,8 @@ class FormView(DataEntryView):
         errors = self.driver.processForm(
             request=request, external_record=context['record'], form_spec=kwargs['form_spec'], session=request.session)
 
+        # this grabs the filepath of the driver instance to
+        # differentiate from nautilus and redcap driver
         driverClass = inspect.getfile(self.driver.__class__)
 
         if errors:
