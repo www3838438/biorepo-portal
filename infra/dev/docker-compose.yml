@@ -34,7 +34,6 @@ services:
       - "32783:8000"
     depends_on:
       - redis
-      - brp_dev_pg
 
   app:
     image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/biorepo-portal:dev
