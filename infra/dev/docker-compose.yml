@@ -26,6 +26,7 @@ services:
   ehb-service:
     image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:dev
     container_name: ehb
+    env_file: ../../ehb_settings.env
     restart: always
     environment:
       - REDIS_HOST=redis
