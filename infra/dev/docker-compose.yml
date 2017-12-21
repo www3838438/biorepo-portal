@@ -24,11 +24,13 @@ services:
     command: logstash -f /config-dir/logstash.conf
 
   ehb-service:
-    image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:dev
+    image: 508852077039.dkr.ecr.us-east-1.amazonaws.com/dbhi/eig/ehb-service:latest
     container_name: ehb
+    env_file: ../../ehb_settings.env
     restart: always
     environment:
       - REDIS_HOST=redis
+      - POSTGRES_DB=ehb_dev
     ports:
       - "32783:8000"
     depends_on:
