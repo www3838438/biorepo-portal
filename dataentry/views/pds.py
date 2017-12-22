@@ -1,5 +1,6 @@
 import json
 import logging
+import inspect
 
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.template import RequestContext
@@ -94,17 +95,39 @@ class FormView(DataEntryView):
             1)
         return context
 
+    #this method is called when users submits forms
+    #if there exists any errors, we display elements from
+    #pds_dataentry_srf.html and this is called with
+    #formBuilderJson.py from ehb_datasources
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         # have the driver process this request
         errors = self.driver.processForm(
             request=request, external_record=context['record'], form_spec=kwargs['form_spec'], session=request.session)
+
+        # this grabs the filepath of the driver instance to
+        # differentiate from nautilus and redcap driver
+        driverClass = inspect.getfile(self.driver.__class__)
+
         if errors:
             self.request.META['action'] = 'Errors processing form.'
+            self.request.META['user_error_msg'] = errors
             self.request.META['error'] = True
             error_msgs = [e for e in errors]
             context['errors'] = error_msgs
-            return JsonResponse({'status': 'error', 'errors': error_msgs})
+            # if this is a redcap error message, need to clean and parse
+            if "redcap" in str(driverClass):
+                # this is to clean the redcap error message
+                errors = errors.replace("Exception('", "")
+                errors = errors.replace ("',)","")
+                json_errors = errors
+                errors = errors.split ('"')
+                # overwrite the previous META for user_error_msg
+                # errors[3] = field Name
+                # errors [5] = redcap message
+                self.request.META['user_error_msg'] = "Error in this field: " + errors[3] + ". " + errors [5]
+                return  JsonResponse({'status': 'error', 'errors': json_errors})
+            return JsonResponse({'status': 'error', 'errors': errors})
         else:
             self.request.META['action'] = 'Form processed.'
             self.request.META['subject_id'] = context['subject'].id  #The ehb PK for this subject
