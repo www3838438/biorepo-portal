@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
 from .views.protocol import New_protocol_usr, Fn_in_progress
-from .views.brp_commands import CacheSubjects
+from .views.brp_commands import CacheSubjects, ReactivateUsers
 
 
 urlpatterns = [
@@ -16,5 +16,9 @@ urlpatterns = [
     url(
         r'^cache_subjects/$',
         login_required(CacheSubjects.as_view()),
+        name='cache_subjects'),
+    url(
+        r'^reactivate_user/$',
+        login_required(ReactivateUsers.as_view()),
         name='cache_subjects'),
 ]
