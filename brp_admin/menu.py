@@ -41,7 +41,7 @@ class CustomMenu(Menu):
             items.MenuItem(
                 _('BRP Management'),
                 children=[
-                    items.MenuItem('cache subjects', '/brp_admin/fn_in_progress/'),
+                    items.MenuItem('cache subjects', '/brp_admin/cache_subjects/'),
                     items.MenuItem('toggle maintenance', '/brp_admin/fn_in_progress/'),
                 ]
             ),

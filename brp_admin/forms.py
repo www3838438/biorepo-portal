@@ -1,6 +1,6 @@
 from django.forms import ModelForm
-
-from api.models.protocols import ProtocolUserCredentials, ProtocolUser
+from django import forms
+from api.models.protocols import ProtocolUserCredentials, ProtocolUser, Protocol
 
 
 class ProtocolUserForm(ModelForm):
@@ -27,3 +27,7 @@ class ProtocolUserCredentialsForm(ModelForm):
         model = ProtocolUserCredentials
         # fields = ('data_source', 'data_source_username', 'data_source_password')
         fields = ('__all__')
+
+
+class ProtocolForm(forms.Form):
+    protocol = forms.ModelChoiceField(queryset=Protocol.objects.all(), empty_label="All")
