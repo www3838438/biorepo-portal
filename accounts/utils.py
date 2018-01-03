@@ -7,7 +7,7 @@ from django.core.mail import mail_admins
 from django.contrib.auth import get_user_model
 from django.views.decorators.debug import sensitive_variables
 
-MAX_LOGIN_ATTEMPTS = 10
+MAX_LOGIN_ATTEMPTS = 5
 MAX_LOGIN_ATTEMPTS_KEY = '%s_%s_login_attempts'
 MAX_LOGIN_ATTEMPTS_SUBJECT = 'Failed Login Attempt'
 
