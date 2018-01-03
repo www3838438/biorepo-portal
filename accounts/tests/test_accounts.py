@@ -332,8 +332,8 @@ class AccountsModuleTests(TestCase):
             form_data = {'email': 'jane@email.chop.edu', 'username': 'jane', 'password': 'Chopchop1234'}
             user = User.objects.get(email='jane@email.chop.edu')
             self.assertTrue(user.is_active)
-            # Make 6 bogus login attempts (10 is max)
-            cache.set('jane@email.chop.edu_127.0.0.1_login_attempts', 4)
+            # Make 3 bogus login attempts (5 is max)
+            cache.set('jane@email.chop.edu_127.0.0.1_login_attempts', 3)
             self.client.post('/login/', form_data)
             user = User.objects.get(email='jane@email.chop.edu')
             self.assertTrue(user.is_active)
