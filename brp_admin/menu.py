@@ -48,7 +48,7 @@ class CustomMenu(Menu):
             items.MenuItem(
                 _('User Management'),
                 children=[
-                    items.MenuItem('re-activate user', 'http://biorepository-portal.readthedocs.io/en/latest/configuration/protocoluser.html'),
+                    items.MenuItem('re-activate user', '/brp_admin/reactivate_user/'),
                     items.MenuItem('update user nautilus credentials', '/brp_admin/fn_in_progress/'),
                     items.MenuItem('update user REDCap credentials', '/brp_admin/fn_in_progress/'),
                 ]
