@@ -9,7 +9,6 @@ from django.http import HttpResponse
 
 class CacheSubjects(TemplateView):
 
-
     def post(self, request):
         print(request)
         protocol = request.POST['protocol']
@@ -17,8 +16,9 @@ class CacheSubjects(TemplateView):
             management.call_command('cache_subjects', protocol, verbosity=0)
         else:
             management.call_command('cache_subjects', "all", verbosity=0)
-        return HttpResponse("Caching initiated")
-
+        context = {}
+        context['message'] = "Caching complete"
+        return render(request, 'confirmation.html', context)
 
     def get(self, request):
         context = {}

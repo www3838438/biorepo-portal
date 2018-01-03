@@ -9,18 +9,13 @@
     </div>
   </div>
 <div class="container" style="border:1px solid #cecece;">
-  <form id="form" method="POST" class="post-form">{% csrf_token %}
+  <form id="form" method="POST" class="post-form" onsubmit="return checkForm(this);">{% csrf_token %}
     {% for field in form %}
         <div class="fieldWrapper">
             {{ field.errors }}
             {{ field.label_tag }} {{ field }}
         </div>
     {% endfor %}
-  <button type="submit" id="myBtn" name="submit_form" class="save btn btn-primary">Submit</button>
+  <button type="submit" id="submitBtn" name="submit_form" class="save btn btn-primary" value="Submit"onclick="this.disabled=true;this.form.submit();">Submit</button>
 </div>
-
-
-
-
-
 {% endblock %}
