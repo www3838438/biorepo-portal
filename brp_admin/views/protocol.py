@@ -111,8 +111,6 @@ class ProtocolUserCredentialForm(TemplateView):
             # todo: if errors send to UI
                 context['data_source'] = cred_form
                 message = 'credentials saved'
-        print("changes: ")
-        print(self.credential_form_set.changed_objects())
 
         context['message'] = message
 
