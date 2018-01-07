@@ -1,0 +1,26 @@
+{% extends "brp_admin_base.html" %}
+
+{% block main_content %}
+
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h3 class="text-center" >{{ message1 }}</h3>
+      <h4 class="text-center" >{{ message2 }}</h4>
+    </div>
+  </div>
+{% if error %}
+  <div class="alert alert-warning">
+  <strong>Error!</strong> {{ error }}
+  </div>
+{% endif %}
+<div class="container" style="border:1px solid #cecece;">
+  <form id="form" method="POST" class="post-form" onsubmit="return checkForm(this);">{% csrf_token %}
+    {% for field in form %}
+        <div class="fieldWrapper">
+            {{ field.errors }}
+            {{ field.label_tag }} {{ field }}
+        </div>
+    {% endfor %}
+  <button type="submit" id="submitBtn" name="submit_form" class="save btn btn-primary" value="Submit"onclick="this.disabled=true;this.form.submit();">Submit</button>
+</div>
+{% endblock %}
