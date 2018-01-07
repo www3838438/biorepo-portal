@@ -105,14 +105,12 @@ class ProtocolUserCredentialForm(TemplateView):
         for cred_form in cred_formset:
             if cred_form.has_changed() and cred_form.is_valid():
                 cred_form.save()
-
-
                 # get changes and send to confirmation page
             # todo: if errors send to UI
                 context['data_source'] = cred_form
-                message = 'credentials saved'
+                context['message'] = 'credentials saved'
 
-        context['message'] = message
+        return context
 
     def get_context_data(self, request):
         request_info = request.POST
@@ -140,9 +138,8 @@ class ProtocolUserCredentialForm(TemplateView):
             protocol = post_data['form-0-protocol']
             protocol_user = ProtocolUser.objects.get(protocol=protocol, user=user)
             self.getCred_formset(protocol, protocol_user, user)
-            self.processProtocolUserCredForm(request)
-            context = {}
-            context['message'] = "credentials saved"
+            context = self.processProtocolUserCredForm(request)
+            print(context['data_source'])
             return render(request, 'confirmation.html', context)
 
         else:
