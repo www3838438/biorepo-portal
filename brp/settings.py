@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'registration',
     'session_security',
+    'crispy_forms',
     'accounts',
     'brp',
     'api',
