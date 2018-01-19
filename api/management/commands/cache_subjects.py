@@ -99,9 +99,12 @@ class Command(BaseCommand):
                         sub['external_records'].extend(self.getExternalRecords(pds, sub, lbls))
                     except:
                         print("there was an error processing external records")
-                        print("subject:")
-                        print(sub)
+                        print("subject DB id:")
+                        print(sub['id'])
+                        print("protocol data source:")
+                        print(pds)
                         pass
+
 
                 if manageExternalIDs:
                     # Break out external ids into a separate object for ease of use
