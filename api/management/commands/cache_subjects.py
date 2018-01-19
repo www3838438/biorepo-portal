@@ -95,12 +95,23 @@ class Command(BaseCommand):
                 sub['organization'] = sub['organization_id']
                 sub.pop('organization_id')
                 for pds in protocoldatasources:
-                    sub['external_records'].extend(self.getExternalRecords(pds, sub, lbls))
+                    try:
+                        sub['external_records'].extend(self.getExternalRecords(pds, sub, lbls))
+                    except:
+                        print("there was an error processing external records")
+                        print("subject:")
+                        print(sub)
+                        pass
+
                 if manageExternalIDs:
                     # Break out external ids into a separate object for ease of use
                     for record in sub['external_records']:
                         if record['external_system'] == 3:
-                            sub['external_ids'].append(record)
+                            try:
+                                sub['external_ids'].append(record)
+                            except:
+                                print("an error occured getting external records")
+                                print(sub['external_ids'])
                 for ehb_org in ehb_orgs:
                     if sub['organization'] == ehb_org.id:
                         sub['organization_name'] = ehb_org.name
