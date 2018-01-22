@@ -10,8 +10,22 @@
             <h2> {{ source }} </h2>
         </div>
         {% endfor %}
-        <!-- <button type="submit" name="protocol_user"  class="save btn btn-default">new protocol user</button> -->
     </form>
+</div>
+
+<div class="container" style="border:1px solid #cecece;">
+{% for cred in protocolUserCred %}
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h3> {{ cred.data_source }} </h4>
+      <h4> username: {{ cred.data_source_username }} </h4>
+      <h4> password: {{ cred.data_source_password }} </h4>
+    </div>
+  </div>
+
+
+{% endfor %}
+
 </div>
 
 {% endblock %}
